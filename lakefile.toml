@@ -1,0 +1,23 @@
+# slt-bridge: a Lean bridge from resolution of singularities to Watanabe's singular learning theory.
+# Phase 0 scaffold only. Pins match vector-slt-lean, residual-slt-in-a-haystack and hironaka@v4.35.0.
+name = "slt-bridge"
+version = "0.0.1"
+defaultTargets = ["SLT"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "56a005855ea17e0b0958f73ec801ae140b0a1679"
+
+# G2 only (not yet enabled; see PLAN.md §4): hironaka at tag v4.35.0 = 044d89c, same mathlib pin.
+# [[require]]
+# name = "hironaka"
+# git = "https://github.com/resolutionorg/hironaka"
+# rev = "044d89c9455859446fc5e986667319f910e15f4b"
+
+[[lean_lib]]
+name = "SLT"
