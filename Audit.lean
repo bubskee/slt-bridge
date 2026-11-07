@@ -189,3 +189,48 @@ import SLT
 #print axioms SLT.antitoneOn_gibbsMean
 #print axioms SLT.integral_gibbsMean_bounds
 #print axioms SLT.tendsto_mul_gibbsMean_of_regularVariation
+
+/-! Brief 01, stage N1 (Newton, easy half) and the N2 statement (definitions only). -/
+#print axioms SLT.Newton.monomial
+#print axioms SLT.Newton.IsNewtonCert
+#print axioms SLT.Newton.newtonDist
+#print axioms SLT.Newton.monomial_le_of_mem_box
+#print axioms SLT.Newton.volume_box
+#print axioms SLT.Newton.newton_laplaceLower
+#print axioms SLT.Newton.newton_lambda_le
+#print axioms SLT.Newton.newtonDist_eq
+#print axioms SLT.Newton.newtonDist_single
+#print axioms SLT.Newton.newtonDist_xy
+#print axioms SLT.Newton.newtonDist_sq_add_sq
+#print axioms SLT.Newton.newtonDist_sq_d2
+#print axioms SLT.Newton.optWeights
+#print axioms SLT.Newton.newtonMult
+#print axioms SLT.Newton.NewtonTwoSided
+
+/-! Brief 01, stage N2 (two-sided Newton) and Bobby's two additions. -/
+#print axioms SLT.Newton.newtonTwoSided
+#print axioms SLT.Newton.hasLaplacePair_monoSum
+#print axioms SLT.Newton.newton_box_units
+#print axioms SLT.Newton.newtonMult_single
+#print axioms SLT.Newton.newtonMult_xy
+#print axioms SLT.Newton.newtonMult_sq_add_sq
+#print axioms SLT.Newton.newtonMult_sq_d2
+#print axioms SLT.Newton.optWeights_single
+#print axioms SLT.Newton.optWeights_xy
+#print axioms SLT.Newton.optWeights_sq_add_sq
+#print axioms SLT.Newton.optWeights_sq_d2
+#print axioms SLT.Newton.eq_zero_of_extremePoint
+#print axioms SLT.Newton.one_dot_ge
+#print axioms SLT.Newton.dualSlab_subset
+#print axioms SLT.Newton.exists_coords_injOn
+#print axioms SLT.Newton.volume_thicken_le
+#print axioms SLT.Newton.volume_image_expNeg
+#print axioms SLT.Newton.volume_sublevel_le
+#print axioms SLT.Newton.volume_sublevel_ge
+#print axioms SLT.Newton.optWeights_nonempty
+#print axioms SLT.Newton.finrank_dualSlab_zero_le
+#print axioms SLT.Newton.volume_dualSlab_le
+#print axioms SLT.Newton.Hfun_le
+#print axioms SLT.Newton.exists_optFamily
+#print axioms SLT.Newton.Hfun_ge
+#print axioms SLT.Newton.lintegral_posBox_scale
