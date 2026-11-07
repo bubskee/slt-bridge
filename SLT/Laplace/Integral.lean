@@ -197,6 +197,26 @@ theorem hasLaplacePair_Z_iff_hasLaplaceOrder [IsFiniteMeasure ν] (hK : Measurab
   have e := Z_eventuallyEq_integral hK hK0
   exact ⟨fun h => h.congr e, fun h => h.congr e.symm⟩
 
+/-- **From the scalar library's `HasLaplaceOrder` to `HasLaplacePair (Z ν K)`, with no side
+conditions.** The lower bound makes the Bochner integral positive for large `N`, so
+`e^{-N K}` is integrable there and `Z ν K N` is its `ofReal`. -/
+theorem hasLaplacePair_Z_of_hasLaplaceOrder
+    (h : HasLaplaceOrder lam m (fun N => ∫ x, Real.exp (-N * K x) ∂ν)) :
+    HasLaplacePair (Z ν K) lam m := by
+  have hp := hasLaplacePair_ofReal_iff.mpr h
+  refine hp.congr ?_
+  obtain ⟨-, c, C, N₀, hc, -, hN₀, hb⟩ := h
+  filter_upwards [eventually_ge_atTop N₀] with N hN
+  have hpos : 0 < ∫ x, Real.exp (-N * K x) ∂ν :=
+    lt_of_lt_of_le (mul_pos hc (rate_pos lam m (hN₀.trans_le hN))) (hb N hN).1
+  have hint : Integrable (fun x => Real.exp (-(N * K x))) ν := by
+    by_contra hni
+    have : ¬ Integrable (fun x => Real.exp (-N * K x)) ν := by simpa only [neg_mul] using hni
+    rw [integral_undef this] at hpos
+    exact lt_irrefl _ hpos
+  rw [Z_eq_ofReal_integral hint]
+  simp only [neg_mul]
+
 /-- **Bridge to grammar's `LaplaceTheta`**: `(N ↦ ∫ e^{-N K} dν) =Θ[atTop] rate λ m`. -/
 theorem hasLaplacePair_Z_iff_isTheta [IsFiniteMeasure ν] (hK : Measurable K)
     (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) (hm : 1 ≤ m) :

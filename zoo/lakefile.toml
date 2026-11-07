@@ -1,0 +1,28 @@
+# slt-bridge zoo: certified SLT examples restated in the shared core's vocabulary.
+# Kept as a separate package so that the core (`..`) stays mathlib-only.
+name = "slt-zoo"
+version = "0.0.1"
+defaultTargets = ["Zoo"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "56a005855ea17e0b0958f73ec801ae140b0a1679"
+
+[[require]]
+name = "slt-bridge"
+path = ".."
+
+# Scalar ResNet paper, pinned at the paper's reproducibility snapshot (Lean source unchanged since 3aa8739).
+[[require]]
+name = "residual-slt"
+git = "https://github.com/bubskee/residual-slt-in-a-haystack.git"
+rev = "2865e70a9ca7f559dabfce6aa32e13cf4fc88259"
+subDir = "lean"
+
+[[lean_lib]]
+name = "Zoo"

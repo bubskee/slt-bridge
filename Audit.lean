@@ -123,6 +123,7 @@ import SLT
 #print axioms SLT.gammaLog_lt_top
 #print axioms SLT.hasLaplacePair_Z_iff_hasLaplaceOrder
 #print axioms SLT.hasLaplacePair_Z_iff_isTheta
+#print axioms SLT.hasLaplacePair_Z_of_hasLaplaceOrder
 #print axioms SLT.hasLaplacePair_finset_sum
 #print axioms SLT.hasLaplacePair_iff_bounds
 #print axioms SLT.hasLaplacePair_ofReal_iff
