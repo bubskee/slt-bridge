@@ -11,4 +11,16 @@ import Zoo
 #print axioms SLT.Zoo.ResidualNetwork.cubic_depth6_three_active
 #print axioms SLT.Zoo.ResidualNetwork.cubic_depth5_local_split13
 #print axioms SLT.Zoo.ResidualNetwork.cubic_depth5_local_split22
+#print axioms SLT.Zoo.VectorShear.ofVector
+#print axioms SLT.Zoo.VectorShear.toVector
+#print axioms SLT.Zoo.VectorShear.position_one_pair
+#print axioms SLT.Zoo.VectorShear.position_one_unique
+#print axioms SLT.Zoo.VectorShear.mainTheorem_shear_core
+#print axioms SLT.Zoo.VectorShear.position_one_ne_position
+#print axioms SLT.Zoo.VectorShear.mainTheorem_shear_gaussian_core
+
+-- the source theorems, re-checked here
 #print axioms ResidualSLT.unified_residual_network_certificate
+#print axioms VectorSLT.ZN1_two_sided_moments
+#print axioms VectorSLT.mainTheorem_shear
+#print axioms VectorSLT.mainTheorem_shear_gaussian
