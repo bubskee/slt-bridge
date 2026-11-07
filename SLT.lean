@@ -7,3 +7,7 @@ public import SLT.Laplace.Rate
 public import SLT.Laplace.Pair
 public import SLT.Laplace.Integral
 public import SLT.Laplace.Volume
+public import SLT.Laplace.Mellin
+public import SLT.NormalCrossing.Step
+public import SLT.NormalCrossing.Cube
+public import SLT.NormalCrossing.Box
