@@ -172,3 +172,20 @@ import SLT
 #print axioms SLT.rpow_neg_le_rate
 #print axioms SLT.volume_global_of_local
 #print axioms SLT.volume_le_of_laplaceUpper
+
+/-! Brief 01, stage L (LLC identity). -/
+#print axioms SLT.Zr
+#print axioms SLT.gibbsMean
+#print axioms SLT.mul_exp_neg_mul_le
+#print axioms SLT.Z_eq_ofReal_Zr
+#print axioms SLT.Zr_pos
+#print axioms SLT.hasDerivAt_Zr
+#print axioms SLT.hasDerivAt_log_Zr
+#print axioms SLT.continuousOn_gibbsMean
+#print axioms SLT.integral_gibbsMean
+#print axioms SLT.log_rate
+#print axioms SLT.llc_log_average
+#print axioms SLT.tendsto_llc_log_average
+#print axioms SLT.antitoneOn_gibbsMean
+#print axioms SLT.integral_gibbsMean_bounds
+#print axioms SLT.tendsto_mul_gibbsMean_of_regularVariation

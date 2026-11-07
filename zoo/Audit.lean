@@ -24,3 +24,13 @@ import Zoo
 #print axioms VectorSLT.ZN1_two_sided_moments
 #print axioms VectorSLT.mainTheorem_shear
 #print axioms VectorSLT.mainTheorem_shear_gaussian
+
+/-! Brief 01, stage L3 (LLC corollaries). -/
+#print axioms SLT.Zoo.residualNetwork_llc_log_average
+#print axioms SLT.Zoo.residualNetwork_llc
+#print axioms SLT.Zoo.cubic_depth6_three_active_llc
+#print axioms SLT.Zoo.measurable_popLossA
+#print axioms SLT.Zoo.Zpos_eq_Z
+#print axioms SLT.Zoo.isFiniteMeasure_posPrior
+#print axioms SLT.Zoo.position_one_llc
+#print axioms SLT.Zoo.mainTheorem_shear_llc

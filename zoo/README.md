@@ -8,6 +8,7 @@ certified Lean library for a paper and restates its headline results as
 |---|---|---|---|
 | `Zoo/ResidualNetwork.lean` | [residual-slt-in-a-haystack](https://github.com/bubskee/residual-slt-in-a-haystack) (*Learning Coefficients and Active-Block Arrangements in Scalar Residual Networks*) | `2865e70` (paper snapshot) | `residualNetwork_learningPair`, `global_pair_unique`, `local_pair`, worked instances `(2,2)`, `(7/6,2)`, `(7/6,1)` |
 | `Zoo/VectorShear.lean` | vector-slt-lean (*Rank, Shears, and Logarithmic Multiplicity…*), local repo | `2d545cd` | `position_one_pair` (unconditional `(4,5)`), `position_one_unique`, `mainTheorem_shear_core` (table `(4,5),(4,1),(4,1),(4,1)`, conditional on `ThmK`/`ThmN`), Gaussian form |
+| `Zoo/LLC.lean` | both of the above, plus core `SLT.LLC` | — | LLC identity: `residualNetwork_llc`, `cubic_depth6_three_active_llc` (→ 2), `position_one_llc` (unconditional, → 4, `-4 log log T`), `mainTheorem_shear_llc` (conditional on `ThmK`/`ThmN`) |
 
 Every statement here is a corollary. The mathematics lives in the source library; the zoo only
 translates it, and the core's `HasLaplacePair.unique` then shows the certified pair is the
