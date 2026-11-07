@@ -31,13 +31,14 @@ variable {d : ℕ}
 noncomputable abbrev optDim (Γ : Finset (Fin d → ℝ)) : ℕ :=
   finrank ℝ (affineSpan ℝ (optWeights Γ)).direction
 
+/-- `newtonMult Γ = optDim Γ + 1`, by definition. -/
 theorem newtonMult_eq (Γ : Finset (Fin d → ℝ)) : newtonMult Γ = optDim Γ + 1 := rfl
 
-theorem optDim_le (Γ : Finset (Fin d → ℝ)) : optDim Γ ≤ d := by
+private theorem optDim_le (Γ : Finset (Fin d → ℝ)) : optDim Γ ≤ d := by
   have := Submodule.finrank_le (affineSpan ℝ (optWeights Γ)).direction
   rwa [Module.finrank_fin_fun] at this
 
-theorem dualSlab_zero_subset {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
+private theorem dualSlab_zero_subset {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
     dualSlab Γ 0 ⊆ (fun u => (newtonDist Γ)⁻¹ • u) '' optWeights Γ := by
   intro u hu
   have hge := one_dot_ge hd hu.1
@@ -54,7 +55,7 @@ theorem dualSlab_zero_subset {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist 
     exact le_mul_of_one_le_right hd.le h
   · simp only [smul_smul, inv_mul_cancel₀ hd.ne', one_smul]
 
-theorem finrank_dualSlab_zero_le {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
+private theorem finrank_dualSlab_zero_le {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
     finrank ℝ (affineSpan ℝ (dualSlab Γ 0)).direction ≤ optDim Γ := by
   set f : (Fin d → ℝ) →ₗ[ℝ] (Fin d → ℝ) := (newtonDist Γ)⁻¹ • LinearMap.id
   have himg : (fun u => (newtonDist Γ)⁻¹ • u) '' optWeights Γ = f.toAffineMap '' optWeights Γ := rfl
@@ -68,8 +69,8 @@ theorem finrank_dualSlab_zero_le {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonD
         rw [AffineSubspace.map_direction]
         exact Submodule.finrank_map_le _ _
 
-/-- **Slab volume**: `vol(P_η) ≤ C η^{d-k} (1+η)^k` with `k = dim O`. -/
-theorem volume_dualSlab_le {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
+/-- (N2 proof) **Slab volume**: `vol(P_η) ≤ C η^{d-k} (1+η)^k` with `k = dim O`. -/
+private theorem volume_dualSlab_le {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
     ∃ C₃ : ℝ, 0 ≤ C₃ ∧ ∀ η : ℝ, 0 < η →
       volume (dualSlab Γ η) ≤
         ENNReal.ofReal (C₃ * η ^ (d - optDim Γ) * (1 + η) ^ optDim Γ) := by
@@ -133,7 +134,7 @@ theorem volume_dualSlab_le {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ
             _ = _ := by ring
 
 /-- `S_L ∩ {⟨𝟙,x⟩ ≤ L(1/t* + η)} = L • P_η`. -/
-theorem logCone_inter_eq (Γ : Finset (Fin d → ℝ)) {L : ℝ} (hL : 0 < L) (η : ℝ) :
+private theorem logCone_inter_eq (Γ : Finset (Fin d → ℝ)) {L : ℝ} (hL : 0 < L) (η : ℝ) :
     logCone Γ L ∩ {x | ones ⬝ᵥ x ≤ L * ((newtonDist Γ)⁻¹ + η)} = L • dualSlab Γ η := by
   ext x
   rw [mem_smul_set_iff_inv_smul_mem₀ hL.ne']
@@ -151,11 +152,11 @@ theorem logCone_inter_eq (Γ : Finset (Fin d → ℝ)) {L : ℝ} (hL : 0 < L) (�
     · have := h1 α hα; rwa [le_inv_mul_iff₀ hL, mul_one] at this
     · rwa [inv_mul_le_iff₀ hL] at h2
 
-theorem one_dot_ge_of_logCone {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) {L : ℝ}
+private theorem one_dot_ge_of_logCone {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) {L : ℝ}
     (hL : 0 < L) {x : Fin d → ℝ} (hx : x ∈ logCone Γ L) : L * (newtonDist Γ)⁻¹ ≤ ones ⬝ᵥ x := by
   have hmem : x ∈ logCone Γ L ∩ {x | ones ⬝ᵥ x ≤ L * ((newtonDist Γ)⁻¹ + (ones ⬝ᵥ x / L))} := by
     refine ⟨hx, ?_⟩
-    show ones ⬝ᵥ x ≤ L * ((newtonDist Γ)⁻¹ + ones ⬝ᵥ x / L)
+    change ones ⬝ᵥ x ≤ L * ((newtonDist Γ)⁻¹ + ones ⬝ᵥ x / L)
     rw [mul_add, mul_div_cancel₀ _ hL.ne']
     have : 0 ≤ L * (newtonDist Γ)⁻¹ := by positivity
     linarith
@@ -166,11 +167,11 @@ theorem one_dot_ge_of_logCone {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist
   rw [dotProduct_smul, smul_eq_mul, le_inv_mul_iff₀ hL] at this
   exact this
 
-theorem volume_smul_dualSlab (Γ : Finset (Fin d → ℝ)) {L : ℝ} (hL : 0 < L) (η : ℝ) :
+private theorem volume_smul_dualSlab (Γ : Finset (Fin d → ℝ)) {L : ℝ} (hL : 0 < L) (η : ℝ) :
     volume (L • dualSlab Γ η) = ENNReal.ofReal (L ^ d) * volume (dualSlab Γ η) := by
   rw [Measure.addHaar_smul, Module.finrank_fin_fun, abs_of_pos (pow_pos hL d)]
 
-theorem summable_shell (d : ℕ) :
+private theorem summable_shell (d : ℕ) :
     Summable fun j : ℕ => ((j : ℝ) + 2) ^ d * Real.exp (-(j : ℝ)) := by
   have h0 := (summable_nat_add_iff 2).mpr (Real.summable_pow_mul_exp_neg_nat_mul d one_pos)
   refine (h0.mul_left (Real.exp 2)).congr fun j => ?_
@@ -181,7 +182,7 @@ theorem summable_shell (d : ℕ) :
       = ((j : ℝ) + 2) ^ d * Real.exp (-(j : ℝ)) * (Real.exp 2 * Real.exp (-2)) := by ring
     _ = _ := by rw [this, mul_one]
 
-/-- **Upper bound**: `H(L) ≤ C e^{-L/t*} L^{dim O}` for `L ≥ 1`. -/
+/-- (N2 proof) **Upper bound**: `H(L) ≤ C e^{-L/t*} L^{dim O}` for `L ≥ 1`. -/
 theorem Hfun_le {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
     ∃ C₄ : ℝ, 0 ≤ C₄ ∧ ∀ L : ℝ, 1 ≤ L →
       Hfun Γ L ≤ ENNReal.ofReal (C₄ * Real.exp (-(L * (newtonDist Γ)⁻¹)) * L ^ optDim Γ) := by
@@ -201,11 +202,11 @@ theorem Hfun_le {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
     have hge := one_dot_ge_of_logCone hd hL0 hx
     set j := ⌊ones ⬝ᵥ x - L * τ⌋₊
     refine mem_iUnion.mpr ⟨j, ⟨hx, ?_⟩, ?_⟩
-    · show ones ⬝ᵥ x ≤ L * (τ + ((j : ℝ) + 1) / L)
+    · change ones ⬝ᵥ x ≤ L * (τ + ((j : ℝ) + 1) / L)
       rw [mul_add, mul_div_cancel₀ _ hL0.ne']
       have := Nat.lt_floor_add_one (ones ⬝ᵥ x - L * τ)
       linarith
-    · show L * τ + j ≤ ones ⬝ᵥ x
+    · change L * τ + j ≤ ones ⬝ᵥ x
       have := Nat.floor_le (sub_nonneg.mpr hge)
       linarith
   have hterm : ∀ j : ℕ, ∫⁻ x in Sh j, ENNReal.ofReal (Real.exp (-(ones ⬝ᵥ x))) ≤

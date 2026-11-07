@@ -1,6 +1,7 @@
 import SLT
 
-/-! Axiom audit for the SLT core (M1 + M2). Run: `lake env lean Audit.lean`. -/
+/-! Axiom audit for the SLT core: every public declaration (M1, M2, brief 01 L and N). Run:
+`lake env lean Audit.lean`; completeness is checked by `scripts/check_audit.sh`. -/
 
 #print axioms SLT.Dominates
 #print axioms SLT.Dominates.refl
@@ -219,18 +220,39 @@ import SLT
 #print axioms SLT.Newton.optWeights_xy
 #print axioms SLT.Newton.optWeights_sq_add_sq
 #print axioms SLT.Newton.optWeights_sq_d2
-#print axioms SLT.Newton.eq_zero_of_extremePoint
 #print axioms SLT.Newton.one_dot_ge
 #print axioms SLT.Newton.dualSlab_subset
 #print axioms SLT.Newton.exists_coords_injOn
 #print axioms SLT.Newton.volume_thicken_le
-#print axioms SLT.Newton.volume_image_expNeg
 #print axioms SLT.Newton.volume_sublevel_le
 #print axioms SLT.Newton.volume_sublevel_ge
 #print axioms SLT.Newton.optWeights_nonempty
-#print axioms SLT.Newton.finrank_dualSlab_zero_le
-#print axioms SLT.Newton.volume_dualSlab_le
 #print axioms SLT.Newton.Hfun_le
-#print axioms SLT.Newton.exists_optFamily
 #print axioms SLT.Newton.Hfun_ge
-#print axioms SLT.Newton.lintegral_posBox_scale
+
+/-! Brief 02 (cleanliness pass): public declarations that had no audit line. Helpers made
+`private` are not listed; `#print axioms` is transitive, so their axioms show up under the
+public theorems that use them. Completeness is checked by `scripts/check_audit.sh`. -/
+#print axioms SLT.Newton.Hfun
+#print axioms SLT.Newton.IsNewtonCert.mono
+#print axioms SLT.Newton.dualPoly
+#print axioms SLT.Newton.dualSlab
+#print axioms SLT.Newton.dualSlab_isBounded
+#print axioms SLT.Newton.isCompact_dualSlab
+#print axioms SLT.Newton.logCone
+#print axioms SLT.Newton.measurable_monoSum
+#print axioms SLT.Newton.monoSum
+#print axioms SLT.Newton.monoSum_nonneg
+#print axioms SLT.Newton.monomial_nonneg
+#print axioms SLT.Newton.newtonMult_eq
+#print axioms SLT.Newton.nonempty_of_newtonDist_pos
+#print axioms SLT.Newton.ones
+#print axioms SLT.Newton.ones_dotProduct
+#print axioms SLT.Newton.optDim
+#print axioms SLT.Newton.simplex
+#print axioms SLT.Zr_eq_integral
+#print axioms SLT.cgf_neg_eq_log_Zr
+#print axioms SLT.gibbsMean_nonneg
+#print axioms SLT.gibbsNum
+#print axioms SLT.gibbsNum_nonneg
+#print axioms SLT.mgf_neg_eq_Zr

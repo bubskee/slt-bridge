@@ -26,16 +26,19 @@ open MeasureTheory Set Filter Real
 
 /-! ### Explicit one-dimensional integrals -/
 
+/-- `∫_0^a x^h dx = a^{h+1}/(h+1)` for `h > -1`. -/
 theorem lintegral_Ioc_zero_rpow {a h : ℝ} (ha : 0 ≤ a) (hh : -1 < h) :
     ∫⁻ x in Ioc 0 a, ENNReal.ofReal (x ^ h) = ENNReal.ofReal (a ^ (h + 1) / (h + 1)) := by
   have hint : IntegrableOn (fun x : ℝ => x ^ h) (Ioc 0 a) :=
-    (intervalIntegrable_iff_integrableOn_Ioc_of_le ha).mp (intervalIntegral.intervalIntegrable_rpow' hh)
+    (intervalIntegrable_iff_integrableOn_Ioc_of_le ha).mp
+      (intervalIntegral.intervalIntegrable_rpow' hh)
   rw [← ofReal_integral_eq_lintegral_ofReal hint]
   · rw [← intervalIntegral.integral_of_le ha, integral_rpow (Or.inl hh),
       Real.zero_rpow (by linarith), sub_zero]
   · filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
     exact Real.rpow_nonneg hx.1.le _
 
+/-- `∫_a^1 x^e dx = (1 - a^{e+1})/(e+1)` for `e ≠ -1`. -/
 theorem lintegral_Ioc_one_rpow {a e : ℝ} (ha : 0 < a) (ha1 : a ≤ 1) (he : e ≠ -1) :
     ∫⁻ x in Ioc a 1, ENNReal.ofReal (x ^ e) = ENNReal.ofReal ((1 - a ^ (e + 1)) / (e + 1)) := by
   have hcont : ContinuousOn (fun x : ℝ => x ^ e) (Icc a 1) :=
@@ -48,6 +51,7 @@ theorem lintegral_Ioc_one_rpow {a e : ℝ} (ha : 0 < a) (ha1 : a ≤ 1) (he : e 
   · filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
     exact Real.rpow_nonneg (by linarith [hx.1]) _
 
+/-- `∫_a^1 x⁻¹ dx = log(1/a)`. -/
 theorem lintegral_Ioc_one_inv {a : ℝ} (ha : 0 < a) (ha1 : a ≤ 1) :
     ∫⁻ x in Ioc a 1, ENNReal.ofReal (x ^ (-1 : ℝ)) = ENNReal.ofReal (Real.log (1 / a)) := by
   have hcont : ContinuousOn (fun x : ℝ => x ^ (-1 : ℝ)) (Icc a 1) :=
@@ -104,6 +108,7 @@ section Step
 
 variable {F : ℝ → ENNReal} {h : ℝ} {k : ℕ}
 
+/-- `stepG` preserves antitonicity on `[0, ∞)`. -/
 theorem stepG_mono (hF : ∀ M M', 0 ≤ M → M ≤ M' → F M' ≤ F M) {N N' : ℝ} (hN : 0 ≤ N)
     (hNN : N ≤ N') : stepG F h k N' ≤ stepG F h k N := by
   apply setLIntegral_mono' measurableSet_Ioc
@@ -112,6 +117,7 @@ theorem stepG_mono (hF : ∀ M M', 0 ≤ M → M ≤ M' → F M' ≤ F M) {N N' 
   gcongr
   exact hF _ _ (mul_nonneg hN hx0) (mul_le_mul_of_nonneg_right hNN hx0)
 
+/-- The value of `stepG` at `0` is bounded by `B/(h+1)` when `F 0 ≤ B`. -/
 theorem stepG_zero_le (hh : -1 < h) {B : ℝ} (hB : F 0 ≤ ENNReal.ofReal B) :
     stepG F h k 0 ≤ ENNReal.ofReal (B / (h + 1)) := by
   unfold stepG
@@ -144,7 +150,7 @@ theorem split_point {N : ℝ} (hN : 1 ≤ N) (hk : 1 ≤ k) :
       mul_inv_cancel₀ hN0.ne']
   · simp only [a]; rw [← Real.rpow_mul hN0.le]; ring_nf
 
-/-- **(L1)** `G(N) ≥ F(1) N^{-μ}/(h+1)` for `N ≥ 1`, `μ = (h+1)/(k)`. -/
+/-- (M2) **(step L1)** `G(N) ≥ F(1) N^{-μ}/(h+1)` for `N ≥ 1`, `μ = (h+1)/(k)`. -/
 theorem stepG_lower_mu (hF : ∀ M M', 0 ≤ M → M ≤ M' → F M' ≤ F M) (hh : -1 < h)
     (hk : 1 ≤ k) {b : ℝ} (_hb : 0 < b) (hb1 : ENNReal.ofReal b ≤ F 1) {N : ℝ} (hN : 1 ≤ N) :
     ENNReal.ofReal (b / (h + 1) * N ^ (-((h + 1) / k))) ≤ stepG F h k N := by
@@ -214,6 +220,7 @@ theorem stepG_outer_pt {lam C : ℝ} {j : ℕ} (_hC : 0 ≤ C)
         ← Real.rpow_mul hx0.le, sub_eq_add_neg, Real.rpow_add hx0]
       ring_nf
 
+/-- `∫_a^1 K x^e dx = K (1 - a^{e+1})/(e+1)` for `e ≠ -1`, `K ≥ 0`. -/
 theorem lintegral_outer_const {a K e : ℝ} (ha : 0 < a) (ha1 : a ≤ 1) (hK : 0 ≤ K) (he : e ≠ -1) :
     ∫⁻ x in Ioc a 1, ENNReal.ofReal (K * x ^ e) =
       ENNReal.ofReal K * ENNReal.ofReal ((1 - a ^ (e + 1)) / (e + 1)) := by
@@ -231,6 +238,7 @@ theorem upper_nonneg {lam : ℝ} {j : ℕ}
     mul_nonneg (Real.rpow_nonneg (by linarith) _) (pow_nonneg (by linarith [Real.log_nonneg hM]) _)
   rw [mul_assoc, mul_assoc]; exact mul_le_mul_of_nonneg_right (le_max_left _ _) this
 
+/-- On the outer range `N^{-1/k} < x ≤ 1`, `0 ≤ log(N x^k) ≤ log N`. -/
 theorem log_bounds_outer {N x : ℝ} (hk : 1 ≤ k) (hN : 1 ≤ N)
     (hx : x ∈ Ioc (N ^ (-(1 : ℝ) / k)) 1) :
     0 ≤ Real.log (N * x ^ k) ∧ Real.log (N * x ^ k) ≤ Real.log N := by
@@ -243,7 +251,7 @@ theorem log_bounds_outer {N x : ℝ} (hk : 1 ≤ k) (hN : 1 ≤ N)
   · apply Real.log_le_log (by positivity)
     exact mul_le_of_le_one_right hN0.le (pow_le_one₀ hx0.le hx.2)
 
-/-- **(U1)** If `λ < μ`: `G(N) ≤ C' N^{-λ} (1+log N)^j`. -/
+/-- (M2) **(step U1)** If `λ < μ`: `G(N) ≤ C' N^{-λ} (1+log N)^j`. -/
 theorem stepG_upper_lt (hF : ∀ M M', 0 ≤ M → M ≤ M' → F M' ≤ F M) (hh : -1 < h) (hk : 1 ≤ k)
     {B : ℝ} (hB : F 0 ≤ ENNReal.ofReal B) {lam : ℝ} {j : ℕ}
     (hup : ∃ C : ℝ, ∀ M, 1 ≤ M → F M ≤ ENNReal.ofReal (C * M ^ (-lam) * (1 + Real.log M) ^ j))
@@ -298,7 +306,7 @@ theorem stepG_upper_lt (hF : ∀ M M', 0 ≤ M → M ≤ M' → F M' ≤ F M) (h
       C / (e + 1) * (N ^ (-lam) * (1 + Real.log N) ^ j) := by ring
   rw [h2]; nlinarith
 
-/-- **(U2)** If `λ = μ`: `G(N) ≤ C' N^{-μ} (1+log N)^{j+1}` (one more logarithm). -/
+/-- (M2) **(step U2)** If `λ = μ`: `G(N) ≤ C' N^{-μ} (1+log N)^{j+1}` (one more logarithm). -/
 theorem stepG_upper_eq (hF : ∀ M M', 0 ≤ M → M ≤ M' → F M' ≤ F M) (hh : -1 < h) (hk : 1 ≤ k)
     {B : ℝ} (hB : F 0 ≤ ENNReal.ofReal B) {lam : ℝ} {j : ℕ}
     (hup : ∃ C : ℝ, ∀ M, 1 ≤ M → F M ≤ ENNReal.ofReal (C * M ^ (-lam) * (1 + Real.log M) ^ j))
@@ -362,7 +370,7 @@ theorem stepG_upper_eq (hF : ∀ M M', 0 ≤ M → M ≤ M' → F M' ≤ F M) (h
       _ = _ := by ring
   nlinarith
 
-/-- **(U3)** If `μ < λ`: `G(N) ≤ C' N^{-μ}` (no logarithm survives). -/
+/-- (M2) **(step U3)** If `μ < λ`: `G(N) ≤ C' N^{-μ}` (no logarithm survives). -/
 theorem stepG_upper_gt (hF : ∀ M M', 0 ≤ M → M ≤ M' → F M' ≤ F M) (hh : -1 < h) (hk : 1 ≤ k)
     {B : ℝ} (hB : F 0 ≤ ENNReal.ofReal B) {lam : ℝ} {j : ℕ}
     (hup : ∃ C : ℝ, ∀ M, 1 ≤ M → F M ≤ ENNReal.ofReal (C * M ^ (-lam) * (1 + Real.log M) ^ j))
@@ -434,13 +442,15 @@ theorem stepG_upper_gt (hF : ∀ M M', 0 ≤ M → M ≤ M' → F M' ≤ F M) (h
   simp only [pow_zero, mul_one]
   apply le_of_eq; ring
 
+/-- On `(1/2, 1]`, `x^h ≥ min 1 ((1/2)^h)`. -/
 theorem rpow_h_ge {h x : ℝ} (hx : x ∈ Ioc (1 / 2 : ℝ) 1) : min 1 ((1 / 2 : ℝ) ^ h) ≤ x ^ h := by
   have hx0 : 0 < x := lt_trans (by norm_num) hx.1
   rcases le_total 0 h with hh | hh
   · exact (min_le_right _ _).trans (Real.rpow_le_rpow (by norm_num) hx.1.le hh)
   · exact (min_le_left _ _).trans (Real.one_le_rpow_of_pos_of_le_one_of_nonpos hx0 hx.2 hh)
 
-/-- **(L2)** From the lower half of `F`'s pair: `G(N) ≥ c' N^{-λ} (log N)^j` for large `N`. -/
+/-- (M2) **(step L2)** From the lower half of `F`'s pair: `G(N) ≥ c' N^{-λ} (log N)^j` for large
+`N`. -/
 theorem stepG_lower_lam (_hk : 1 ≤ k) {lam : ℝ} (hlam : 0 ≤ lam) {j : ℕ}
     (hlow : ∃ c : ℝ, 0 < c ∧ ∃ M₀ : ℝ, ∀ M, M₀ ≤ M →
       ENNReal.ofReal (c * M ^ (-lam) * Real.log M ^ j) ≤ F M) :
@@ -510,7 +520,7 @@ theorem stepG_lower_lam (_hk : 1 ≤ k) {lam : ℝ} (hlam : 0 ≤ lam) {j : ℕ}
         setLIntegral_mono' measurableSet_Ioc hpt
     _ ≤ stepG F h k N := lintegral_mono_set (Ioc_subset_Ioc_left (by norm_num))
 
-/-- **(L3)** If `λ = μ`: `G(N) ≥ c' N^{-μ} (log N)^{j+1}` for large `N`. -/
+/-- (M2) **(step L3)** If `λ = μ`: `G(N) ≥ c' N^{-μ} (log N)^{j+1}` for large `N`. -/
 theorem stepG_lower_eq (hk : 1 ≤ k) {lam : ℝ} {j : ℕ} (heq : lam = (h + 1) / k)
     (hlow : ∃ c : ℝ, 0 < c ∧ ∃ M₀ : ℝ, ∀ M, M₀ ≤ M →
       ENNReal.ofReal (c * M ^ (-lam) * Real.log M ^ j) ≤ F M) :
@@ -592,6 +602,8 @@ theorem stepG_lower_eq (hk : 1 ≤ k) {lam : ℝ} {j : ℕ} (heq : lam = (h + 1)
 
 /-! ### The step on `NCBound` -/
 
+/-- The common estimates behind one integration step: `stepG` is antitone, bounded at `0` and
+positive at `1`. -/
 theorem NCBound.common {lam : ℝ} {m : ℕ} (hF : NCBound F lam m) (hh : -1 < h) (hk : 1 ≤ k) :
     (∀ M M', 0 ≤ M → M ≤ M' → stepG F h k M' ≤ stepG F h k M) ∧
     (∃ B : ℝ, stepG F h k 0 ≤ ENNReal.ofReal B) ∧
@@ -640,6 +652,8 @@ theorem NCBound.step_gt_of_upper (hmono : ∀ M M', 0 ≤ M → M ≤ M' → F M
   · have := hlow 1 le_rfl; rwa [Real.one_rpow, mul_one] at this
   · simpa using hlow N hN
 
+/-- **Integration step, new pole wins (M2)**: if `(h+1)/k < λ`, one step gives `NCBound` with
+`((h+1)/k, 1)`. -/
 theorem NCBound.step_gt {lam : ℝ} {m : ℕ} (hF : NCBound F lam m)
     (hh : -1 < h) (hk : 1 ≤ k) (hgt : (h + 1) / k < lam) :
     NCBound (stepG F h k) ((h + 1) / k) 1 := by
@@ -668,7 +682,7 @@ theorem exp_neg_upper {lam : ℝ} (_hlam : 0 ≤ lam) :
   calc (Real.exp M)⁻¹ ≤ n.factorial * (M ^ n)⁻¹ := this
     _ ≤ n.factorial * M ^ (-lam) := by rw [← h3]; exact mul_le_mul_of_nonneg_left h2 hf.le
 
-/-- **Base case** (one variable): `∫₀¹ x^h e^{-N x^{k}} dx` has bounds `((h+1)/(k), 1)`. -/
+/-- (M2) **Base case** (one variable): `∫₀¹ x^h e^{-N x^{k}} dx` has bounds `((h+1)/(k), 1)`. -/
 theorem NCBound.base {h : ℝ} {k : ℕ} (hh : -1 < h) (hk : 1 ≤ k) :
     NCBound (stepG (fun M => ENNReal.ofReal (Real.exp (-M))) h k) ((h + 1) / k) 1 := by
   have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk

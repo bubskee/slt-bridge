@@ -48,15 +48,19 @@ def box (δ : ℝ) : Set (Fin d → ℝ) := Set.pi univ fun _ => Icc (-δ) δ
 noncomputable def boxMeasure (δ : ℝ) (h : Fin d → ℝ) : Measure (Fin d → ℝ) :=
   (volume.restrict (box δ)).withDensity fun y => ENNReal.ofReal (absDens h y)
 
+/-- The box `[-δ,δ]^d` is measurable. -/
 theorem measurableSet_box (δ : ℝ) : MeasurableSet (box (d := d) δ) :=
   MeasurableSet.univ_pi fun _ => measurableSet_Icc
 
+/-- The density `∏|yᵢ|^{hᵢ}` is nonnegative. -/
 theorem absDens_nonneg (h : Fin d → ℝ) (y : Fin d → ℝ) : 0 ≤ absDens h y :=
   Finset.prod_nonneg fun _ _ => Real.rpow_nonneg (abs_nonneg _) _
 
+/-- The normal-crossing loss `∏|yᵢ|^{kᵢ}` is measurable. -/
 theorem measurable_absLoss (k : Fin d → ℕ) : Measurable (absLoss k) := by
   unfold absLoss; fun_prop
 
+/-- The density `∏|yᵢ|^{hᵢ}` is measurable. -/
 theorem measurable_absDens (h : Fin d → ℝ) : Measurable (absDens h) := by
   unfold absDens; fun_prop
 
@@ -64,11 +68,13 @@ theorem measurable_absDens (h : Fin d → ℝ) : Measurable (absDens h) := by
 noncomputable def boxIntegrand (k : Fin d → ℕ) (h : Fin d → ℝ) (N : ℝ) (y : Fin d → ℝ) : ℝ≥0∞ :=
   ENNReal.ofReal (Real.exp (-(N * absLoss k y)) * absDens h y)
 
+/-- `boxIntegrand` is measurable. -/
 theorem measurable_boxIntegrand (k : Fin d → ℕ) (h : Fin d → ℝ) (N : ℝ) :
     Measurable (boxIntegrand k h N) := by
   unfold boxIntegrand
   have := measurable_absLoss k; have := measurable_absDens h; fun_prop
 
+/-- `Z` for the box prior with density `∏|yᵢ|^{hᵢ}` as a set integral of `boxIntegrand`. -/
 theorem Z_boxMeasure (δ : ℝ) (k : Fin d → ℕ) (h : Fin d → ℝ) (N : ℝ) :
     Z (boxMeasure δ h) (absLoss k) N = ∫⁻ y in box δ, boxIntegrand k h N y := by
   unfold Z boxMeasure boxIntegrand
@@ -83,6 +89,7 @@ theorem Z_boxMeasure (δ : ℝ) (k : Fin d → ℕ) (h : Fin d → ℝ) (N : ℝ
 /-- The reflection `yᵢ ↦ yᵢ` if `εᵢ`, `yᵢ ↦ -yᵢ` otherwise. -/
 def refl (ε : Fin d → Bool) (y : Fin d → ℝ) : Fin d → ℝ := fun i => if ε i then y i else -y i
 
+/-- Coordinate reflections preserve Lebesgue measure. -/
 theorem measurePreserving_refl (ε : Fin d → Bool) :
     MeasurePreserving (refl ε) (volume : Measure (Fin d → ℝ)) volume := by
   have := measurePreserving_pi (fun _ : Fin d => (volume : Measure ℝ)) (fun _ => volume)
@@ -92,6 +99,7 @@ theorem measurePreserving_refl (ε : Fin d → Bool) :
       · simp only [hε]; exact Measure.measurePreserving_neg _)
   exact this
 
+/-- `boxIntegrand` is invariant under coordinate reflections. -/
 theorem boxIntegrand_refl (k : Fin d → ℕ) (h : Fin d → ℝ) (N : ℝ) (ε : Fin d → Bool)
     (y : Fin d → ℝ) : boxIntegrand k h N (refl ε y) = boxIntegrand k h N y := by
   have e : ∀ i, |refl ε y i| = |y i| := fun i => by
@@ -104,6 +112,7 @@ def posBox (δ : ℝ) : Set (Fin d → ℝ) := Set.pi univ fun _ => Icc 0 δ
 /-- The half-open positive orthant `(0, δ]^d`. -/
 def posBox' (δ : ℝ) : Set (Fin d → ℝ) := Set.pi univ fun _ => Ioc 0 δ
 
+/-- `[-δ,δ]^d` is covered by the reflections of `[0,δ]^d`. -/
 theorem box_subset_iUnion (δ : ℝ) :
     box (d := d) δ ⊆ ⋃ ε : Fin d → Bool, refl ε ⁻¹' posBox δ := by
   intro y hy
@@ -116,6 +125,7 @@ theorem box_subset_iUnion (δ : ℝ) :
     simp only [h0, decide_false, Bool.false_eq_true, ↓reduceIte]
     exact ⟨by linarith, by linarith [hyi.1]⟩
 
+/-- `[0,δ]^d` and `(0,δ]^d` give the same lower integral. -/
 theorem lintegral_posBox_eq (δ : ℝ) (f : (Fin d → ℝ) → ℝ≥0∞) :
     ∫⁻ y in posBox δ, f y = ∫⁻ y in posBox' δ, f y := by
   have hae : (posBox' δ : Set (Fin d → ℝ)) =ᵐ[(volume : Measure (Fin d → ℝ))] posBox δ :=
@@ -143,12 +153,14 @@ theorem Z_box_le (δ : ℝ) (k : Fin d → ℕ) (h : Fin d → ℝ) (N : ℝ) :
           (measurable_boxIntegrand k h N)
     _ = _ := by rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
 
+/-- The integral over the positive orthant is at most the integral over the box. -/
 theorem Z_pos_le_box {δ : ℝ} (k : Fin d → ℕ) (h : Fin d → ℝ) (N : ℝ) :
     ∫⁻ y in posBox' δ, boxIntegrand k h N y ≤ ∫⁻ y in box δ, boxIntegrand k h N y :=
   lintegral_mono_set (Set.pi_mono fun _ _ x hx => ⟨by linarith [hx.1, hx.2], hx.2⟩)
 
 /-! ### Scaling `(0, δ]^d → (0, 1]^d` -/
 
+/-- Rescaling the positive orthant `(0,δ]^d` to `(0,1]^d` turns the box integral into `ncZ`. -/
 theorem Z_pos_scale {δ : ℝ} (hδ : 0 < δ) (k : Fin d → ℕ) (h : Fin d → ℝ) (N : ℝ) :
     ENNReal.ofReal (δ ^ d)⁻¹ * ∫⁻ y in posBox' δ, boxIntegrand k h N y =
       ENNReal.ofReal (∏ i, δ ^ h i) * ncZ k h ((∏ i, δ ^ k i) * N) := by
@@ -164,7 +176,8 @@ theorem Z_pos_scale {δ : ℝ} (hδ : 0 < δ) (k : Fin d → ℕ) (h : Fin d →
   have hg : Measurable ((posBox' δ).indicator (boxIntegrand k h N)) :=
     (measurable_boxIntegrand k h N).indicator hP
   have key : ∫⁻ x, (posBox' δ).indicator (boxIntegrand k h N) (L x) =
-      ENNReal.ofReal |(LinearMap.det L)⁻¹| * ∫⁻ y, (posBox' δ).indicator (boxIntegrand k h N) y := by
+      ENNReal.ofReal |(LinearMap.det L)⁻¹| *
+        ∫⁻ y, (posBox' δ).indicator (boxIntegrand k h N) y := by
     rw [← lintegral_map hg hLm, hmap, lintegral_smul_measure, smul_eq_mul]
   rw [hdet, abs_of_pos (by positivity), lintegral_indicator hP] at key
   rw [← key]
@@ -221,7 +234,7 @@ theorem hasLaplacePair_posBox {δ : ℝ} (hδ : 0 < δ) (k : Fin d → ℕ) (h :
   rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity), mul_inv_cancel₀ (by positivity),
     ENNReal.ofReal_one, one_mul]
 
-/-- **Normal crossing on the box.** For `δ > 0`, `hᵢ > -1` and some `kᵢ ≠ 0`,
+/-- (M2) **Normal crossing on the box.** For `δ > 0`, `hᵢ > -1` and some `kᵢ ≠ 0`,
 `∫_{[-δ,δ]^d} e^{-N ∏|yᵢ|^{kᵢ}} ∏|yᵢ|^{hᵢ} dy ≍ N^{-λ}(log N)^{m-1}` with
 `λ = min {(hᵢ+1)/kᵢ : kᵢ ≠ 0}`, `m = #{i : kᵢ ≠ 0, (hᵢ+1)/kᵢ = λ}`. -/
 theorem normalCrossing_box {δ : ℝ} (hδ : 0 < δ) (k : Fin d → ℕ) (h : Fin d → ℝ)
@@ -235,8 +248,9 @@ theorem normalCrossing_box {δ : ℝ} (hδ : 0 < δ) (k : Fin d → ℕ) (h : Fi
   exact (hp.2.2.const_mul (ENNReal.natCast_ne_top _)).mono
     (Eventually.of_forall fun N => Z_box_le δ k h N)
 
-/-- **Normal crossing on the box, with units.** A loss `K` with `c ∏|yᵢ|^{kᵢ} ≤ K ≤ C ∏|yᵢ|^{kᵢ}`
-and a prior density `f` with `a ∏|yᵢ|^{hᵢ} ≤ f ≤ b ∏|yᵢ|^{hᵢ}` on the box (`0 < a, b, c, C`) give the
+/-- (M2) **Normal crossing on the box, with units.** A loss `K` with
+`c ∏|yᵢ|^{kᵢ} ≤ K ≤ C ∏|yᵢ|^{kᵢ}` and a prior density `f` with `a ∏|yᵢ|^{hᵢ} ≤ f ≤ b ∏|yᵢ|^{hᵢ}` on
+the box (`0 < a, b, c, C`) give the
 same pair. This is the shape of a resolution chart: `K ∘ g = unit × monomial`,
 `φ(g) |det g'| = unit × monomial`. -/
 theorem normalCrossing_box_units {δ : ℝ} (hδ : 0 < δ) (k : Fin d → ℕ) (h : Fin d → ℝ)
@@ -247,7 +261,8 @@ theorem normalCrossing_box_units {δ : ℝ} (hδ : 0 < δ) (k : Fin d → ℕ) (
     (hfhi : ∀ y ∈ box δ, f y ≤ ENNReal.ofReal b * ENNReal.ofReal (absDens h y)) :
     HasLaplacePair (Z ((volume.restrict (box δ)).withDensity f) K) (ncLam k h) (ncMult k h) := by
   have hB := measurableSet_box (d := d) δ
-  have hP := (normalCrossing_box hδ k h hh hS).of_prior (ν' := (volume.restrict (box δ)).withDensity f)
+  have hP := (normalCrossing_box hδ k h hh hS).of_prior
+    (ν' := (volume.restrict (box δ)).withDensity f)
     (a := ENNReal.ofReal a) (b := ENNReal.ofReal b) (ENNReal.ofReal_pos.mpr ha).ne'
     ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top
     (by

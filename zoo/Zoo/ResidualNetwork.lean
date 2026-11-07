@@ -17,7 +17,8 @@ reproducibility snapshot `2865e70`), restated in the shared core's vocabulary:
 
 * `hasLaplaceOrder_iff`: the scalar library's `HasLaplaceOrder` *is* the core's
   `SLT.HasLaplaceOrder` (`Iff.rfl`), so the adapter is checked by the kernel rather than by reading.
-* `global_pair`, `residualNetwork_learningPair`: the paper's Theorem 3 (global pair), as a core pair.
+* `global_pair`, `residualNetwork_learningPair`: the paper's Theorem 3 (global pair), as a core
+  pair.
 * `global_pair_unique`: the pair is **intrinsic**. Any Laplace pair of this `Z` equals
   `globalLearningPair`. This is the core's uniqueness theorem applied to the paper.
 * `local_pair`: the local arrangement certificates (Theorem 2) as core pairs on small balls.
@@ -44,20 +45,20 @@ noncomputable abbrev prior {L : ℕ} (ρ : (Fin L → ℝ) → NNReal) : Measure
 
 variable {μ : Measure ℝ} {r L k : ℕ} {t : Fin L → ℝ} {ρ : (Fin L → ℝ) → NNReal}
 
-/-- **Global pair (Theorem 3) as a core pair.** -/
+/-- (G6) **Global pair (Theorem 3) as a core pair.** -/
 theorem global_pair (h : UnifiedNetworkCertificate μ r L k t ρ) :
     SLT.HasLaplacePair (SLT.Z (prior ρ) (networkTargetLoss μ r t))
       (globalLearningPair r k (L - k)).1 (globalLearningPair r k (L - k)).2 :=
   hasLaplacePair_Z_of_hasLaplaceOrder ((hasLaplaceOrder_iff _ _ _).mp h.global_laplace)
 
-/-- **The global pair is intrinsic**: any Laplace pair of the network's `Z` is
+/-- (G6) **The global pair is intrinsic**: any Laplace pair of the network's `Z` is
 `globalLearningPair r k (L-k)`. -/
 theorem global_pair_unique (h : UnifiedNetworkCertificate μ r L k t ρ) {lam : ℝ} {m : ℕ}
     (h' : SLT.HasLaplacePair (SLT.Z (prior ρ) (networkTargetLoss μ r t)) lam m) :
     lam = (globalLearningPair r k (L - k)).1 ∧ m = (globalLearningPair r k (L - k)).2 :=
   h'.unique (global_pair h)
 
-/-- **The scalar ResNet learning pair**, from the paper's hypotheses: degree `r ≥ 2`, depth
+/-- (G6) **The scalar ResNet learning pair**, from the paper's hypotheses: degree `r ≥ 2`, depth
 `L > 0`, a positive-definite feature Gram for the input law, a target with `k` active blocks, and
 a finite prior that is continuous and positive on the zero set. -/
 theorem residualNetwork_learningPair (μ : Measure ℝ) (r L k : ℕ) (hr : 2 ≤ r) (hL : 0 < L)
@@ -69,7 +70,7 @@ theorem residualNetwork_learningPair (μ : Measure ℝ) (r L k : ℕ) (hr : 2 �
       (globalLearningPair r k (L - k)).1 (globalLearningPair r k (L - k)).2 :=
   global_pair (unified_residual_network_certificate μ r L k hr hL hμ t hk ρ hρ hfinite hprior)
 
-/-- **Local pairs (Theorem 2) as core pairs**: a local certificate at `x` with pair `p` gives
+/-- (G6) **Local pairs (Theorem 2) as core pairs**: a local certificate at `x` with pair `p` gives
 `HasLaplacePair` for the prior restricted to every small ball around `x`. -/
 theorem local_pair {x : Fin L → ℝ} {p : ℝ × ℕ} (h : LocalNetworkCertificate μ r t x ρ p) :
     ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ ε : ℝ, 0 < ε → ε ≤ ε₀ →
@@ -82,7 +83,8 @@ theorem local_pair {x : Fin L → ℝ} {p : ℝ × ℕ} (h : LocalNetworkCertifi
 /-! ### Worked instances -/
 
 /-- Cubic network, depth 6, three active blocks: the learning pair is `(λ, m) = (2, 2)`. -/
-theorem cubic_depth6_three_active {t : Fin 6 → ℝ} {ρ : (Fin 6 → ℝ) → NNReal} (h : UnifiedNetworkCertificate μ 3 6 3 t ρ) :
+theorem cubic_depth6_three_active {t : Fin 6 → ℝ} {ρ : (Fin 6 → ℝ) → NNReal}
+    (h : UnifiedNetworkCertificate μ 3 6 3 t ρ) :
     SLT.HasLaplacePair (SLT.Z (prior ρ) (networkTargetLoss μ 3 t)) 2 2 := by
   have := global_pair h
   norm_num [globalLearningPair, identityLearningPair] at this

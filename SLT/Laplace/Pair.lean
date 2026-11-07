@@ -20,7 +20,8 @@ exponential decay, sums (the dominant pair wins: `λ = min`, `m = max` among min
 (`(λ₁+λ₂, m₁+m₂-1)`), and **uniqueness** of `(λ, m)`.
 
 ## Alignment with existing libraries
-* `vector-slt-lean`: `SLT.HasLaplacePair` there has the bodies of `laplaceLower_iff`/`laplaceUpper_iff`
+* `vector-slt-lean`: `SLT.HasLaplacePair` there has the bodies of
+  `laplaceLower_iff`/`laplaceUpper_iff`
   below and no `1 ≤ m`. See `hasLaplacePair_iff_bounds`.
 * `residual-slt-in-a-haystack`: `ResidualSLT.HasLaplaceOrder` has exactly the body of
   `SLT.HasLaplaceOrder` below (real-valued). See `hasLaplacePair_ofReal_iff`.
@@ -45,16 +46,18 @@ def LaplaceLower (F : ℝ → ℝ≥0∞) (lam : ℝ) (m : ℕ) : Prop :=
 def LaplaceUpper (F : ℝ → ℝ≥0∞) (lam : ℝ) (m : ℕ) : Prop :=
   ∃ C : ℝ, ∀ᶠ N in atTop, F N ≤ ENNReal.ofReal (C * rate lam m N)
 
-/-- **The learning pair** `(λ, m)`: `F(N) ≍ N^{-λ} (log N)^{m-1}`, with `m ≥ 1`. -/
+/-- (M1) **The learning pair** `(λ, m)`: `F(N) ≍ N^{-λ} (log N)^{m-1}`, with `m ≥ 1`. -/
 def HasLaplacePair (F : ℝ → ℝ≥0∞) (lam : ℝ) (m : ℕ) : Prop :=
   1 ≤ m ∧ LaplaceLower F lam m ∧ LaplaceUpper F lam m
 
 /-! ### Explicit-constant forms -/
 
+/-- Unfolded form of `LaplaceLower` with an explicit threshold `N₀`. -/
 theorem laplaceLower_iff : LaplaceLower F lam m ↔ ∃ c : ℝ, 0 < c ∧ ∃ N₀ : ℝ, ∀ N, N₀ ≤ N →
     ENNReal.ofReal (c * N ^ (-lam) * Real.log N ^ (m - 1)) ≤ F N := by
   simp only [LaplaceLower, eventually_atTop, rate, mul_assoc]
 
+/-- Unfolded form of `LaplaceUpper` with an explicit threshold `N₀`. -/
 theorem laplaceUpper_iff : LaplaceUpper F lam m ↔ ∃ C : ℝ, ∃ N₀ : ℝ, ∀ N, N₀ ≤ N →
     F N ≤ ENNReal.ofReal (C * N ^ (-lam) * Real.log N ^ (m - 1)) := by
   simp only [LaplaceUpper, eventually_atTop, rate, mul_assoc]
@@ -69,6 +72,7 @@ theorem hasLaplacePair_iff_bounds : HasLaplacePair F lam m ↔ 1 ≤ m ∧
 
 /-! ### Basic API -/
 
+/-- The constant in a Laplace upper bound can be taken positive. -/
 theorem LaplaceUpper.exists_pos (h : LaplaceUpper F lam m) :
     ∃ C : ℝ, 0 < C ∧ ∀ᶠ N in atTop, F N ≤ ENNReal.ofReal (C * rate lam m N) := by
   obtain ⟨C, hC⟩ := h
@@ -76,24 +80,29 @@ theorem LaplaceUpper.exists_pos (h : LaplaceUpper F lam m) :
   filter_upwards [hC, eventually_rate_nonneg lam m] with N h1 h2
   exact h1.trans (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_right (le_max_left _ _) h2))
 
+/-- A function with a Laplace upper bound is eventually finite. -/
 theorem LaplaceUpper.eventually_lt_top (h : LaplaceUpper F lam m) : ∀ᶠ N in atTop, F N < ⊤ := by
   obtain ⟨C, hC⟩ := h
   filter_upwards [hC] with N h using h.trans_lt ENNReal.ofReal_lt_top
 
+/-- A Laplace lower bound passes to an eventually larger function. -/
 theorem LaplaceLower.mono (h : LaplaceLower F lam m) (hFG : ∀ᶠ N in atTop, F N ≤ G N) :
     LaplaceLower G lam m := by
   obtain ⟨c, hc, h⟩ := h
   exact ⟨c, hc, by filter_upwards [h, hFG] with N h1 h2 using h1.trans h2⟩
 
+/-- A Laplace upper bound passes to an eventually smaller function. -/
 theorem LaplaceUpper.mono (h : LaplaceUpper G lam m) (hFG : ∀ᶠ N in atTop, F N ≤ G N) :
     LaplaceUpper F lam m := by
   obtain ⟨C, h⟩ := h
   exact ⟨C, by filter_upwards [h, hFG] with N h1 h2 using h2.trans h1⟩
 
+/-- A Laplace pair only depends on `F` eventually along `atTop`. -/
 theorem HasLaplacePair.congr (h : HasLaplacePair F lam m) (hFG : F =ᶠ[atTop] G) :
     HasLaplacePair G lam m :=
   ⟨h.1, h.2.1.mono hFG.le, h.2.2.mono hFG.symm.le⟩
 
+/-- Multiplying by a constant in `(0, ∞)` preserves a Laplace lower bound. -/
 theorem LaplaceLower.const_mul {a : ℝ≥0∞} (ha : a ≠ 0) (ha' : a ≠ ⊤) (h : LaplaceLower F lam m) :
     LaplaceLower (fun N => a * F N) lam m := by
   obtain ⟨c, hc, h⟩ := h
@@ -103,6 +112,7 @@ theorem LaplaceLower.const_mul {a : ℝ≥0∞} (ha : a ≠ 0) (ha' : a ≠ ⊤)
   rw [mul_assoc, ENNReal.ofReal_mul hpos.le, ENNReal.ofReal_toReal ha']
   gcongr
 
+/-- Multiplying by a finite constant preserves a Laplace upper bound. -/
 theorem LaplaceUpper.const_mul {a : ℝ≥0∞} (ha' : a ≠ ⊤) (h : LaplaceUpper F lam m) :
     LaplaceUpper (fun N => a * F N) lam m := by
   obtain ⟨C, -, h⟩ := h.exists_pos
@@ -111,12 +121,14 @@ theorem LaplaceUpper.const_mul {a : ℝ≥0∞} (ha' : a ≠ ⊤) (h : LaplaceUp
   rw [mul_assoc, ENNReal.ofReal_mul ENNReal.toReal_nonneg, ENNReal.ofReal_toReal ha']
   gcongr
 
+/-- Multiplying by a constant in `(0, ∞)` preserves a Laplace pair. -/
 theorem HasLaplacePair.const_mul {a : ℝ≥0∞} (ha : a ≠ 0) (ha' : a ≠ ⊤)
     (h : HasLaplacePair F lam m) : HasLaplacePair (fun N => a * F N) lam m :=
   ⟨h.1, h.2.1.const_mul ha ha', h.2.2.const_mul ha'⟩
 
 /-! ### Rescaling `N ↦ b N` -/
 
+/-- Rescaling `N ↦ bN` (`b > 0`) preserves a Laplace lower bound. -/
 theorem LaplaceLower.comp_mul {b : ℝ} (hb : 0 < b) (h : LaplaceLower F lam m) :
     LaplaceLower (fun N => F (b * N)) lam m := by
   obtain ⟨c, hc, h⟩ := h
@@ -128,6 +140,7 @@ theorem LaplaceLower.comp_mul {b : ℝ} (hb : 0 < b) (h : LaplaceLower F lam m) 
       = c * (b ^ (-lam) * (1 / 2) ^ (m - 1) * rate lam m N) := by ring
     _ ≤ c * rate lam m (b * N) := mul_le_mul_of_nonneg_left h2.1 hc.le
 
+/-- Rescaling `N ↦ bN` (`b > 0`) preserves a Laplace upper bound. -/
 theorem LaplaceUpper.comp_mul {b : ℝ} (hb : 0 < b) (h : LaplaceUpper F lam m) :
     LaplaceUpper (fun N => F (b * N)) lam m := by
   obtain ⟨C, hC, h⟩ := h.exists_pos
@@ -139,6 +152,7 @@ theorem LaplaceUpper.comp_mul {b : ℝ} (hb : 0 < b) (h : LaplaceUpper F lam m) 
         mul_le_mul_of_nonneg_left h2.2 hC.le
     _ = _ := by ring
 
+/-- Rescaling `N ↦ bN` (`b > 0`) preserves a Laplace pair. -/
 theorem HasLaplacePair.comp_mul {b : ℝ} (hb : 0 < b) (h : HasLaplacePair F lam m) :
     HasLaplacePair (fun N => F (b * N)) lam m :=
   ⟨h.1, h.2.1.comp_mul hb, h.2.2.comp_mul hb⟩
@@ -161,7 +175,7 @@ theorem LaplaceLower.of_dominates (h : LaplaceLower F lam m) (hd : Dominates lam
     filter_upwards [h, rate_le_of_dominates hd] with N h1 h2
     exact (ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left h2 hc.le)).trans h1⟩
 
-/-- **Exponentially small terms are below every rate.** -/
+/-- (M1) **Exponentially small terms are below every rate.** -/
 theorem laplaceUpper_of_exp {a C : ℝ} (ha : 0 < a)
     (h : ∀ᶠ N in atTop, F N ≤ ENNReal.ofReal (C * Real.exp (-a * N))) (lam : ℝ) (m : ℕ) :
     LaplaceUpper F lam m := by
@@ -176,9 +190,11 @@ theorem laplaceUpper_of_exp {a C : ℝ} (ha : 0 < a)
 
 /-! ### Sums: the dominant pair wins -/
 
+/-- The zero function has every Laplace upper bound. -/
 theorem laplaceUpper_zero (lam : ℝ) (m : ℕ) : LaplaceUpper (fun _ => 0) lam m :=
   ⟨0, Eventually.of_forall fun _ => zero_le⟩
 
+/-- Laplace upper bounds with the same `(λ, m)` add. -/
 theorem LaplaceUpper.add (hF : LaplaceUpper F lam m) (hG : LaplaceUpper G lam m) :
     LaplaceUpper (fun N => F N + G N) lam m := by
   obtain ⟨C₁, hC₁, h₁⟩ := hF.exists_pos
@@ -191,6 +207,7 @@ theorem LaplaceUpper.add (hF : LaplaceUpper F lam m) (hG : LaplaceUpper G lam m)
         (ENNReal.ofReal_add (by positivity) (by positivity)).symm
     _ = _ := by rw [add_mul]
 
+/-- Laplace upper bounds with the same `(λ, m)` add over a finite sum. -/
 theorem LaplaceUpper.finset_sum {ι : Type*} (s : Finset ι) {F : ι → ℝ → ℝ≥0∞}
     (h : ∀ i ∈ s, LaplaceUpper (F i) lam m) : LaplaceUpper (fun N => ∑ i ∈ s, F i N) lam m := by
   classical
@@ -200,12 +217,14 @@ theorem LaplaceUpper.finset_sum {ι : Type*} (s : Finset ι) {F : ι → ℝ →
     simp only [Finset.sum_insert ha]
     exact (h a (mem_insert_self a s)).add (ih fun i hi => h i (mem_insert_of_mem hi))
 
+/-- A lower bound for one summand is a lower bound for the finite sum. -/
 theorem LaplaceLower.le_sum {ι : Type*} {s : Finset ι} {F : ι → ℝ → ℝ≥0∞} {i : ι} (hi : i ∈ s)
     (h : LaplaceLower (F i) lam m) : LaplaceLower (fun N => ∑ j ∈ s, F j N) lam m :=
-  h.mono (Eventually.of_forall fun N => Finset.single_le_sum (f := fun j => F j N) (fun _ _ => zero_le) hi)
+  h.mono (Eventually.of_forall fun N =>
+    Finset.single_le_sum (f := fun j => F j N) (fun _ _ => zero_le) hi)
 
-/-- **Finite sums, dominant-term form.** If `F i₀` has a lower bound at `(λ, m)`, and every term
-has an upper bound at a rate dominated by `(λ, m)`, then the sum has the pair `(λ, m)`. Terms
+/-- (M1) **Finite sums, dominant-term form.** If `F i₀` has a lower bound at `(λ, m)`, and every
+term has an upper bound at a rate dominated by `(λ, m)`, then the sum has the pair `(λ, m)`. Terms
 with exponential decay are allowed (`laplaceUpper_of_exp`). -/
 theorem hasLaplacePair_finset_sum {ι : Type*} {s : Finset ι} {F : ι → ℝ → ℝ≥0∞} {i₀ : ι}
     (hi₀ : i₀ ∈ s) (hm : 1 ≤ m) (hlow : LaplaceLower (F i₀) lam m) {lam' : ι → ℝ} {m' : ι → ℕ}
@@ -214,7 +233,7 @@ theorem hasLaplacePair_finset_sum {ι : Type*} {s : Finset ι} {F : ι → ℝ �
     HasLaplacePair (fun N => ∑ i ∈ s, F i N) lam m :=
   ⟨hm, hlow.le_sum hi₀, LaplaceUpper.finset_sum s fun i hi => (hup i hi).of_dominates (hdom i hi)⟩
 
-/-- **Finite sums, min/max form.** A nonempty finite sum of terms with pairs `(λᵢ, mᵢ)` has the
+/-- (M1) **Finite sums, min/max form.** A nonempty finite sum of terms with pairs `(λᵢ, mᵢ)` has the
 pair `(λ, m)` with `λ = minᵢ λᵢ` and `m = max {mᵢ : λᵢ = λ}`. -/
 theorem exists_hasLaplacePair_finset_sum {ι : Type*} {s : Finset ι} (hs : s.Nonempty)
     {F : ι → ℝ → ℝ≥0∞} {lam : ι → ℝ} {m : ι → ℕ} (h : ∀ i ∈ s, HasLaplacePair (F i) (lam i) (m i)) :
@@ -236,10 +255,12 @@ theorem exists_hasLaplacePair_finset_sum {ι : Type*} {s : Finset ι} (hs : s.No
 
 /-! ### Products: `(λ₁ + λ₂, m₁ + m₂ - 1)` -/
 
+/-- The constant `1` has Laplace pair `(0, 1)`. -/
 theorem hasLaplacePair_one : HasLaplacePair (fun _ => 1) 0 1 :=
   ⟨le_rfl, ⟨1, one_pos, Eventually.of_forall fun N => by simp [rate_zero_one]⟩,
     ⟨1, Eventually.of_forall fun N => by simp [rate_zero_one]⟩⟩
 
+/-- **Product rule (M1)**: pairs `(λ₁, m₁)` and `(λ₂, m₂)` multiply to `(λ₁ + λ₂, m₁ + m₂ - 1)`. -/
 theorem HasLaplacePair.mul {l₁ l₂ : ℝ} {m₁ m₂ : ℕ} (h₁ : HasLaplacePair F l₁ m₁)
     (h₂ : HasLaplacePair G l₂ m₂) :
     HasLaplacePair (fun N => F N * G N) (l₁ + l₂) (m₁ + m₂ - 1) := by
@@ -259,7 +280,7 @@ theorem HasLaplacePair.mul {l₁ l₂ : ℝ} {m₁ m₂ : ℕ} (h₁ : HasLaplac
       (b₁ * rate l₁ m₁ N) * (b₂ * rate l₂ m₂ N) by ring, ENNReal.ofReal_mul (by positivity)]
     exact mul_le_mul' h1 h2
 
-/-- **Finite products**: `∏ Fᵢ` has the pair `(Σ λᵢ, Σ (mᵢ - 1) + 1)`. -/
+/-- (M1) **Finite products**: `∏ Fᵢ` has the pair `(Σ λᵢ, Σ (mᵢ - 1) + 1)`. -/
 theorem HasLaplacePair.finset_prod {ι : Type*} (s : Finset ι) {F : ι → ℝ → ℝ≥0∞}
     {lam : ι → ℝ} {m : ι → ℕ} (h : ∀ i ∈ s, HasLaplacePair (F i) (lam i) (m i)) :
     HasLaplacePair (fun N => ∏ i ∈ s, F i N) (∑ i ∈ s, lam i) (∑ i ∈ s, (m i - 1) + 1) := by
@@ -299,7 +320,7 @@ theorem dominates_of_lower_upper (hm' : 1 ≤ m') (hl : LaplaceLower F lam m)
       _ = c / 2 * rate lam m N := by field_simp
   nlinarith
 
-/-- **Uniqueness**: a function has at most one Laplace pair. -/
+/-- (M1) **Uniqueness**: a function has at most one Laplace pair. -/
 theorem HasLaplacePair.unique (h : HasLaplacePair F lam m) (h' : HasLaplacePair F lam' m') :
     lam = lam' ∧ m = m' := by
   have d1 := dominates_of_lower_upper h'.1 h.2.1 h'.2.2
@@ -312,12 +333,14 @@ theorem HasLaplacePair.unique (h : HasLaplacePair F lam m) (h' : HasLaplacePair 
 
 /-! ### Real-valued and `IsTheta` forms -/
 
-/-- The body of `ResidualSLT.HasLaplaceOrder` (scalar library), verbatim with `laplaceRate = rate`. -/
+/-- The body of `ResidualSLT.HasLaplaceOrder` (scalar library), verbatim with
+`laplaceRate = rate`. -/
 def HasLaplaceOrder (ℓ : ℝ) (m : ℕ) (Z : ℝ → ℝ) : Prop :=
   0 < m ∧ ∃ c C N₀ : ℝ, 0 < c ∧ 0 < C ∧ 1 < N₀ ∧ ∀ N : ℝ, N₀ ≤ N →
     c * rate ℓ m N ≤ Z N ∧ Z N ≤ C * rate ℓ m N
 
-/-- **Bridge to the scalar library**: for real `Z`, the pair of `ofReal ∘ Z` is `HasLaplaceOrder`. -/
+/-- (M1) **Bridge to the scalar library**: for real `Z`, the pair of `ofReal ∘ Z` is
+`HasLaplaceOrder`. -/
 theorem hasLaplacePair_ofReal_iff {Z : ℝ → ℝ} :
     HasLaplacePair (fun N => ENNReal.ofReal (Z N)) lam m ↔ HasLaplaceOrder lam m Z := by
   constructor
@@ -337,8 +360,8 @@ theorem hasLaplacePair_ofReal_iff {Z : ℝ → ℝ} :
     · exact ENNReal.ofReal_le_ofReal (h N hN).1
     · exact ENNReal.ofReal_le_ofReal (h N hN).2
 
-/-- **Bridge to `IsTheta`** (grammar's `LaplaceTheta` form): for eventually nonnegative real `Z`
-and `m ≥ 1`, the pair of `ofReal ∘ Z` is `Z =Θ[atTop] rate λ m`. -/
+/-- (M1) **Bridge to `IsTheta`** (grammar's `LaplaceTheta` form): for eventually nonnegative real
+`Z` and `m ≥ 1`, the pair of `ofReal ∘ Z` is `Z =Θ[atTop] rate λ m`. -/
 theorem hasLaplacePair_ofReal_iff_isTheta {Z : ℝ → ℝ} (hZ : ∀ᶠ N in atTop, 0 ≤ Z N)
     (hm : 1 ≤ m) :
     HasLaplacePair (fun N => ENNReal.ofReal (Z N)) lam m ↔ Z =Θ[atTop] rate lam m := by

@@ -34,3 +34,6 @@ import Zoo
 #print axioms SLT.Zoo.isFiniteMeasure_posPrior
 #print axioms SLT.Zoo.position_one_llc
 #print axioms SLT.Zoo.mainTheorem_shear_llc
+
+/-! Brief 02 (cleanliness pass). -/
+#print axioms SLT.Zoo.posPrior

@@ -34,10 +34,10 @@ open scoped ENNReal
 
 variable {d : ℕ}
 
-theorem refl_refl (ε : Fin d → Bool) (y : Fin d → ℝ) : refl ε (refl ε y) = y := by
+private theorem refl_refl (ε : Fin d → Bool) (y : Fin d → ℝ) : refl ε (refl ε y) = y := by
   funext i; unfold refl; split_ifs <;> simp
 
-theorem monomial_refl_smul {δ : ℝ} (hδ : 0 < δ) (ε : Fin d → Bool) (α x : Fin d → ℝ) :
+private theorem monomial_refl_smul {δ : ℝ} (hδ : 0 < δ) (ε : Fin d → Bool) (α x : Fin d → ℝ) :
     monomial α (refl ε (δ • x)) = δ ^ (∑ i, α i) * monomial α x := by
   have habs : ∀ i, |refl ε (δ • x) i| = δ * |x i| := fun i => by
     unfold refl; split_ifs <;> simp [abs_mul, abs_of_pos hδ]
@@ -45,7 +45,8 @@ theorem monomial_refl_smul {δ : ℝ} (hδ : 0 < δ) (ε : Fin d → Bool) (α x
     Real.rpow_sum_of_pos hδ]
 
 /-- Scaling `[0,δ]^d → [0,1]^d`. -/
-theorem lintegral_posBox_scale {δ : ℝ} (hδ : 0 < δ) {g : (Fin d → ℝ) → ℝ≥0∞} (hg : Measurable g) :
+private theorem lintegral_posBox_scale {δ : ℝ} (hδ : 0 < δ) {g : (Fin d → ℝ) → ℝ≥0∞}
+    (hg : Measurable g) :
     ∫⁻ y in posBox δ, g y = ENNReal.ofReal (δ ^ d) * ∫⁻ x in Icc (0 : Fin d → ℝ) 1, g (δ • x) := by
   set L : (Fin d → ℝ) →ₗ[ℝ] (Fin d → ℝ) := δ • LinearMap.id
   have hdet : LinearMap.det L = δ ^ d := by
@@ -132,7 +133,7 @@ theorem newton_box_units {δ : ℝ} (hδ : 0 < δ) {Γ : Finset (Fin d → ℝ)}
   -- the piece integrals
   set G : ℝ → (Fin d → ℝ) → ℝ≥0∞ := fun N y => ENNReal.ofReal (Real.exp (-(N * K y)))
   have hGm : ∀ N, Measurable (G N) := fun N => by
-    show Measurable fun y => ENNReal.ofReal (Real.exp (-(N * K y)))
+    change Measurable fun y => ENNReal.ofReal (Real.exp (-(N * K y)))
     fun_prop
   have hP : MeasurableSet (posBox (d := d) δ) := MeasurableSet.univ_pi fun _ => measurableSet_Icc
   have hpiece_eq : ∀ ε N, ∫⁻ y in refl ε ⁻¹' posBox δ, G N y =

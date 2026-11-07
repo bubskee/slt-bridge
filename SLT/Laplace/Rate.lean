@@ -31,23 +31,30 @@ noncomputable def rate (lam : ℝ) (m : ℕ) (N : ℝ) : ℝ := N ^ (-lam) * Rea
 def Dominates (lam : ℝ) (m : ℕ) (lam' : ℝ) (m' : ℕ) : Prop :=
   lam < lam' ∨ (lam = lam' ∧ m' ≤ m)
 
+/-- Domination is reflexive. -/
 theorem Dominates.refl (lam : ℝ) (m : ℕ) : Dominates lam m lam m := Or.inr ⟨rfl, le_rfl⟩
 
+/-- `rate λ m N ≥ 0` for `N ≥ 1`. -/
 theorem rate_nonneg (lam : ℝ) (m : ℕ) {N : ℝ} (hN : 1 ≤ N) : 0 ≤ rate lam m N :=
   mul_nonneg (Real.rpow_nonneg (by linarith) _) (pow_nonneg (Real.log_nonneg hN) _)
 
+/-- `rate λ m N > 0` for `N > 1`. -/
 theorem rate_pos (lam : ℝ) (m : ℕ) {N : ℝ} (hN : 1 < N) : 0 < rate lam m N :=
   mul_pos (Real.rpow_pos_of_pos (by linarith) _) (pow_pos (Real.log_pos hN) _)
 
+/-- `rate λ m` is eventually nonnegative. -/
 theorem eventually_rate_nonneg (lam : ℝ) (m : ℕ) : ∀ᶠ N in atTop, 0 ≤ rate lam m N :=
   (eventually_ge_atTop 1).mono fun _ hN => rate_nonneg lam m hN
 
+/-- `rate λ m` is eventually positive. -/
 theorem eventually_rate_pos (lam : ℝ) (m : ℕ) : ∀ᶠ N in atTop, 0 < rate lam m N :=
   (eventually_gt_atTop 1).mono fun _ hN => rate_pos lam m hN
 
+/-- `1 ≤ log N` for `N ≥ e`. -/
 theorem one_le_log_of_exp_le {N : ℝ} (hN : Real.exp 1 ≤ N) : 1 ≤ Real.log N := by
   rw [← Real.log_exp 1]; exact Real.log_le_log (Real.exp_pos 1) hN
 
+/-- Eventually `1 ≤ log N`. -/
 theorem eventually_one_le_log : ∀ᶠ N : ℝ in atTop, 1 ≤ Real.log N :=
   (eventually_ge_atTop (Real.exp 1)).mono fun _ hN => one_le_log_of_exp_le hN
 
@@ -61,6 +68,7 @@ theorem rpow_neg_le_rate (lam : ℝ) (m : ℕ) {N : ℝ} (hN : Real.exp 1 ≤ N)
     _ ≤ N ^ (-lam) * Real.log N ^ (m - 1) :=
       mul_le_mul_of_nonneg_left (one_le_pow₀ hl) (Real.rpow_nonneg hN0.le _)
 
+/-- `N^{-λ} = O(rate λ m N)` along `atTop`. -/
 theorem rpow_neg_isBigO_rate (lam : ℝ) (m : ℕ) :
     (fun N : ℝ => N ^ (-lam)) =O[atTop] rate lam m := by
   refine IsBigO.of_bound 1 ?_
@@ -76,8 +84,8 @@ theorem log_pow_isLittleO_rpow (k : ℕ) {s : ℝ} (hs : 0 < s) :
     (fun N : ℝ => Real.log N ^ k) =o[atTop] fun N => N ^ s :=
   (isLittleO_log_rpow_rpow_atTop (k : ℝ) hs).congr_left fun _ => Real.rpow_natCast _ _
 
-/-- **Strict domination is little-o.** If `λ < λ'`, or `λ = λ'` and `m' < m` (with `m' ≥ 1`), then
-`rate λ' m' = o(rate λ m)`. -/
+/-- (M1) **Strict domination is little-o.** If `λ < λ'`, or `λ = λ'` and `m' < m` (with `m' ≥ 1`),
+then `rate λ' m' = o(rate λ m)`. -/
 theorem rate_isLittleO {lam lam' : ℝ} {m m' : ℕ} (hm' : 1 ≤ m')
     (h : lam < lam' ∨ (lam = lam' ∧ m' < m)) : rate lam' m' =o[atTop] rate lam m := by
   rcases h with h | ⟨rfl, h⟩
@@ -94,7 +102,7 @@ theorem rate_isLittleO {lam lam' : ℝ} {m m' : ℕ} (hm' : 1 ≤ m')
         Real.tendsto_log_atTop
     exact (isBigO_refl (fun N : ℝ => N ^ (-lam)) atTop).mul_isLittleO h1
 
-/-- **Domination gives an eventual inequality of rates** (constant `1`). -/
+/-- (M1) **Domination gives an eventual inequality of rates** (constant `1`). -/
 theorem rate_le_of_dominates {lam lam' : ℝ} {m m' : ℕ} (h : Dominates lam m lam' m') :
     ∀ᶠ N in atTop, rate lam' m' N ≤ rate lam m N := by
   rcases h with h | ⟨rfl, h⟩
@@ -127,6 +135,7 @@ theorem rate_add {l₁ l₂ : ℝ} {m₁ m₂ : ℕ} (hm₁ : 1 ≤ m₁) (hm₂
   rw [neg_add, Real.rpow_add hN, show m₁ + m₂ - 1 - 1 = (m₁ - 1) + (m₂ - 1) by omega, pow_add]
   ring
 
+/-- `rate 0 1 = 1`. -/
 theorem rate_zero_one (N : ℝ) : rate 0 1 N = 1 := by simp [rate]
 
 /-- For `C > 0`: eventually `(log N)/2 ≤ log(C N) ≤ 2 log N` and `0 ≤ log (C N)`. -/
@@ -146,7 +155,7 @@ theorem log_mul_bounds {C : ℝ} (hC : 0 < C) :
     rw [Real.log_pow, Real.log_inv] at this; push_cast at this; linarith
   refine ⟨by linarith, by linarith, by linarith⟩
 
-/-- **Rescaling a rate.** For `b > 0`, eventually
+/-- (M1) **Rescaling a rate.** For `b > 0`, eventually
 `b^{-λ} 2^{-(m-1)} rate λ m N ≤ rate λ m (b N) ≤ b^{-λ} 2^{m-1} rate λ m N`. -/
 theorem rate_comp_mul_bounds (lam : ℝ) (m : ℕ) {b : ℝ} (hb : 0 < b) :
     ∀ᶠ N in atTop, b ^ (-lam) * (1 / 2) ^ (m - 1) * rate lam m N ≤ rate lam m (b * N) ∧

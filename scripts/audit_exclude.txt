@@ -1,0 +1,2 @@
+# Public declarations deliberately left out of Audit.lean / zoo/Audit.lean, one per line,
+# with the reason after the name. Read by scripts/check_audit.sh. Currently empty.

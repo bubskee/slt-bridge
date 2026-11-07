@@ -42,6 +42,7 @@ variable {ν ν' : Measure α} {K K' : α → ℝ} {N lam : ℝ} {m : ℕ}
 
 /-! ### Losses -/
 
+/-- Scaling the loss is scaling `N`: `Z ν (c K) N = Z ν K (c N)`. -/
 theorem Z_mul_loss (c : ℝ) : Z ν (fun x => c * K x) N = Z ν K (c * N) := by
   unfold Z; congr 1; funext x; ring_nf
 
@@ -50,23 +51,27 @@ theorem Z_anti_loss (h : ∀ᵐ x ∂ν, K x ≤ K' x) (hN : 0 ≤ N) : Z ν K' 
   lintegral_mono_ae <| h.mono fun x hx => ENNReal.ofReal_le_ofReal <| Real.exp_le_exp.mpr <| by
     have := mul_le_mul_of_nonneg_left hx hN; linarith
 
+/-- If `c K ≤ K'` a.e., then `Z ν K' N ≤ Z ν K (c N)` for `N ≥ 0`. -/
 theorem Z_le_of_mul_le {c : ℝ} (hlo : ∀ᵐ x ∂ν, c * K x ≤ K' x) (hN : 0 ≤ N) :
     Z ν K' N ≤ Z ν K (c * N) := by
   rw [← Z_mul_loss]; exact Z_anti_loss hlo hN
 
+/-- If `K' ≤ C K` a.e., then `Z ν K (C N) ≤ Z ν K' N` for `N ≥ 0`. -/
 theorem Z_ge_of_le_mul {C : ℝ} (hhi : ∀ᵐ x ∂ν, K' x ≤ C * K x) (hN : 0 ≤ N) :
     Z ν K (C * N) ≤ Z ν K' N := by
   rw [← Z_mul_loss]; exact Z_anti_loss hhi hN
 
+/-- If `K' ≤ C K` a.e. (`C > 0`), a lower bound for `Z ν K` gives one for `Z ν K'`. -/
 theorem LaplaceLower.of_le_mul {C : ℝ} (hC : 0 < C) (hhi : ∀ᵐ x ∂ν, K' x ≤ C * K x)
     (h : LaplaceLower (Z ν K) lam m) : LaplaceLower (Z ν K') lam m :=
   (h.comp_mul hC).mono <| (eventually_ge_atTop 0).mono fun _ hN => Z_ge_of_le_mul hhi hN
 
+/-- If `c K ≤ K'` a.e. (`c > 0`), an upper bound for `Z ν K` gives one for `Z ν K'`. -/
 theorem LaplaceUpper.of_mul_le {c : ℝ} (hc : 0 < c) (hlo : ∀ᵐ x ∂ν, c * K x ≤ K' x)
     (h : LaplaceUpper (Z ν K) lam m) : LaplaceUpper (Z ν K') lam m :=
   (h.comp_mul hc).mono <| (eventually_ge_atTop 0).mono fun _ hN => Z_le_of_mul_le hlo hN
 
-/-- **Comparable losses have the same pair.** -/
+/-- (M1) **Comparable losses have the same pair.** -/
 theorem HasLaplacePair.of_comparable {c C : ℝ} (hc : 0 < c) (hC : 0 < C)
     (hlo : ∀ᵐ x ∂ν, c * K x ≤ K' x) (hhi : ∀ᵐ x ∂ν, K' x ≤ C * K x)
     (h : HasLaplacePair (Z ν K) lam m) : HasLaplacePair (Z ν K') lam m :=
@@ -74,12 +79,14 @@ theorem HasLaplacePair.of_comparable {c C : ℝ} (hc : 0 < c) (hC : 0 < C)
 
 /-! ### Priors -/
 
+/-- `Z` is linear in scalar multiples of the measure. -/
 theorem Z_smul_measure (a : ℝ≥0∞) : Z (a • ν) K N = a * Z ν K N := by
   rw [Z, Z, lintegral_smul_measure, smul_eq_mul]
 
+/-- `Z` is monotone in the measure. -/
 theorem Z_mono_measure (h : ν ≤ ν') : Z ν K N ≤ Z ν' K N := lintegral_mono' h le_rfl
 
-/-- **Comparable priors have the same pair**: `a ν ≤ ν' ≤ b ν` with `0 < a`, `b < ∞`. -/
+/-- (M1) **Comparable priors have the same pair**: `a ν ≤ ν' ≤ b ν` with `0 < a`, `b < ∞`. -/
 theorem HasLaplacePair.of_prior {a b : ℝ≥0∞} (ha : a ≠ 0) (ha' : a ≠ ⊤) (hb : b ≠ ⊤)
     (hlo : a • ν ≤ ν') (hhi : ν' ≤ b • ν) (h : HasLaplacePair (Z ν K) lam m) :
     HasLaplacePair (Z ν' K) lam m :=
@@ -88,7 +95,7 @@ theorem HasLaplacePair.of_prior {a b : ℝ≥0∞} (ha : a ≠ 0) (ha' : a ≠ �
     (h.2.2.const_mul hb).mono (Eventually.of_forall fun _ => by
       rw [← Z_smul_measure]; exact Z_mono_measure hhi)⟩
 
-/-- **Prior densities bounded between positive constants** do not change the pair. -/
+/-- (M1) **Prior densities bounded between positive constants** do not change the pair. -/
 theorem HasLaplacePair.withDensity {f : α → ℝ≥0∞} {a b : ℝ≥0∞} (ha : a ≠ 0) (ha' : a ≠ ⊤)
     (hb : b ≠ ⊤) (hlo : ∀ᵐ x ∂ν, a ≤ f x) (hhi : ∀ᵐ x ∂ν, f x ≤ b)
     (h : HasLaplacePair (Z ν K) lam m) : HasLaplacePair (Z (ν.withDensity f) K) lam m :=
@@ -106,7 +113,7 @@ theorem Z_prod {ν₁ : Measure α} {ν₂ : Measure β} [SFinite ν₂] {K₁ :
   congr 1; funext p
   rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add]; congr 2; ring
 
-/-- **Pairs add over disjoint blocks**: `(λ₁, m₁)` and `(λ₂, m₂)` give `(λ₁+λ₂, m₁+m₂-1)`. -/
+/-- (M1) **Pairs add over disjoint blocks**: `(λ₁, m₁)` and `(λ₂, m₂)` give `(λ₁+λ₂, m₁+m₂-1)`. -/
 theorem HasLaplacePair.prod {ν₁ : Measure α} {ν₂ : Measure β} [SFinite ν₂]
     {K₁ : α → ℝ} {K₂ : β → ℝ} (h₁ : Measurable K₁) (h₂ : Measurable K₂) {l₁ l₂ : ℝ} {m₁ m₂ : ℕ}
     (H₁ : HasLaplacePair (Z ν₁ K₁) l₁ m₁) (H₂ : HasLaplacePair (Z ν₂ K₂) l₂ m₂) :
@@ -139,7 +146,7 @@ theorem V_le_Z (hK : Measurable K) (hN : 0 < N) :
 
 /-! ### Pieces for gluing: covers and exponentially small regions -/
 
-/-- **Cover bound**: the integral over a finite union is at most the sum over the pieces
+/-- (M1) **Cover bound**: the integral over a finite union is at most the sum over the pieces
 (overlaps allowed, since the integrand is nonnegative). -/
 theorem Z_restrict_iUnion_le {ι : Type*} [Fintype ι] (A : ι → Set α) (N : ℝ) :
     Z (ν.restrict (⋃ i, A i)) K N ≤ ∑ i, Z (ν.restrict (A i)) K N := by
@@ -147,6 +154,7 @@ theorem Z_restrict_iUnion_le {ι : Type*} [Fintype ι] (A : ι → Set α) (N : 
         Z_mono_measure Measure.restrict_iUnion_le
     _ = _ := by rw [Z, lintegral_sum_measure, tsum_fintype]; rfl
 
+/-- Restricting the measure decreases `Z`. -/
 theorem Z_restrict_le (A : Set α) (N : ℝ) : Z (ν.restrict A) K N ≤ Z ν K N :=
   Z_mono_measure Measure.restrict_le_self
 
@@ -158,7 +166,7 @@ theorem Z_le_of_loss_ge {a : ℝ} (hK : ∀ᵐ x ∂ν, a ≤ K x) (hN : 0 ≤ N
           (Real.exp_le_exp.mpr (by nlinarith)))
     _ = _ := by rw [lintegral_const, mul_comm]
 
-/-- **A region where `K` is bounded below contributes below every rate.** -/
+/-- (M1) **A region where `K` is bounded below contributes below every rate.** -/
 theorem laplaceUpper_of_loss_ge [IsFiniteMeasure ν] {a : ℝ} (ha : 0 < a)
     (hK : ∀ᵐ x ∂ν, a ≤ K x) (lam : ℝ) (m : ℕ) : LaplaceUpper (Z ν K) lam m := by
   refine laplaceUpper_of_exp (C := (ν univ).toReal) ha ?_ lam m
@@ -169,11 +177,13 @@ theorem laplaceUpper_of_loss_ge [IsFiniteMeasure ν] {a : ℝ} (ha : 0 < a)
 
 /-! ### Bochner form -/
 
+/-- For integrable `e^{-N K}`, `Z` is the `ofReal` of the Bochner integral. -/
 theorem Z_eq_ofReal_integral (hint : Integrable (fun x => Real.exp (-(N * K x))) ν) :
     Z ν K N = ENNReal.ofReal (∫ x, Real.exp (-(N * K x)) ∂ν) :=
   (ofReal_integral_eq_lintegral_ofReal hint
     (Eventually.of_forall fun _ => (Real.exp_pos _).le)).symm
 
+/-- For finite `ν`, nonnegative `K` and `N ≥ 0`, `e^{-N K}` is integrable. -/
 theorem integrable_exp_neg_mul [IsFiniteMeasure ν] (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x)
     (hN : 0 ≤ N) : Integrable (fun x => Real.exp (-(N * K x))) ν := by
   refine Integrable.of_bound (by fun_prop : Measurable _).aestronglyMeasurable 1 ?_
@@ -189,15 +199,16 @@ theorem Z_eventuallyEq_integral [IsFiniteMeasure ν] (hK : Measurable K) (hK0 : 
   rw [Z_eq_ofReal_integral (integrable_exp_neg_mul hK hK0 hN)]
   simp only [neg_mul]
 
-/-- **Bridge to `ResidualSLT.HasLaplaceOrder`** for the Bochner Laplace integral. -/
+/-- (M1) **Bridge to `ResidualSLT.HasLaplaceOrder`** for the Bochner Laplace integral. -/
 theorem hasLaplacePair_Z_iff_hasLaplaceOrder [IsFiniteMeasure ν] (hK : Measurable K)
     (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) :
-    HasLaplacePair (Z ν K) lam m ↔ HasLaplaceOrder lam m (fun N => ∫ x, Real.exp (-N * K x) ∂ν) := by
+    HasLaplacePair (Z ν K) lam m ↔
+      HasLaplaceOrder lam m (fun N => ∫ x, Real.exp (-N * K x) ∂ν) := by
   rw [← hasLaplacePair_ofReal_iff]
   have e := Z_eventuallyEq_integral hK hK0
   exact ⟨fun h => h.congr e, fun h => h.congr e.symm⟩
 
-/-- **From the scalar library's `HasLaplaceOrder` to `HasLaplacePair (Z ν K)`, with no side
+/-- (M1) **From the scalar library's `HasLaplaceOrder` to `HasLaplacePair (Z ν K)`, with no side
 conditions.** The lower bound makes the Bochner integral positive for large `N`, so
 `e^{-N K}` is integrable there and `Z ν K N` is its `ofReal`. -/
 theorem hasLaplacePair_Z_of_hasLaplaceOrder
@@ -217,7 +228,7 @@ theorem hasLaplacePair_Z_of_hasLaplaceOrder
   rw [Z_eq_ofReal_integral hint]
   simp only [neg_mul]
 
-/-- **Bridge to grammar's `LaplaceTheta`**: `(N ↦ ∫ e^{-N K} dν) =Θ[atTop] rate λ m`. -/
+/-- (M1) **Bridge to grammar's `LaplaceTheta`**: `(N ↦ ∫ e^{-N K} dν) =Θ[atTop] rate λ m`. -/
 theorem hasLaplacePair_Z_iff_isTheta [IsFiniteMeasure ν] (hK : Measurable K)
     (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) (hm : 1 ≤ m) :
     HasLaplacePair (Z ν K) lam m ↔

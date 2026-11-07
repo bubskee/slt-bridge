@@ -40,10 +40,10 @@ section System
 variable {R : Type*} [Fintype R] (a : R → Fin d → ℝ) (b : R → ℝ)
 
 /-- The solution set `{u | b r ≤ a r ⬝ᵥ u ∀ r}` of a finite linear system. -/
-def sysSet : Set (Fin d → ℝ) := {u | ∀ r, b r ≤ a r ⬝ᵥ u}
+private def sysSet : Set (Fin d → ℝ) := {u | ∀ r, b r ≤ a r ⬝ᵥ u}
 
 omit [Fintype R] in
-theorem convex_sysSet : Convex ℝ (sysSet a b) := by
+private theorem convex_sysSet : Convex ℝ (sysSet a b) := by
   intro u hu v hv s t hs ht hst r
   rw [dotProduct_add, dotProduct_smul, dotProduct_smul, smul_eq_mul, smul_eq_mul]
   have h1 := mul_le_mul_of_nonneg_left (hu r) hs
@@ -52,15 +52,18 @@ theorem convex_sysSet : Convex ℝ (sysSet a b) := by
   linarith
 
 omit [Fintype R] in
-theorem isClosed_sysSet : IsClosed (sysSet a b) := by
+private theorem isClosed_sysSet : IsClosed (sysSet a b) := by
   have : sysSet a b = ⋂ r, {u | b r ≤ a r ⬝ᵥ u} := by ext; simp [sysSet]
   rw [this]
   refine isClosed_iInter fun r => isClosed_le continuous_const ?_
-  show Continuous fun u : Fin d → ℝ => ∑ i, a r i * u i
+  change Continuous fun u : Fin d → ℝ => ∑ i, a r i * u i
   exact continuous_finsetSum _ fun i _ => continuous_const.mul (continuous_apply i)
 
-/-- **Extreme points are basic**: the tight rows at an extreme point have trivial joint kernel. -/
-theorem eq_zero_of_extremePoint {v : Fin d → ℝ} (hv : v ∈ (sysSet a b).extremePoints ℝ)
+-- `[Fintype R]` is only used in the proof; kept so the statement is unchanged (brief 02, C1).
+set_option linter.unusedFintypeInType false in
+/-- (N2 proof) **Extreme points are basic**: the tight rows at an extreme point have trivial joint
+kernel. -/
+private theorem eq_zero_of_extremePoint {v : Fin d → ℝ} (hv : v ∈ (sysSet a b).extremePoints ℝ)
     {z : Fin d → ℝ} (hz : ∀ r, a r ⬝ᵥ v = b r → a r ⬝ᵥ z = 0) : z = 0 := by
   by_contra hz0
   have hvS := hv.1
@@ -97,6 +100,7 @@ end System
 /-- The all-ones vector. -/
 def ones : Fin d → ℝ := fun _ => 1
 
+/-- `⟨𝟙, u⟩ = Σ u_i`. -/
 theorem ones_dotProduct (u : Fin d → ℝ) : ones ⬝ᵥ u = ∑ i, u i := by
   simp [ones, dotProduct]
 
@@ -109,33 +113,34 @@ def dualSlab (Γ : Finset (Fin d → ℝ)) (η : ℝ) : Set (Fin d → ℝ) :=
   {u | u ∈ dualPoly Γ ∧ ones ⬝ᵥ u ≤ (newtonDist Γ)⁻¹ + η}
 
 /-- The rows of `P`: coordinates, then exponents. -/
-abbrev Row (Γ : Finset (Fin d → ℝ)) := Fin d ⊕ Γ
+private abbrev Row (Γ : Finset (Fin d → ℝ)) := Fin d ⊕ Γ
 
 /-- Row normals. -/
-noncomputable def rowA (Γ : Finset (Fin d → ℝ)) : Row Γ → Fin d → ℝ
+private noncomputable def rowA (Γ : Finset (Fin d → ℝ)) : Row Γ → Fin d → ℝ
   | .inl i => Pi.single i 1
   | .inr α => α.1
 
 /-- Row bounds. -/
-def rowB (Γ : Finset (Fin d → ℝ)) : Row Γ → ℝ
+private def rowB (Γ : Finset (Fin d → ℝ)) : Row Γ → ℝ
   | .inl _ => 0
   | .inr _ => 1
 
-theorem dualPoly_eq_sysSet (Γ : Finset (Fin d → ℝ)) : dualPoly Γ = sysSet (rowA Γ) (rowB Γ) := by
+private theorem dualPoly_eq_sysSet (Γ : Finset (Fin d → ℝ)) :
+    dualPoly Γ = sysSet (rowA Γ) (rowB Γ) := by
   ext u
   simp only [dualPoly, sysSet, mem_ofPred_eq, Sum.forall, rowA, rowB, single_dotProduct, one_mul,
     Subtype.forall]
 
 /-- The slab rows: `P`'s rows plus `-⟨𝟙,u⟩ ≥ -(1/t* + η)`. -/
-noncomputable def slabA (Γ : Finset (Fin d → ℝ)) : Row Γ ⊕ Unit → Fin d → ℝ
+private noncomputable def slabA (Γ : Finset (Fin d → ℝ)) : Row Γ ⊕ Unit → Fin d → ℝ
   | .inl r => rowA Γ r
   | .inr _ => -ones
 
-noncomputable def slabB (Γ : Finset (Fin d → ℝ)) (η : ℝ) : Row Γ ⊕ Unit → ℝ
+private noncomputable def slabB (Γ : Finset (Fin d → ℝ)) (η : ℝ) : Row Γ ⊕ Unit → ℝ
   | .inl r => rowB Γ r
   | .inr _ => -((newtonDist Γ)⁻¹ + η)
 
-theorem dualSlab_eq_sysSet (Γ : Finset (Fin d → ℝ)) (η : ℝ) :
+private theorem dualSlab_eq_sysSet (Γ : Finset (Fin d → ℝ)) (η : ℝ) :
     dualSlab Γ η = sysSet (slabA Γ) (slabB Γ η) := by
   ext u
   simp only [dualSlab, dualPoly_eq_sysSet, sysSet, mem_ofPred_eq, Sum.forall, slabA, slabB,
@@ -144,7 +149,7 @@ theorem dualSlab_eq_sysSet (Γ : Finset (Fin d → ℝ)) (η : ℝ) :
 
 /-! ### Basic facts about `t*` -/
 
-theorem newtonDist_le_zero_of_empty : newtonDist (∅ : Finset (Fin d → ℝ)) ≤ 0 := by
+private theorem newtonDist_le_zero_of_empty : newtonDist (∅ : Finset (Fin d → ℝ)) ≤ 0 := by
   by_cases h : {t | ∃ u, IsNewtonCert (∅ : Finset (Fin d → ℝ)) t u}.Nonempty
   · obtain ⟨t, u, hu⟩ := h
     have : ¬ BddAbove {t | ∃ u, IsNewtonCert (∅ : Finset (Fin d → ℝ)) t u} := by
@@ -155,13 +160,14 @@ theorem newtonDist_le_zero_of_empty : newtonDist (∅ : Finset (Fin d → ℝ)) 
   · rw [not_nonempty_iff_eq_empty] at h
     rw [newtonDist, h, Real.sSup_empty]
 
+/-- `t* > 0` forces `Γ` to be nonempty. -/
 theorem nonempty_of_newtonDist_pos {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
     Γ.Nonempty := by
   rw [Finset.nonempty_iff_ne_empty]
   rintro rfl
   exact absurd hd (not_lt.mpr newtonDist_le_zero_of_empty)
 
-theorem bddAbove_cert {Γ : Finset (Fin d → ℝ)} (hne : Γ.Nonempty) :
+private theorem bddAbove_cert {Γ : Finset (Fin d → ℝ)} (hne : Γ.Nonempty) :
     BddAbove {t | ∃ u, IsNewtonCert Γ t u} := by
   obtain ⟨α₀, hα₀⟩ := hne
   refine ⟨∑ i, |α₀ i|, fun t ⟨u, hu0, hu1, hut⟩ => (hut α₀ hα₀).trans ?_⟩
@@ -172,7 +178,7 @@ theorem bddAbove_cert {Γ : Finset (Fin d → ℝ)} (hne : Γ.Nonempty) :
     _ ≤ |α₀ i| * 1 := mul_le_mul_of_nonneg_left hui (abs_nonneg _)
     _ = |α₀ i| := mul_one _
 
-theorem le_newtonDist {Γ : Finset (Fin d → ℝ)} (hne : Γ.Nonempty) {t : ℝ} {u : Fin d → ℝ}
+private theorem le_newtonDist {Γ : Finset (Fin d → ℝ)} (hne : Γ.Nonempty) {t : ℝ} {u : Fin d → ℝ}
     (hu : IsNewtonCert Γ t u) : t ≤ newtonDist Γ :=
   le_csSup (bddAbove_cert hne) ⟨u, hu⟩
 
@@ -211,18 +217,18 @@ theorem one_dot_ge {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) {u : F
 /-! ### Finitely many vertices, finitely many slide directions -/
 
 /-- Joint kernel triviality of a set of rows. -/
-def Triv (Γ : Finset (Fin d → ℝ)) (T : Set (Row Γ)) : Prop :=
+private def Triv (Γ : Finset (Fin d → ℝ)) (T : Set (Row Γ)) : Prop :=
   ∀ y : Fin d → ℝ, (∀ r ∈ T, rowA Γ r ⬝ᵥ y = 0) → y = 0
 
 /-- Tight rows of `P` at `v`. -/
-def tight (Γ : Finset (Fin d → ℝ)) (v : Fin d → ℝ) : Set (Row Γ) :=
+private def tight (Γ : Finset (Fin d → ℝ)) (v : Fin d → ℝ) : Set (Row Γ) :=
   {r | rowA Γ r ⬝ᵥ v = rowB Γ r}
 
 /-- The vertices of `P`. -/
-def vertices (Γ : Finset (Fin d → ℝ)) : Set (Fin d → ℝ) :=
+private def vertices (Γ : Finset (Fin d → ℝ)) : Set (Fin d → ℝ) :=
   {v | v ∈ dualPoly Γ ∧ Triv Γ (tight Γ v)}
 
-theorem vertices_finite (Γ : Finset (Fin d → ℝ)) : (vertices Γ).Finite := by
+private theorem vertices_finite (Γ : Finset (Fin d → ℝ)) : (vertices Γ).Finite := by
   refine Set.Finite.of_finite_image (f := tight Γ) (Set.toFinite _) ?_
   intro v hv w hw hvw
   have := hv.2 (v - w) fun r hr => by
@@ -231,11 +237,11 @@ theorem vertices_finite (Γ : Finset (Fin d → ℝ)) : (vertices Γ).Finite := 
   exact sub_eq_zero.mp this
 
 /-- The slide directions. -/
-def slides (Γ : Finset (Fin d → ℝ)) : Set (Fin d → ℝ) :=
+private def slides (Γ : Finset (Fin d → ℝ)) : Set (Fin d → ℝ) :=
   {z | ones ⬝ᵥ z = 1 ∧ ∀ y : Fin d → ℝ,
     (∀ r, rowA Γ r ⬝ᵥ z = 0 → rowA Γ r ⬝ᵥ y = 0) → ones ⬝ᵥ y = 0 → y = 0}
 
-theorem slides_finite (Γ : Finset (Fin d → ℝ)) : (slides Γ).Finite := by
+private theorem slides_finite (Γ : Finset (Fin d → ℝ)) : (slides Γ).Finite := by
   refine Set.Finite.of_finite_image (f := fun z => {r | rowA Γ r ⬝ᵥ z = 0}) (Set.toFinite _) ?_
   intro z hz w hw hzw
   have hzw' : ∀ r, rowA Γ r ⬝ᵥ z = 0 ↔ rowA Γ r ⬝ᵥ w = 0 := fun r => by
@@ -245,7 +251,7 @@ theorem slides_finite (Γ : Finset (Fin d → ℝ)) : (slides Γ).Finite := by
     (by rw [dotProduct_sub, hz.1, hw.1, sub_self])
   exact sub_eq_zero.mp this
 
-theorem exists_pos_le_of_finite {S : Set ℝ} (hS : S.Finite) (hpos : ∀ x ∈ S, 0 < x) :
+private theorem exists_pos_le_of_finite {S : Set ℝ} (hS : S.Finite) (hpos : ∀ x ∈ S, 0 < x) :
     ∃ g : ℝ, 0 < g ∧ ∀ x ∈ S, g ≤ x := by
   by_cases hne : S.Nonempty
   · obtain ⟨x₀, hx₀, hmin⟩ := hS.exists_minimal hne
@@ -257,9 +263,10 @@ theorem exists_pos_le_of_finite {S : Set ℝ} (hS : S.Finite) (hpos : ∀ x ∈ 
 
 /-! ### The slab estimate -/
 
-theorem dualSlab_mono (Γ : Finset (Fin d → ℝ)) {η η' : ℝ} (h : η ≤ η') :
+private theorem dualSlab_mono (Γ : Finset (Fin d → ℝ)) {η η' : ℝ} (h : η ≤ η') :
     dualSlab Γ η ⊆ dualSlab Γ η' := fun _ hu => ⟨hu.1, hu.2.trans (by linarith)⟩
 
+/-- Points of the slab `P_η` have sup norm at most `|1/t* + η|`. -/
 theorem dualSlab_isBounded (Γ : Finset (Fin d → ℝ)) (η : ℝ) :
     ∀ u ∈ dualSlab Γ η, ‖u‖ ≤ |(newtonDist Γ)⁻¹ + η| := by
   rintro u ⟨⟨hu0, -⟩, hu⟩
@@ -269,15 +276,16 @@ theorem dualSlab_isBounded (Γ : Finset (Fin d → ℝ)) (η : ℝ) :
   exact ((Finset.single_le_sum (fun j _ => hu0 j) (Finset.mem_univ i)).trans hu).trans
     (le_abs_self _)
 
+/-- The slab `P_η` is compact. -/
 theorem isCompact_dualSlab (Γ : Finset (Fin d → ℝ)) (η : ℝ) : IsCompact (dualSlab Γ η) := by
   refine Metric.isCompact_of_isClosed_isBounded ?_ ?_
   · rw [dualSlab_eq_sysSet]; exact isClosed_sysSet _ _
   · exact (isBounded_iff_forall_norm_le).mpr ⟨_, dualSlab_isBounded Γ η⟩
 
-theorem convex_dualSlab (Γ : Finset (Fin d → ℝ)) (η : ℝ) : Convex ℝ (dualSlab Γ η) := by
+private theorem convex_dualSlab (Γ : Finset (Fin d → ℝ)) (η : ℝ) : Convex ℝ (dualSlab Γ η) := by
   rw [dualSlab_eq_sysSet]; exact convex_sysSet _ _
 
-/-- **Hoffman-type slab bound**: for small `η ≥ 0`, `P_η ⊆ P_0 + closedBall 0 (C η)`. -/
+/-- (N2 proof) **Hoffman-type slab bound**: for small `η ≥ 0`, `P_η ⊆ P_0 + closedBall 0 (C η)`. -/
 theorem dualSlab_subset {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
     ∃ g : ℝ, 0 < g ∧ ∃ C : ℝ, 0 ≤ C ∧ ∀ η, 0 ≤ η → η < g →
       dualSlab Γ η ⊆ dualSlab Γ 0 + closedBall 0 (C * η) := by

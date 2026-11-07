@@ -56,7 +56,7 @@ theorem lintegral_rpow_mul_exp_neg {a : ℝ} (ha : 0 < a) (hs : 0 < s) :
         rw [Real.integral_rpow_mul_exp_neg_mul_Ioi hs ha, one_div, Real.inv_rpow ha.le,
           ← Real.rpow_neg ha.le, mul_comm, ENNReal.ofReal_mul (Real.Gamma_pos_of_pos hs).le]
 
-/-- **The Mellin identity** `∫₀^∞ t^{s-1} Z(t) dt = Γ(s) ∫ K^{-s} dν`. -/
+/-- (M2) **The Mellin identity** `∫₀^∞ t^{s-1} Z(t) dt = Γ(s) ∫ K^{-s} dν`. -/
 theorem mellin_Z [SFinite ν] (hK : Measurable K) (hKpos : ∀ᵐ x ∂ν, 0 < K x) (hs : 0 < s) :
     ∫⁻ t in Ioi 0, ENNReal.ofReal (t ^ (s - 1)) * Z ν K t =
       ENNReal.ofReal (Real.Gamma s) * ∫⁻ x, ENNReal.ofReal (K x ^ (-s)) ∂ν := by
@@ -67,6 +67,7 @@ theorem mellin_Z [SFinite ν] (hK : Measurable K) (hKpos : ∀ᵐ x ∂ν, 0 < K
   filter_upwards [hKpos] with x hx
   exact lintegral_rpow_mul_exp_neg hx hs
 
+/-- For nonnegative `K` and `N ≥ 0`, `Z ν K N ≤ ν univ`. -/
 theorem Z_le_measure_univ (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) {N : ℝ} (hN : 0 ≤ N) : Z ν K N ≤ ν univ := by
   calc Z ν K N ≤ ∫⁻ _, 1 ∂ν := lintegral_mono_ae (hK0.mono fun x hx => by
         rw [← ENNReal.ofReal_one]
@@ -91,7 +92,7 @@ theorem integrableOn_of_lintegral_lt_top {f : ℝ → ℝ} {S : Set ℝ} (hS : M
   ⟨hf.aestronglyMeasurable, (hasFiniteIntegral_iff_ofReal
     ((ae_restrict_iff' hS).mpr (Eventually.of_forall h0))).mpr h⟩
 
-/-- **The Mellin threshold.** If `Z` has the pair `(λ, m)`, then `∫ K^{-s} dν < ∞ ↔ s < λ`
+/-- (M2) **The Mellin threshold.** If `Z` has the pair `(λ, m)`, then `∫ K^{-s} dν < ∞ ↔ s < λ`
 for every `s > 0`. -/
 theorem lintegral_rpow_neg_lt_top_iff [IsFiniteMeasure ν] (hK : Measurable K)
     (hKpos : ∀ᵐ x ∂ν, 0 < K x) (hp : HasLaplacePair (Z ν K) lam m) (hs : 0 < s) :

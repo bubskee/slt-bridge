@@ -49,8 +49,8 @@ def optWeights (Γ : Finset (Fin d → ℝ)) : Set (Fin d → ℝ) := {u | IsNew
 noncomputable def newtonMult (Γ : Finset (Fin d → ℝ)) : ℕ :=
   Module.finrank ℝ (affineSpan ℝ (optWeights Γ)).direction + 1
 
-/-- **N2** (proved as `newtonTwoSided`): if `K` is comparable to `∑_{α∈Γ} |w|^α` on `[0,1]^d` (positive
-constants in both directions) and `t* > 0`, then `Z` has learning pair `(1/t*, m)`. -/
+/-- **N2** (proved as `newtonTwoSided`): if `K` is comparable to `∑_{α∈Γ} |w|^α` on `[0,1]^d`
+(positive constants in both directions) and `t* > 0`, then `Z` has learning pair `(1/t*, m)`. -/
 def NewtonTwoSided (d : ℕ) : Prop :=
   ∀ (Γ : Finset (Fin d → ℝ)), (∀ α ∈ Γ, ∀ i, 0 ≤ α i) → 0 < newtonDist Γ →
     ∀ (K : (Fin d → ℝ) → ℝ), Measurable K → ∀ c C : ℝ, 0 < c →

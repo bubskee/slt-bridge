@@ -33,28 +33,30 @@ variable {d : ℕ}
 noncomputable def monoSum (Γ : Finset (Fin d → ℝ)) (w : Fin d → ℝ) : ℝ :=
   ∑ α ∈ Γ, monomial α w
 
+/-- The monomial sum is nonnegative. -/
 theorem monoSum_nonneg (Γ : Finset (Fin d → ℝ)) (w : Fin d → ℝ) : 0 ≤ monoSum Γ w :=
   Finset.sum_nonneg fun α _ => monomial_nonneg α w
 
+/-- The monomial sum is measurable. -/
 theorem measurable_monoSum (Γ : Finset (Fin d → ℝ)) : Measurable (monoSum Γ) := by
   unfold monoSum monomial
   fun_prop
 
 /-- `x ↦ (e^{-x_i})_i`. -/
-noncomputable def expNeg (x : Fin d → ℝ) : Fin d → ℝ := fun i => Real.exp (-x i)
+private noncomputable def expNeg (x : Fin d → ℝ) : Fin d → ℝ := fun i => Real.exp (-x i)
 
 /-- Its derivative, `diag(-e^{-x_i})`. -/
-noncomputable def expNegDeriv (x : Fin d → ℝ) : (Fin d → ℝ) →L[ℝ] (Fin d → ℝ) :=
+private noncomputable def expNegDeriv (x : Fin d → ℝ) : (Fin d → ℝ) →L[ℝ] (Fin d → ℝ) :=
   ContinuousLinearMap.pi fun i => (-Real.exp (-x i)) • ContinuousLinearMap.proj i
 
-theorem hasFDerivAt_expNeg (x : Fin d → ℝ) : HasFDerivAt expNeg (expNegDeriv x) x := by
+private theorem hasFDerivAt_expNeg (x : Fin d → ℝ) : HasFDerivAt expNeg (expNegDeriv x) x := by
   refine hasFDerivAt_pi.2 fun i => ?_
   have := ((hasFDerivAt_apply i x).neg).exp
   convert this using 1
   · rfl
   · ext v; simp
 
-theorem det_expNegDeriv (x : Fin d → ℝ) :
+private theorem det_expNegDeriv (x : Fin d → ℝ) :
     (expNegDeriv x).det = ∏ i, -Real.exp (-x i) := by
   have : (expNegDeriv x : (Fin d → ℝ) →ₗ[ℝ] (Fin d → ℝ)) =
       Matrix.toLin' (Matrix.diagonal fun i => -Real.exp (-x i)) := by
@@ -62,27 +64,28 @@ theorem det_expNegDeriv (x : Fin d → ℝ) :
     simp [expNegDeriv, Matrix.toLin'_apply, Matrix.mulVec_diagonal]
   rw [ContinuousLinearMap.det, this, LinearMap.det_toLin', Matrix.det_diagonal]
 
-theorem abs_det_expNegDeriv (x : Fin d → ℝ) :
+private theorem abs_det_expNegDeriv (x : Fin d → ℝ) :
     |(expNegDeriv x).det| = Real.exp (-(ones ⬝ᵥ x)) := by
   rw [det_expNegDeriv, Finset.abs_prod, ones_dotProduct, neg_sum_eq, Real.exp_sum]
   · exact Finset.prod_congr rfl fun i _ => by rw [abs_neg, abs_of_pos (Real.exp_pos _)]
   where neg_sum_eq : -(∑ i, x i) = ∑ i, -x i := by rw [Finset.sum_neg_distrib]
 
-theorem expNeg_injective : Function.Injective (expNeg : (Fin d → ℝ) → (Fin d → ℝ)) := by
+private theorem expNeg_injective : Function.Injective (expNeg : (Fin d → ℝ) → (Fin d → ℝ)) := by
   intro x y h
   funext i
   have := congrFun h i
   simp only [expNeg, Real.exp_eq_exp, neg_inj] at this
   exact this
 
-/-- **Change of variables**: for measurable `S`, `vol(expNeg '' S) = ∫_S e^{-⟨𝟙,x⟩}`. -/
-theorem volume_image_expNeg {S : Set (Fin d → ℝ)} (hS : MeasurableSet S) :
+/-- (N2 proof) **Change of variables**: for measurable `S`, `vol(expNeg '' S) = ∫_S e^{-⟨𝟙,x⟩}`. -/
+private theorem volume_image_expNeg {S : Set (Fin d → ℝ)} (hS : MeasurableSet S) :
     volume (expNeg '' S) = ∫⁻ x in S, ENNReal.ofReal (Real.exp (-(ones ⬝ᵥ x))) := by
   rw [← lintegral_abs_det_fderiv_eq_addHaar_image volume hS
     (fun x _ => (hasFDerivAt_expNeg x).hasFDerivWithinAt) expNeg_injective.injOn]
   simp only [abs_det_expNegDeriv]
 
-theorem monomial_expNeg (α x : Fin d → ℝ) : monomial α (expNeg x) = Real.exp (-(α ⬝ᵥ x)) := by
+private theorem monomial_expNeg (α x : Fin d → ℝ) :
+    monomial α (expNeg x) = Real.exp (-(α ⬝ᵥ x)) := by
   simp only [monomial, expNeg, abs_of_pos (Real.exp_pos _), ← Real.exp_mul, dotProduct,
     ← Real.exp_sum, ← Finset.sum_neg_distrib]
   congr 1
@@ -92,13 +95,15 @@ theorem monomial_expNeg (α x : Fin d → ℝ) : monomial α (expNeg x) = Real.e
 def logCone (Γ : Finset (Fin d → ℝ)) (L : ℝ) : Set (Fin d → ℝ) :=
   {x | (∀ i, 0 ≤ x i) ∧ ∀ α ∈ Γ, L ≤ α ⬝ᵥ x}
 
-theorem measurableSet_logCone (Γ : Finset (Fin d → ℝ)) (L : ℝ) : MeasurableSet (logCone Γ L) := by
+private theorem measurableSet_logCone (Γ : Finset (Fin d → ℝ)) (L : ℝ) :
+    MeasurableSet (logCone Γ L) := by
   have : logCone Γ L = (⋂ i, {x | 0 ≤ x i}) ∩ ⋂ α ∈ Γ, {x | L ≤ α ⬝ᵥ x} := by
     ext x; simp [logCone]
   rw [this]
-  refine (MeasurableSet.iInter fun i => measurableSet_le measurable_const (measurable_pi_apply i)).inter
+  refine (MeasurableSet.iInter fun i =>
+    measurableSet_le measurable_const (measurable_pi_apply i)).inter
     (MeasurableSet.biInter Γ.countable_toSet fun α _ => measurableSet_le measurable_const ?_)
-  show Measurable fun x : Fin d → ℝ => ∑ i, α i * x i
+  change Measurable fun x : Fin d → ℝ => ∑ i, α i * x i
   exact (continuous_finsetSum _ fun i _ => continuous_const.mul (continuous_apply i)).measurable
 
 /-- `H(L) = ∫_{S_L} e^{-⟨𝟙,x⟩}`. -/
@@ -141,6 +146,7 @@ theorem volume_sublevel_le (Γ : Finset (Fin d → ℝ)) (s : ℝ) :
     simp at this
   rw [hnull, add_zero]
 
+/-- (N2 proof) **Log coordinates, lower sandwich**: `H(log(|Γ|/s)) ≤ vol{w ∈ [0,1]^d | M w ≤ s}`. -/
 theorem volume_sublevel_ge (Γ : Finset (Fin d → ℝ)) {s : ℝ} (hs : 0 < s) :
     Hfun Γ (Real.log (Γ.card / s)) ≤ volume (Icc (0 : Fin d → ℝ) 1 ∩ {w | monoSum Γ w ≤ s}) := by
   rw [Hfun, ← volume_image_expNeg (measurableSet_logCone Γ _)]
@@ -148,7 +154,7 @@ theorem volume_sublevel_ge (Γ : Finset (Fin d → ℝ)) {s : ℝ} (hs : 0 < s) 
   rintro _ ⟨x, ⟨hx0, hxα⟩, rfl⟩
   refine ⟨⟨fun i => (Real.exp_pos _).le, fun i => ?_⟩, ?_⟩
   · simp only [expNeg, Pi.one_apply, Real.exp_le_one_iff, neg_nonpos]; exact hx0 i
-  · show monoSum Γ (expNeg x) ≤ s
+  · change monoSum Γ (expNeg x) ≤ s
     rcases Γ.eq_empty_or_nonempty with rfl | hne
     · simp [monoSum, hs.le]
     have hc : (0 : ℝ) < Γ.card := by exact_mod_cast Finset.card_pos.mpr hne
@@ -167,7 +173,7 @@ theorem volume_sublevel_ge (Γ : Finset (Fin d → ℝ)) {s : ℝ} (hs : 0 < s) 
 /-- The standard simplex. -/
 def simplex (d : ℕ) : Set (Fin d → ℝ) := {u | (∀ i, 0 ≤ u i) ∧ ∑ i, u i = 1}
 
-theorem isCompact_simplex : IsCompact (simplex d) := by
+private theorem isCompact_simplex : IsCompact (simplex d) := by
   refine Metric.isCompact_of_isClosed_isBounded ?_ ?_
   · have : simplex d = (⋂ i, {u : Fin d → ℝ | 0 ≤ u i}) ∩ {u | ∑ i, u i = 1} := by
       ext u; simp [simplex]
@@ -179,7 +185,7 @@ theorem isCompact_simplex : IsCompact (simplex d) := by
     rw [Real.norm_of_nonneg (hu0 i), ← hu1]
     exact Finset.single_le_sum (fun j _ => hu0 j) (Finset.mem_univ i)
 
-/-- **`t*` is attained**: `O` is nonempty when `t* > 0`. -/
+/-- (N2 proof) **`t*` is attained**: `O` is nonempty when `t* > 0`. -/
 theorem optWeights_nonempty {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
     (optWeights Γ).Nonempty := by
   have hne := nonempty_of_newtonDist_pos hd
@@ -194,7 +200,7 @@ theorem optWeights_nonempty {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist �
   have hφc : Continuous φ := by
     refine Continuous.finset_inf'_apply (f := fun (α : Fin d → ℝ) (u : Fin d → ℝ) => α ⬝ᵥ u) hne
       fun α _ => ?_
-    show Continuous fun u : Fin d → ℝ => ∑ i, α i * u i
+    change Continuous fun u : Fin d → ℝ => ∑ i, α i * u i
     exact continuous_finsetSum _ fun i _ => continuous_const.mul (continuous_apply i)
   obtain ⟨u, hu, hmax⟩ := isCompact_simplex.exists_isMaxOn ⟨u₀, hu₀.1, hu₀.2.1⟩ hφc.continuousOn
   have hφ : ∀ α ∈ Γ, φ u ≤ α ⬝ᵥ u := fun α hα => Finset.inf'_le _ hα

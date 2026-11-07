@@ -31,7 +31,7 @@ open scoped Pointwise
 variable {d : ℕ}
 
 /-- `k + 1` linearly independent optimal weights. -/
-theorem exists_optFamily {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
+private theorem exists_optFamily {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) :
     ∃ v : Fin (optDim Γ + 1) → Fin d → ℝ, (∀ q, v q ∈ optWeights Γ) ∧ LinearIndependent ℝ v := by
   obtain ⟨t, ht, hspan, hai⟩ := exists_affineIndependent ℝ (Fin d → ℝ) (optWeights Γ)
   have hli : LinearIndependent ℝ (fun x : t => (x : Fin d → ℝ)) := by
@@ -60,7 +60,7 @@ theorem exists_optFamily {Γ : Finset (Fin d → ℝ)} (hd : 0 < newtonDist Γ) 
   refine ⟨fun q => (e.symm q : Fin d → ℝ), fun q => ht (e.symm q).2, ?_⟩
   exact hli.comp _ e.symm.injective
 
-/-- **Lower bound**: `H(L) ≥ c e^{-L/t*} L^{dim O}` for `L > 0`. -/
+/-- (N2 proof) **Lower bound**: `H(L) ≥ c e^{-L/t*} L^{dim O}` for `L > 0`. -/
 theorem Hfun_ge {Γ : Finset (Fin d → ℝ)} (hΓ : ∀ α ∈ Γ, ∀ i, 0 ≤ α i) (hd : 0 < newtonDist Γ) :
     ∃ c : ℝ, 0 < c ∧ ∀ L : ℝ, 0 < L →
       ENNReal.ofReal (c * Real.exp (-(L * (newtonDist Γ)⁻¹)) * L ^ optDim Γ) ≤ Hfun Γ L := by
@@ -170,7 +170,8 @@ theorem Hfun_ge {Γ : Finset (Fin d → ℝ)} (hΓ : ∀ α ∈ Γ, ∀ i, 0 ≤
     · have := congrFun hy0 m
       simp only [y, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply] at this
       rw [Finset.sum_eq_single m (fun i hi him => by
-        rw [hbIc i (Finset.mem_filter.mp hi).2, Pi.single_apply, ite_eq_right (Ne.symm him), mul_zero])
+        rw [hbIc i (Finset.mem_filter.mp hi).2, Pi.single_apply, ite_eq_right (Ne.symm him),
+          mul_zero])
         (fun h => absurd (Finset.mem_filter.mpr ⟨Finset.mem_univ m, hm⟩) h),
         hbIc m hm, Pi.single_eq_same, mul_one] at this
       have hne : m ≠ i₀ := fun h => hm (h ▸ hi₀)
@@ -238,7 +239,8 @@ theorem Hfun_ge {Γ : Finset (Fin d → ℝ)} (hΓ : ∀ α ∈ Γ, ∀ i, 0 ≤
     have hcfIc : ∀ i, i ∉ I → cf θ i = θ i := fun i h => by
       have : i ≠ i₀ := fun e => h (e ▸ hi₀)
       simp [cf, this]
-    have hsplit : ∀ f : Fin d → ℝ, ∑ i, f i = ∑ i ∈ I, f i + ∑ i ∈ Finset.univ.filter (· ∉ I), f i :=
+    have hsplit : ∀ f : Fin d → ℝ,
+        ∑ i, f i = ∑ i ∈ I, f i + ∑ i ∈ Finset.univ.filter (· ∉ I), f i :=
       fun f => by rw [← Finset.sum_filter_add_sum_filter_not Finset.univ (· ∈ I)]; simp
     refine ⟨⟨fun m => ?_, fun α hα => ?_⟩, ?_⟩
     · rw [hΛ, Finset.sum_apply]
@@ -273,7 +275,8 @@ theorem Hfun_ge {Γ : Finset (Fin d → ℝ)} (hΓ : ∀ α ∈ Γ, ∀ i, 0 ≤
               have hne : i ≠ i₀ := fun e => hiI (e ▸ hi₀)
               simpa [hi, hne, hiI] using this
           _ ≤ ∑ _i : Fin d, (1 : ℝ) :=
-              Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) fun _ _ _ => zero_le_one
+              Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
+                fun _ _ _ => zero_le_one
           _ = d := by simp
       linarith [hθ0.2]
   -- assemble
@@ -294,7 +297,7 @@ theorem Hfun_ge {Γ : Finset (Fin d → ℝ)} (hΓ : ∀ α ∈ Γ, ∀ i, 0 ≤
         (setLIntegral_const _ _).symm
     _ ≤ ∫⁻ x in Λ '' Icc lo hi, ENNReal.ofReal (Real.exp (-(ones ⬝ᵥ x))) := by
         refine setLIntegral_mono (by
-          show Measurable fun x : Fin d → ℝ => ENNReal.ofReal (Real.exp (-(∑ i, ones i * x i)))
+          change Measurable fun x : Fin d → ℝ => ENNReal.ofReal (Real.exp (-(∑ i, ones i * x i)))
           fun_prop) fun x hx => ?_
         obtain ⟨θ, hθ, rfl⟩ := hx
         exact ENNReal.ofReal_le_ofReal (Real.exp_le_exp.mpr (by linarith [(hmaps θ hθ).2]))

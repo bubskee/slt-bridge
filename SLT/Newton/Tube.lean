@@ -73,8 +73,8 @@ theorem exists_coords_injOn (W : Submodule ℝ (Fin d → ℝ)) :
   have := hli.fintype_card_le_finrank
   simpa using this
 
-/-- **Tube volume**: a compact set of affine dimension `k`, thickened by `r ≤ 1`, has volume
-`≤ C r^{d-k}`. -/
+/-- (N2 proof) **Tube volume**: a compact set of affine dimension `k`, thickened by `r ≤ 1`, has
+volume `≤ C r^{d-k}`. -/
 theorem volume_thicken_le {A : Set (Fin d → ℝ)} (hA : IsCompact A) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ r : ℝ, 0 < r → r ≤ 1 →
       volume (A + closedBall (0 : Fin d → ℝ) r) ≤
@@ -105,14 +105,14 @@ theorem volume_thicken_le {A : Set (Fin d → ℝ)} (hA : IsCompact A) :
     rintro _ ⟨a, ha, y, hy, rfl⟩ _ ⟨a', ha', y', hy', rfl⟩ hxx
     rw [mem_closedBall, dist_zero_right] at hy hy'
     have hW : a - a' ∈ W := by
-      show a - a' ∈ (affineSpan ℝ A).direction
+      change a - a' ∈ (affineSpan ℝ A).direction
       rw [direction_affineSpan]; exact vsub_mem_vectorSpan ℝ ha ha'
     have hπ : ‖πI ⟨a - a', hW⟩‖ ≤ 2 * r := by
       refine (pi_norm_le_iff_of_nonneg (by positivity)).mpr fun i => ?_
       have h := hxx i.1 i.2
       simp only [Pi.add_apply] at h
       have : (a - a') i.1 = y' i.1 - y i.1 := by simp only [Pi.sub_apply]; linarith
-      show ‖(a - a') i.1‖ ≤ 2 * r
+      change ‖(a - a') i.1‖ ≤ 2 * r
       rw [this]
       calc ‖y' i.1 - y i.1‖ ≤ ‖y' i.1‖ + ‖y i.1‖ := norm_sub_le _ _
         _ ≤ ‖y'‖ + ‖y‖ := add_le_add (norm_le_pi_norm y' _) (norm_le_pi_norm y _)
@@ -172,7 +172,8 @@ theorem volume_thicken_le {A : Set (Fin d → ℝ)} (hA : IsCompact A) :
   calc ∫⁻ y, volume (Prod.mk y ⁻¹' (e.symm ⁻¹' T))
       ≤ ∫⁻ y, (closedBall (0 : {i // i ∈ I} → ℝ) (|R| + 1)).indicator
           (fun _ => ENNReal.ofReal ((2 * (D * r)) ^ c)) y := lintegral_mono hslice
-    _ = ENNReal.ofReal ((2 * (D * r)) ^ c) * volume (closedBall (0 : {i // i ∈ I} → ℝ) (|R| + 1)) := by
+    _ = ENNReal.ofReal ((2 * (D * r)) ^ c) *
+          volume (closedBall (0 : {i // i ∈ I} → ℝ) (|R| + 1)) := by
         rw [lintegral_indicator_const measurableSet_closedBall, mul_comm]
     _ = ENNReal.ofReal ((2 * (D * r)) ^ c * (2 * (|R| + 1)) ^ I.card) := by
         rw [Real.volume_pi_closedBall _ (by positivity), Fintype.card_coe,

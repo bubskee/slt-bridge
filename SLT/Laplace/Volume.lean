@@ -15,7 +15,8 @@ bounds `V(t) ≍ t^λ (log 1/t)^{m-1}` (as `t → 0`) and Laplace bounds `Z(N) �
 
 * `laplaceLower_of_volume`: a local lower volume bound gives the Laplace lower bound;
 * `laplaceUpper_of_volume`: a global upper volume bound gives the Laplace upper bound;
-* `laplaceUpper_iff_volume`: for finite `ν`, the Laplace upper bound is *equivalent* to a local upper
+* `laplaceUpper_iff_volume`: for finite `ν`, the Laplace upper bound is *equivalent* to a local
+  upper
   volume bound (`V(1/N) ≤ e Z(N)` gives the converse).
 
 The lower-direction converse (Laplace ⇒ volume, a Tauberian statement) is not here.
@@ -31,7 +32,7 @@ open scoped ENNReal
 
 variable {α : Type*} [MeasurableSpace α] {ν : Measure α} {K : α → ℝ} {lam : ℝ} {m : ℕ}
 
-/-- **Volume ⇒ Laplace (lower).** If `V(t) ≥ c t^λ (log 1/t)^{m-1}` for `0 < t ≤ t₀`, then
+/-- (M1) **Volume ⇒ Laplace (lower).** If `V(t) ≥ c t^λ (log 1/t)^{m-1}` for `0 < t ≤ t₀`, then
 `Z(N) ≥ e^{-1} c · rate λ m N` for `N ≥ 1/t₀`. -/
 theorem laplaceLower_of_volume (hK : Measurable K) {c t₀ : ℝ} (hc : 0 < c) (ht₀ : 0 < t₀)
     (hV : ∀ t, 0 < t → t ≤ t₀ →
@@ -68,7 +69,7 @@ theorem lintegral_Ioi_indicator_exp {a : ℝ} (ha : 0 ≤ a) :
   · exact (exp_neg_integrableOn_Ioi a one_pos).congr_fun (fun x _ => by simp) measurableSet_Ioi
   · exact Eventually.of_forall fun x => (Real.exp_pos _).le
 
-/-- **Layer cake**: for a nonnegative measurable loss and `N > 0`,
+/-- (M1) **Layer cake**: for a nonnegative measurable loss and `N > 0`,
 `Z(N) = ∫_0^∞ e^{-s} V(s/N) ds`, i.e. `∫_0^∞ N e^{-Nt} V(t) dt` after `s = Nt`. -/
 theorem Z_eq_layercake {ν : Measure α} [SFinite ν] {K : α → ℝ} (hK : Measurable K)
     (hK0 : ∀ x, 0 ≤ K x) {N : ℝ} (hN : 0 < N) :
@@ -101,6 +102,7 @@ theorem Z_eq_layercake {ν : Measure α} [SFinite ν] {K : α → ℝ} (hK : Mea
 noncomputable def gammaLog (lam : ℝ) (k : ℕ) : ENNReal :=
   ∫⁻ s in Ioi 0, ENNReal.ofReal (Real.exp (-s) * s ^ lam * (1 + |Real.log s|) ^ k)
 
+/-- `1 + |log s| ≤ (1 + 1/δ)(s^δ + s^{-δ})` for `s, δ > 0`. -/
 theorem one_add_abs_log_le {s δ : ℝ} (hs : 0 < s) (hδ : 0 < δ) :
     1 + |Real.log s| ≤ (1 + 1 / δ) * (s ^ δ + s ^ (-δ)) := by
   have h1 : 0 < s ^ δ := Real.rpow_pos_of_pos hs δ
@@ -126,6 +128,7 @@ theorem one_add_abs_log_le {s δ : ℝ} (hs : 0 < s) (hδ : 0 < δ) :
     have : 0 ≤ (1 + 1 / δ) * s ^ δ := by positivity
     linarith
 
+/-- `(a + b)^k ≤ 2^k (a^k + b^k)` for `a, b ≥ 0`. -/
 theorem add_pow_le_two_pow {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (k : ℕ) :
     (a + b) ^ k ≤ 2 ^ k * (a ^ k + b ^ k) := by
   have hm : a + b ≤ 2 * max a b := by
@@ -138,6 +141,7 @@ theorem add_pow_le_two_pow {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (k : ℕ) :
         · rw [max_eq_right h]; have := pow_nonneg ha k; linarith
         · rw [max_eq_left h]; have := pow_nonneg hb k; linarith
 
+/-- `gammaLog λ k` is finite for `λ > 0`. -/
 theorem gammaLog_lt_top {lam : ℝ} (hlam : 0 < lam) (k : ℕ) : gammaLog lam k < ⊤ := by
   set δ := lam / (2 * (k + 1))
   have hδ : 0 < δ := by positivity
@@ -180,7 +184,7 @@ theorem gammaLog_lt_top {lam : ℝ} (hlam : 0 < lam) (k : ℕ) : gammaLog lam k 
         intro s hs; exact ENNReal.ofReal_le_ofReal (hpt s hs)
     _ < ⊤ := hg.lintegral_lt_top
 
-/-- **Volume ⇒ Laplace (upper), explicit form.** If `V(t) ≤ C t^λ (1+|log t|)^k` for all
+/-- (M1) **Volume ⇒ Laplace (upper), explicit form.** If `V(t) ≤ C t^λ (1+|log t|)^k` for all
 `t > 0`, then `Z(N) ≤ C N^{-λ} (1 + log N)^k · I(λ,k)` for `N ≥ 1`. -/
 theorem Z_le_of_volume {ν : Measure α} [SFinite ν] {K : α → ℝ} (hK : Measurable K)
     (hK0 : ∀ x, 0 ≤ K x) {C lam : ℝ} {k : ℕ} (hC : 0 ≤ C)
@@ -220,7 +224,7 @@ theorem Z_le_of_volume {ν : Measure α} [SFinite ν] {K : α → ℝ} (hK : Mea
         _ = C * N ^ (-lam) * (1 + Real.log N) ^ k *
             (Real.exp (-s) * s ^ lam * (1 + |Real.log s|) ^ k) := by ring
 
-/-- **Volume ⇒ Laplace (upper).** A global sublevel bound `V(t) ≤ C t^λ (1+|log t|)^{m-1}`
+/-- (M1) **Volume ⇒ Laplace (upper).** A global sublevel bound `V(t) ≤ C t^λ (1+|log t|)^{m-1}`
 with `λ > 0` gives `Z(N) ≤ C' · rate λ m N` for large `N`. -/
 theorem laplaceUpper_of_volume [SFinite ν] (hK : Measurable K) (hK0 : ∀ x, 0 ≤ K x) {C : ℝ}
     (hC : 0 ≤ C) (hlam : 0 < lam)
@@ -283,7 +287,7 @@ theorem volume_global_of_local [IsFiniteMeasure ν] {C t₀ : ℝ} (ht₀ : 0 < 
               (by positivity) hk1
           _ ≤ _ := by gcongr; linarith [le_max_right C 0]
 
-/-- **Laplace ⇒ volume (upper).** An eventual upper bound `Z(N) ≤ C · rate λ m N` gives
+/-- (M1) **Laplace ⇒ volume (upper).** An eventual upper bound `Z(N) ≤ C · rate λ m N` gives
 `V(t) ≤ e C t^λ (log 1/t)^{m-1}` for small `t > 0`. -/
 theorem volume_le_of_laplaceUpper (hK : Measurable K) (h : LaplaceUpper (Z ν K) lam m) :
     ∃ C t₀ : ℝ, 0 < t₀ ∧ ∀ t, 0 < t → t ≤ t₀ →
@@ -305,7 +309,8 @@ theorem volume_le_of_laplaceUpper (hK : Measurable K) (h : LaplaceUpper (Z ν K)
         congr 1; unfold rate
         rw [Real.rpow_neg (inv_nonneg.mpr ht.le), Real.inv_rpow ht.le, inv_inv, one_div]; ring
 
-/-- **Upper Laplace bound ⇔ local upper volume bound**, for a finite measure, `K ≥ 0`, `λ > 0`. -/
+/-- (M1) **Upper Laplace bound ⇔ local upper volume bound**, for a finite measure, `K ≥ 0`,
+`λ > 0`. -/
 theorem laplaceUpper_iff_volume [IsFiniteMeasure ν] (hK : Measurable K) (hK0 : ∀ x, 0 ≤ K x)
     (hlam : 0 < lam) :
     LaplaceUpper (Z ν K) lam m ↔ ∃ C t₀ : ℝ, 0 < t₀ ∧ ∀ t, 0 < t → t ≤ t₀ →

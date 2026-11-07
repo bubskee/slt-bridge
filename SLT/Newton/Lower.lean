@@ -16,7 +16,8 @@ Exponents `Γ ⊂ ℝ≥0^d` (a `Finset`), monomials `|w|^α = ∏ |w_i|^{α_i}`
 standard simplex (`u ≥ 0`, `∑ u = 1`) with `t ≤ ⟨α, u⟩` for every `α ∈ Γ`. Then
 `newtonDist Γ = sup { t | some u certifies t } = max_{u ∈ Δ} min_{α ∈ Γ} ⟨α, u⟩`.
 This is the brief's second (minimax) formula for `t* = min { t | t·𝟙 ∈ conv Γ + ℝ≥0^d }`. The
-LP-duality equivalence with the polyhedral formula is **not** formalised here; nothing in N1 needs it.
+LP-duality equivalence with the polyhedral formula is **not** formalised here; nothing in N1 needs
+it.
 
 * `monomial_le_of_mem_box`: on the anisotropic box `∏ [0, ε^{u_i}]`, `|w|^α ≤ ε^t`.
 * `newton_laplaceLower`: if `K ≤ C ∑_{α ∈ Γ} |w|^α` on `[0,1]^d` and `u` certifies `t > 0`, then
@@ -46,10 +47,12 @@ def IsNewtonCert (Γ : Finset (Fin d → ℝ)) (t : ℝ) (u : Fin d → ℝ) : P
 noncomputable def newtonDist (Γ : Finset (Fin d → ℝ)) : ℝ :=
   sSup {t | ∃ u, IsNewtonCert Γ t u}
 
+/-- A certificate for `t'` certifies every `t ≤ t'`. -/
 theorem IsNewtonCert.mono {Γ : Finset (Fin d → ℝ)} {t t' : ℝ} {u : Fin d → ℝ}
     (h : IsNewtonCert Γ t' u) (htt : t ≤ t') : IsNewtonCert Γ t u :=
   ⟨h.1, h.2.1, fun α hα => htt.trans (h.2.2 α hα)⟩
 
+/-- Monomials `|w|^α` are nonnegative. -/
 theorem monomial_nonneg (α w : Fin d → ℝ) : 0 ≤ monomial α w :=
   Finset.prod_nonneg fun _ _ => Real.rpow_nonneg (abs_nonneg _) _
 
@@ -67,6 +70,7 @@ theorem monomial_le_of_mem_box {α u w : Fin d → ℝ} (hα : ∀ i, 0 ≤ α i
         rw [← Real.rpow_mul hε.le, mul_comm]
     _ ≤ ε ^ t := Real.rpow_le_rpow_of_exponent_ge hε hε1 ht
 
+/-- The anisotropic box `∏ [0, ε^{u_i}]` with `Σ u_i = 1` has volume `ε` (N1). -/
 theorem volume_box {u : Fin d → ℝ} (hu1 : ∑ i, u i = 1) {ε : ℝ} (hε : 0 < ε) :
     volume (Icc (0 : Fin d → ℝ) fun i => ε ^ u i) = ENNReal.ofReal ε := by
   rw [Real.volume_Icc_pi]

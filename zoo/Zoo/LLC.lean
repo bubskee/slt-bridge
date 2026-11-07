@@ -35,12 +35,12 @@ section Residual
 
 open ResidualSLT SLT.Zoo.ResidualNetwork
 
-theorem networkTargetLoss_nonneg (μ : Measure ℝ) (r : ℕ) {L : ℕ} (t w : Fin L → ℝ) :
+private theorem networkTargetLoss_nonneg (μ : Measure ℝ) (r : ℕ) {L : ℕ} (t w : Fin L → ℝ) :
     0 ≤ networkTargetLoss μ r t w := by
   unfold networkTargetLoss
   exact integral_nonneg fun _ => sq_nonneg _
 
-/-- **Scalar ResNet LLC identity, `O(1)` form**: under the paper's hypotheses, with
+/-- (L3) **Scalar ResNet LLC identity, `O(1)` form**: under the paper's hypotheses, with
 `(λ, m) = globalLearningPair r k (L-k)`,
 `∫_{t₀}^{T} E_t[K] dt = λ log T - (m-1) log log T + O(1)`. -/
 theorem residualNetwork_llc_log_average (μ : Measure ℝ) (r L k : ℕ) (hr : 2 ≤ r) (hL : 0 < L)
@@ -58,7 +58,7 @@ theorem residualNetwork_llc_log_average (μ : Measure ℝ) (r L k : ℕ) (hr : 2
     (Eventually.of_forall fun w => networkTargetLoss_nonneg μ r t w)
     (residualNetwork_learningPair μ r L k hr hL hμ t hk ρ hρ hfinite hprior) ht₀
 
-/-- **Scalar ResNet LLC identity, limit form**: `(1/log T) ∫_{t₀}^{T} E_t[K] dt → λ`. -/
+/-- (L3) **Scalar ResNet LLC identity, limit form**: `(1/log T) ∫_{t₀}^{T} E_t[K] dt → λ`. -/
 theorem residualNetwork_llc (μ : Measure ℝ) (r L k : ℕ) (hr : 2 ≤ r) (hL : 0 < L)
     (hμ : FinitePositiveFeatureGram μ (sparseNetworkFeatures r L))
     (t : Fin L → ℝ) (hk : activeCount (zeroExtend t) L = k)
@@ -92,25 +92,30 @@ section Vector
 
 open VectorSLT
 
-theorem continuous_tri (i : ℕ) : Continuous fun v : ℝ × ℝ × ℝ => tri v i := by
+private theorem continuous_tri (i : ℕ) : Continuous fun v : ℝ × ℝ × ℝ => tri v i := by
   rcases i with _ | _ | i <;> simp only [tri] <;> fun_prop
 
-theorem continuous_weights (i : ℕ) : Continuous fun θ : Raw16 => weights θ i := by
+private theorem continuous_weights (i : ℕ) : Continuous fun θ : Raw16 => weights θ i := by
   rcases i with _ | i
   · simp only [weights]
     refine continuous_pi fun a => continuous_pi fun b => ?_
-    fin_cases a <;> fin_cases b <;> simp <;> fun_prop
+    fin_cases a <;> fin_cases b <;>
+      simp only [Fin.mk_one, Fin.isValue, Fin.zero_eta, Matrix.of_apply, Matrix.cons_val',
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one] <;> fun_prop
   · simp only [weights]
     refine continuous_pi fun a => continuous_pi fun b => ?_
-    fin_cases a <;> fin_cases b <;> simp <;> exact (continuous_tri i).comp (by fun_prop)
+    fin_cases a <;> fin_cases b <;>
+      simp only [Fin.mk_one, Fin.isValue, Fin.zero_eta, Matrix.of_apply, Matrix.cons_val',
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one] <;>
+      exact (continuous_tri i).comp (by fun_prop)
 
-theorem continuous_layer :
+private theorem continuous_layer :
     Continuous fun q : Matrix (Fin 2) (Fin 2) ℝ × (Fin 2 → ℝ) => layer q.1 q.2 := by
   unfold layer
   exact continuous_snd.add ((continuous_fst.matrix_mulVec continuous_snd).pow 3)
 
 /-- The network is jointly continuous in the raw weights and the input. -/
-theorem continuous_net : Continuous fun p : Raw16 × (Fin 2 → ℝ) => net p.1 p.2 := by
+private theorem continuous_net : Continuous fun p : Raw16 × (Fin 2 → ℝ) => net p.1 p.2 := by
   have step : ∀ n, Continuous fun p : Raw16 × (Fin 2 → ℝ) => prefixNet (weights p.1) n p.2 := by
     intro n
     induction n with
@@ -167,7 +172,7 @@ theorem isFiniteMeasure_posPrior {A : Matrix (Fin 2) (Fin 2) ℝ} {φ χ : Raw16
       rw [hχs _ hθ, mul_zero]
       exact bot_le
 
-/-- **Vector shear, position one, LLC identity (unconditional)**: under the hypotheses of
+/-- (L3) **Vector shear, position one, LLC identity (unconditional)**: under the hypotheses of
 `position_one_pair`, plus measurability of `φ` and `χ`, the log-averaged LLC of the localised
 tempered posterior at position one satisfies
 `∫_{t₀}^{T} E_t[K] dt = 4 log T - 4 log log T + O(1)`, hence tends to `4` after dividing by
@@ -201,9 +206,9 @@ theorem position_one_llc {A : Matrix (Fin 2) (Fin 2) ℝ} (hA : ShearTarget A) :
   obtain ⟨C, T₀, hC⟩ := llc_log_average hKm hK0 hp ht₀
   exact ⟨C, T₀, fun T hT => by have := hC T hT; norm_num at this ⊢; linarith [this]⟩
 
-/-- **Vector shear position table, LLC form (conditional on `ThmK`/`ThmN`)**: all four positions
-have log-averaged LLC `4`; position one carries `-4 log log T` in the second-order term, positions
-two to four carry none. -/
+/-- (L3) **Vector shear position table, LLC form (conditional on `ThmK`/`ThmN`)**: all four
+positions have log-averaged LLC `4`; position one carries `-4 log log T` in the second-order term,
+positions two to four carry none. -/
 theorem mainTheorem_shear_llc {A : Matrix (Fin 2) (Fin 2) ℝ} (hA : ShearTarget A) :
     ∃ r : ℝ, 0 < r ∧ ∀ (μ : Measure (Fin 2 → ℝ)) [IsFiniteMeasure μ],
       (∀ i, Integrable (fun x : Fin 2 → ℝ => |x i| ^ (2 * 81)) μ) →

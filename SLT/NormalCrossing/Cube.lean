@@ -34,12 +34,14 @@ noncomputable def ncZ {d : ℕ} (k : Fin d → ℕ) (h : Fin d → ℝ) (N : ℝ
   ∫⁻ x in Set.pi univ (fun _ => Ioc (0 : ℝ) 1),
     ENNReal.ofReal (Real.exp (-(N * ∏ i, x i ^ k i)) * ∏ i, x i ^ h i)
 
+/-- `ncZ` in dimension `0` is `e^{-N}`. -/
 theorem ncZ_zero (k : Fin 0 → ℕ) (h : Fin 0 → ℝ) (N : ℝ) :
     ncZ k h N = ENNReal.ofReal (Real.exp (-N)) := by
   unfold ncZ
   rw [lintegral_unique, Measure.restrict_apply MeasurableSet.univ, univ_inter]
   simp [volume_pi_pi]
 
+/-- Recursion for `ncZ`: one more coordinate is one integration step `stepG`. -/
 theorem ncZ_succ {d : ℕ} (k : Fin (d + 1) → ℕ) (h : Fin (d + 1) → ℝ) (N : ℝ) :
     ncZ k h N = stepG (ncZ (Fin.tail k) (Fin.tail h)) (h 0) (k 0) N := by
   set e := MeasurableEquiv.piFinSuccAbove (fun _ : Fin (d + 1) => ℝ) 0
@@ -51,7 +53,8 @@ theorem ncZ_succ {d : ℕ} (k : Fin (d + 1) → ℕ) (h : Fin (d + 1) → ℝ) (
   have hf : Measurable f := by fun_prop
   have hS : Set.pi univ (fun _ => Ioc (0 : ℝ) 1) = e ⁻¹' (Ioc 0 1 ×ˢ T) := by
     ext x
-    simp only [Set.mem_pi, Set.mem_univ, forall_const, Set.mem_preimage, he, Set.mem_prod, T, Fin.tail]
+    simp only [Set.mem_pi, Set.mem_univ, forall_const, Set.mem_preimage, he, Set.mem_prod, T,
+      Fin.tail]
     exact ⟨fun h => ⟨h 0, fun j => h j.succ⟩, fun h i => Fin.cases h.1 h.2 i⟩
   have hint : ∀ x : Fin (d + 1) → ℝ,
       ENNReal.ofReal (Real.exp (-(N * ∏ i, x i ^ k i)) * ∏ i, x i ^ h i) = f (e x) := by
@@ -72,6 +75,7 @@ theorem ncZ_succ {d : ℕ} (k : Fin (d + 1) → ℕ) (h : Fin (d + 1) → ℝ) (
 
 /-! ### Constant factors and inactive coordinates -/
 
+/-- `stepG` commutes with multiplication by a finite constant. -/
 theorem stepG_const_mul (F : ℝ → ℝ≥0∞) {a : ℝ≥0∞} (ha : a ≠ ⊤) (h : ℝ) (k : ℕ) (N : ℝ) :
     stepG (fun M => a * F M) h k N = a * stepG F h k N := by
   unfold stepG
@@ -85,11 +89,13 @@ theorem stepG_zero_exp (F : ℝ → ℝ≥0∞) {h : ℝ} (hh : -1 < h) (N : ℝ
   simp only [pow_zero, mul_one]
   rw [lintegral_mul_const _ (by fun_prop), lintegral_Ioc_zero_rpow zero_le_one hh, Real.one_rpow]
 
+/-- `NCBound` is preserved by multiplication by a positive constant. -/
 theorem NCBound.const_mul {F : ℝ → ℝ≥0∞} {lam : ℝ} {m : ℕ} {c : ℝ} (hc : 0 < c)
     (hF : NCBound F lam m) : NCBound (fun M => ENNReal.ofReal c * F M) lam m := by
   obtain ⟨hmono, ⟨B, hB⟩, ⟨b, hb, hb1⟩, ⟨C, hC⟩, ⟨c', hc', M₀, hM₀⟩⟩ := hF
   refine ⟨fun M M' h1 h2 => by dsimp only; gcongr; exact hmono M M' h1 h2, ⟨c * B, ?_⟩,
-    ⟨c * b, by positivity, ?_⟩, ⟨c * C, fun M hM => ?_⟩, ⟨c * c', by positivity, M₀, fun M hM => ?_⟩⟩
+    ⟨c * b, by positivity, ?_⟩, ⟨c * C, fun M hM => ?_⟩,
+    ⟨c * c', by positivity, M₀, fun M hM => ?_⟩⟩
   · dsimp only; rw [ENNReal.ofReal_mul hc.le]; gcongr
   · dsimp only; rw [ENNReal.ofReal_mul hc.le]; gcongr
   · rw [show c * C * M ^ (-lam) * (1 + Real.log M) ^ (m - 1) =
@@ -117,19 +123,23 @@ noncomputable def ncLam (k : Fin d → ℕ) (h : Fin d → ℝ) : ℝ :=
 noncomputable def ncMult (k : Fin d → ℕ) (h : Fin d → ℝ) : ℕ :=
   (Finset.univ.filter fun i => k i ≠ 0 ∧ ncMu k h i = ncLam k h).card
 
+/-- Membership in the active set: `i ∈ Active k ↔ k i ≠ 0`. -/
 theorem mem_active {k : Fin d → ℕ} {i : Fin d} : i ∈ Active k ↔ k i ≠ 0 := by simp [Active]
 
+/-- `ncLam` is at most every active `ncMu`. -/
 theorem ncLam_le {k : Fin d → ℕ} {h : Fin d → ℝ} {i : Fin d} (hi : k i ≠ 0) :
     ncLam k h ≤ ncMu k h i := by
   have hS : (Active k).Nonempty := ⟨i, mem_active.mpr hi⟩
   rw [ncLam, dite_eq_left hS]; exact Finset.inf'_le _ (mem_active.mpr hi)
 
+/-- The minimum `ncLam` is attained at an active coordinate. -/
 theorem exists_ncLam {k : Fin d → ℕ} {h : Fin d → ℝ} (hS : ∃ i, k i ≠ 0) :
     ∃ i, k i ≠ 0 ∧ ncMu k h i = ncLam k h := by
   have hS' : (Active k).Nonempty := let ⟨i, hi⟩ := hS; ⟨i, mem_active.mpr hi⟩
   obtain ⟨i, hi, he⟩ := Finset.exists_mem_eq_inf' hS' (ncMu k h)
   exact ⟨i, mem_active.mp hi, by rw [ncLam, dite_eq_left hS', he]⟩
 
+/-- Characterisation of `ncLam` as an attained lower bound of the active `ncMu`. -/
 theorem ncLam_eq {k : Fin d → ℕ} {h : Fin d → ℝ} {L : ℝ} (hle : ∀ i, k i ≠ 0 → L ≤ ncMu k h i)
     (hex : ∃ i, k i ≠ 0 ∧ ncMu k h i = L) : ncLam k h = L := by
   obtain ⟨i, hi, hiL⟩ := hex
@@ -138,6 +148,7 @@ theorem ncLam_eq {k : Fin d → ℕ} {h : Fin d → ℝ} {L : ℝ} (hle : ∀ i,
   · rw [← hiL]; exact ncLam_le hi
   · rw [← hjL]; exact hle j hj
 
+/-- `ncLam > 0` when all `h i > -1` and some coordinate is active. -/
 theorem ncLam_pos {k : Fin d → ℕ} {h : Fin d → ℝ} (hh : ∀ i, -1 < h i) (hS : ∃ i, k i ≠ 0) :
     0 < ncLam k h := by
   obtain ⟨i, hi, he⟩ := exists_ncLam (h := h) hS
@@ -146,10 +157,12 @@ theorem ncLam_pos {k : Fin d → ℕ} {h : Fin d → ℝ} (hh : ∀ i, -1 < h i)
   have := hh i
   apply div_pos <;> linarith
 
+/-- `ncMult ≥ 1` when some coordinate is active. -/
 theorem ncMult_pos {k : Fin d → ℕ} {h : Fin d → ℝ} (hS : ∃ i, k i ≠ 0) : 1 ≤ ncMult k h := by
   obtain ⟨i, hi, he⟩ := exists_ncLam (h := h) hS
   exact Finset.card_pos.mpr ⟨i, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hi, he⟩⟩
 
+/-- Recursion for `ncMult` along `Fin.cons`. -/
 theorem ncMult_succ (k : Fin (d + 1) → ℕ) (h : Fin (d + 1) → ℝ) :
     ncMult k h = (if k 0 ≠ 0 ∧ ncMu k h 0 = ncLam k h then 1 else 0) +
       (Finset.univ.filter fun j : Fin d => k j.succ ≠ 0 ∧ ncMu k h j.succ = ncLam k h).card := by
@@ -159,7 +172,7 @@ theorem ncMult_succ (k : Fin (d + 1) → ℕ) (h : Fin (d + 1) → ℝ) :
 
 /-! ### The induction -/
 
-/-- **All the bounds.** With no active coordinate, `ncZ = c e^{-N}`; with one, `NCBound`. -/
+/-- (M2) **All the bounds.** With no active coordinate, `ncZ = c e^{-N}`; with one, `NCBound`. -/
 theorem ncZ_cases : ∀ (d : ℕ) (k : Fin d → ℕ) (h : Fin d → ℝ), (∀ i, -1 < h i) →
     ((∀ i, k i = 0) → ∃ c : ℝ, 0 < c ∧
       ∀ N, ncZ k h N = ENNReal.ofReal c * ENNReal.ofReal (Real.exp (-N))) ∧
@@ -188,7 +201,8 @@ theorem ncZ_cases : ∀ (d : ℕ) (k : Fin d → ℕ) (h : Fin d → ℝ), (∀ 
           | succ j => exact absurd (htail j) hi
         have hM : ncMult k h = 1 := by
           rw [ncMult_succ, ite_eq_left ⟨hk0, hL.symm⟩]
-          have : (Finset.univ.filter fun j : Fin d => k j.succ ≠ 0 ∧ ncMu k h j.succ = ncLam k h) = ∅ :=
+          have : (Finset.univ.filter fun j : Fin d =>
+              k j.succ ≠ 0 ∧ ncMu k h j.succ = ncLam k h) = ∅ :=
             Finset.filter_false_of_mem fun j _ hj => hj.1 (htail j)
           rw [this]; rfl
         rw [e, eT, hL, hM]
@@ -232,7 +246,8 @@ theorem ncZ_cases : ∀ (d : ℕ) (k : Fin d → ℕ) (h : Fin d → ℝ), (∀ 
             | succ j => exact hlt.le.trans (ncLam_le (k := Fin.tail k) hi)
           have hM : ncMult k h = 1 := by
             rw [ncMult_succ, ite_eq_left ⟨hk0, hL.symm⟩]
-            have : (Finset.univ.filter fun j : Fin d => k j.succ ≠ 0 ∧ ncMu k h j.succ = ncLam k h) = ∅ := by
+            have : (Finset.univ.filter fun j : Fin d =>
+                k j.succ ≠ 0 ∧ ncMu k h j.succ = ncLam k h) = ∅ := by
               refine Finset.filter_false_of_mem fun j _ hj => ?_
               have h1 : lamt ≤ ncMu (Fin.tail k) (Fin.tail h) j := ncLam_le hj.1
               have h2 : ncMu (Fin.tail k) (Fin.tail h) j = ncMu k h 0 := hj.2.trans hL
@@ -257,7 +272,8 @@ theorem ncZ_cases : ∀ (d : ℕ) (k : Fin d → ℕ) (h : Fin d → ℝ), (∀ 
             | zero => exact hgt.le
             | succ j => exact ncLam_le (k := Fin.tail k) hi
           have hM : ncMult k h = mt := by
-            rw [ncMult_succ, ite_eq_right (fun hc => by rw [hL] at hc; exact hgt.ne' hc.2), zero_add, hL]
+            rw [ncMult_succ, ite_eq_right (fun hc => by rw [hL] at hc; exact hgt.ne' hc.2),
+              zero_add, hL]
             rfl
           rw [e, hL, hM]
           exact IH.step_lt hlamt.le (hh 0) hk hgt
@@ -286,8 +302,8 @@ theorem NCBound.hasLaplacePair {F : ℝ → ℝ≥0∞} {lam : ℝ} {m : ℕ} (h
           apply mul_le_mul_of_nonneg_left h2; positivity
       _ = _ := by ring
 
-/-- **The normal-crossing lemma on the cube.** For `hᵢ > -1` and at least one active coordinate,
-`∫_{(0,1]^d} e^{-N ∏ xᵢ^{kᵢ}} ∏ xᵢ^{hᵢ} dx` has the pair `(ncLam k h, ncMult k h)`. -/
+/-- (M2) **The normal-crossing lemma on the cube.** For `hᵢ > -1` and at least one active
+coordinate, `∫_{(0,1]^d} e^{-N ∏ xᵢ^{kᵢ}} ∏ xᵢ^{hᵢ} dx` has the pair `(ncLam k h, ncMult k h)`. -/
 theorem ncZ_hasLaplacePair (k : Fin d → ℕ) (h : Fin d → ℝ) (hh : ∀ i, -1 < h i)
     (hS : ∃ i, k i ≠ 0) : HasLaplacePair (ncZ k h) (ncLam k h) (ncMult k h) :=
   ((ncZ_cases d k h hh).2 hS).hasLaplacePair (ncMult_pos hS)

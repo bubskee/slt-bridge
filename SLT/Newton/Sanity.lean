@@ -11,7 +11,8 @@ public import SLT.Newton.Statement
 
 `newtonMult Γ` is **defined** as `dim (affineSpan O) + 1`, where `O = optWeights Γ` is the set of
 optimal simplex weights. The equivalence with `d - dim F` (with `F` the smallest face of the Newton
-polyhedron containing `t*·𝟙`) is LP duality, which is not formalised. These lemmas pin the convention
+polyhedron containing `t*·𝟙`) is LP duality, which is not formalised. These lemmas pin the
+convention
 down on the brief's table by computing `O` explicitly:
 
 | `Γ` | `t*` | `O` | `m` |
@@ -28,7 +29,7 @@ namespace SLT.Newton
 
 open Set Module
 
-theorem newtonMult_of_optWeights_singleton {d : ℕ} {Γ : Finset (Fin d → ℝ)} {p : Fin d → ℝ}
+private theorem newtonMult_of_optWeights_singleton {d : ℕ} {Γ : Finset (Fin d → ℝ)} {p : Fin d → ℝ}
     (h : optWeights Γ = {p}) : newtonMult Γ = 1 := by
   rw [newtonMult, h, direction_affineSpan, vectorSpan_singleton, finrank_bot]
 
@@ -44,6 +45,7 @@ theorem optWeights_single (k : ℝ) :
   · rintro rfl
     exact ⟨fun _ => zero_le_one, rfl, by simp⟩
 
+/-- `{2k}`, `d = 1`: `m = 1` (N2 sanity). -/
 theorem newtonMult_single (k : ℝ) : newtonMult ({fun _ => 2 * k} : Finset (Fin 1 → ℝ)) = 1 :=
   newtonMult_of_optWeights_singleton (optWeights_single k)
 
@@ -61,6 +63,7 @@ theorem optWeights_xy :
     refine ⟨fun i => ?_, by simpa using hab, by simp; nlinarith⟩
     fin_cases i <;> simpa
 
+/-- `x² y²`: `m = 2` (N2 sanity). -/
 theorem newtonMult_xy : newtonMult ({![2, 2]} : Finset (Fin 2 → ℝ)) = 2 := by
   rw [newtonMult, optWeights_xy, ← convexHull_pair, affineSpan_convexHull, direction_affineSpan,
     vectorSpan_pair, finrank_span_singleton]
@@ -85,6 +88,7 @@ theorem optWeights_sq_add_sq :
     simp only [Finset.mem_insert, Finset.mem_singleton] at hα
     rcases hα with rfl | rfl <;> simp [Fin.sum_univ_two]
 
+/-- `x² + y²`: `m = 1` (N2 sanity). -/
 theorem newtonMult_sq_add_sq : newtonMult ({![2, 0], ![0, 2]} : Finset (Fin 2 → ℝ)) = 1 :=
   newtonMult_of_optWeights_singleton optWeights_sq_add_sq
 
@@ -100,6 +104,7 @@ theorem optWeights_sq_d2 : optWeights ({![2, 0]} : Finset (Fin 2 → ℝ)) = {![
   · rintro rfl
     exact ⟨fun i => by fin_cases i <;> norm_num, by simp, by simp⟩
 
+/-- `x²` in `d = 2`: `m = 1` (N2 sanity). -/
 theorem newtonMult_sq_d2 : newtonMult ({![2, 0]} : Finset (Fin 2 → ℝ)) = 1 :=
   newtonMult_of_optWeights_singleton optWeights_sq_d2
 

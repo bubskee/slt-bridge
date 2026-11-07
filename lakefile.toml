@@ -1,5 +1,6 @@
 # slt-bridge: a Lean bridge from resolution of singularities to Watanabe's singular learning theory.
-# Phase 0 scaffold only. Pins match vector-slt-lean, residual-slt-in-a-haystack and hironaka@v4.35.0.
+# The core package (mathlib-only). Pins match vector-slt-lean, residual-slt-in-a-haystack and
+# hironaka@v4.35.0. See README.md.
 name = "slt-bridge"
 version = "0.0.1"
 defaultTargets = ["SLT"]
@@ -7,6 +8,10 @@ defaultTargets = ["SLT"]
 [leanOptions]
 autoImplicit = false
 relaxedAutoImplicit = false
+# Mathlib's standard linter set (brief 02, C1). The header linter is off: it enforces Mathlib's own
+# "Authors:" header layout, and the copyright lines here are kept as they are.
+weak.linter.mathlibStandardSet = true
+weak.linter.style.header = false
 
 [[require]]
 name = "mathlib"

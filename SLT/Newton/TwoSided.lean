@@ -27,16 +27,17 @@ open MeasureTheory Set Filter Module
 
 variable {d : ℕ}
 
-theorem isFiniteMeasure_box : IsFiniteMeasure (volume.restrict (Icc (0 : Fin d → ℝ) 1)) :=
+private theorem isFiniteMeasure_box : IsFiniteMeasure (volume.restrict (Icc (0 : Fin d → ℝ) 1)) :=
   ⟨by rw [Measure.restrict_apply_univ]; exact isCompact_Icc.measure_lt_top⟩
 
-theorem V_box_eq (Γ : Finset (Fin d → ℝ)) (t : ℝ) :
+private theorem V_box_eq (Γ : Finset (Fin d → ℝ)) (t : ℝ) :
     V (volume.restrict (Icc (0 : Fin d → ℝ) 1)) (monoSum Γ) t =
       volume (Icc (0 : Fin d → ℝ) 1 ∩ {w | monoSum Γ w ≤ t}) := by
   rw [V, Measure.restrict_apply (measurableSet_le (measurable_monoSum Γ) measurable_const),
     inter_comm]
 
-theorem exp_neg_log_mul {a τ : ℝ} (ha : 0 < a) : Real.exp (-(Real.log a * τ)) = a ^ (-τ) := by
+private theorem exp_neg_log_mul {a τ : ℝ} (ha : 0 < a) :
+    Real.exp (-(Real.log a * τ)) = a ^ (-τ) := by
   rw [Real.rpow_def_of_pos ha]; ring_nf
 
 /-- **N2 for the monomial sum**: `Z(N) = ∫_{[0,1]^d} e^{-N Σ|w|^α}` has pair `(1/t*, dim O + 1)`. -/
@@ -104,7 +105,8 @@ theorem newtonTwoSided (d : ℕ) : NewtonTwoSided d := by
     ⟨fun _ => zero_le_one, fun _ => le_rfl⟩
   have hM1 : ∑ α ∈ Γ, monomial α (fun _ => 1) = Γ.card := by
     simp [monomial]
-  have hG : (0 : ℝ) < Γ.card := by exact_mod_cast Finset.card_pos.mpr (nonempty_of_newtonDist_pos hd)
+  have hG : (0 : ℝ) < Γ.card := by
+    exact_mod_cast Finset.card_pos.mpr (nonempty_of_newtonDist_pos hd)
   have hC : 0 < C := by
     obtain ⟨h1', h2'⟩ := hcomp _ h1
     rw [hM1] at h1' h2'

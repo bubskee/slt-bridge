@@ -36,13 +36,14 @@ theorem ofVector {F : ℝ → ENNReal} {lam : ℝ} {m : ℕ} (h : VectorSLT.SLT.
     (hm : 1 ≤ m) : SLT.HasLaplacePair F lam m :=
   SLT.hasLaplacePair_iff_bounds.mpr ⟨hm, h⟩
 
+/-- A core pair is a pair for the vector library's predicate (forgetting `1 ≤ m`). -/
 theorem toVector {F : ℝ → ENNReal} {lam : ℝ} {m : ℕ} (h : SLT.HasLaplacePair F lam m) :
     VectorSLT.SLT.HasLaplacePair F lam m :=
   (SLT.hasLaplacePair_iff_bounds.mp h).2
 
-/-- **Position one, unconditionally**: for every shear target, every input law with finite 162nd
-moments and a density bounded below on a box, every bounded prior that is bounded below near the
-first base point, and every admissible cutoff, `Z_{N,1}` has the learning pair `(4, 5)`. -/
+/-- (G6) **Position one, unconditionally**: for every shear target, every input law with finite
+162nd moments and a density bounded below on a box, every bounded prior that is bounded below near
+the first base point, and every admissible cutoff, `Z_{N,1}` has the learning pair `(4, 5)`. -/
 theorem position_one_pair {A : Matrix (Fin 2) (Fin 2) ℝ} (hA : ShearTarget A) :
     ∃ r : ℝ, 0 < r ∧ ∀ (μ : Measure (Fin 2 → ℝ)) [IsFiniteMeasure μ],
       (∀ i, Integrable (fun x : Fin 2 → ℝ => |x i| ^ (2 * 81)) μ) →
@@ -66,7 +67,7 @@ theorem position_one_unique {μ : Measure (Fin 2 → ℝ)} {A : Matrix (Fin 2) (
     (h' : SLT.HasLaplacePair (Zpos μ A φ χ 0) lam m) : lam = 4 ∧ m = 5 :=
   h'.unique h
 
-/-- **Main theorem in core vocabulary**: the depth-four position table
+/-- (G6) **Main theorem in core vocabulary**: the depth-four position table
 `(4,5), (4,1), (4,1), (4,1)`, conditional on `ThmK` and `ThmN` (upper halves at positions 2–4). -/
 theorem mainTheorem_shear_core {A : Matrix (Fin 2) (Fin 2) ℝ} (hA : ShearTarget A) :
     ∃ r : ℝ, 0 < r ∧ ∀ (μ : Measure (Fin 2 → ℝ)) [IsFiniteMeasure μ],
@@ -88,9 +89,10 @@ theorem mainTheorem_shear_core {A : Matrix (Fin 2) (Fin 2) ℝ} (hA : ShearTarge
     h μ hmom hlh hμ₀ hμ φ χ hφ₀ hχ₀ hφl hχl hπ₁ hφ hχ hχs hK hN
   exact ⟨ofVector h0 (by norm_num), ofVector h1 le_rfl, ofVector h2 le_rfl, ofVector h3 le_rfl⟩
 
-/-- **Positions are told apart by the multiplicity**: if position one has pair `(4,5)` and position
-`p` has pair `(4,1)`, the two partition functions are different functions of `N`, by uniqueness of
-the pair. The source's `mainTheorem_shear_ratio` proves the stronger `Z_{N,1}/Z_{N,p} → ∞`. -/
+/-- (G6) **Positions are told apart by the multiplicity**: if position one has pair `(4,5)` and
+position `p` has pair `(4,1)`, the two partition functions are different functions of `N`, by
+uniqueness of the pair. The source's `mainTheorem_shear_ratio` proves the stronger
+`Z_{N,1}/Z_{N,p} → ∞`. -/
 theorem position_one_ne_position {μ : Measure (Fin 2 → ℝ)} {A : Matrix (Fin 2) (Fin 2) ℝ}
     {φ χ : Raw16 → ENNReal} (h0 : SLT.HasLaplacePair (Zpos μ A φ χ 0) 4 5) {p : Fin 4}
     (hp : SLT.HasLaplacePair (Zpos μ A φ χ p) 4 1) : Zpos μ A φ χ 0 ≠ Zpos μ A φ χ p := by
@@ -99,7 +101,7 @@ theorem position_one_ne_position {μ : Measure (Fin 2 → ℝ)} {A : Matrix (Fin
   have := (h0.unique hp).2
   norm_num at this
 
-/-- **Gaussian inputs**: the same table for the standard Gaussian input law. -/
+/-- (G6) **Gaussian inputs**: the same table for the standard Gaussian input law. -/
 theorem mainTheorem_shear_gaussian_core {A : Matrix (Fin 2) (Fin 2) ℝ} (hA : ShearTarget A) :
     ∃ r : ℝ, 0 < r ∧ ∀ (φ χ : Raw16 → ENNReal) {φ₀ χ₀ π₁ : ℝ}, 0 < φ₀ → 0 < χ₀ →
       (∀ p : Fin 4, ∀ᶠ θ in 𝓝 (basePos A p), ENNReal.ofReal φ₀ ≤ φ θ) →

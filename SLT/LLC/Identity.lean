@@ -19,7 +19,8 @@ No boundedness of `K` is needed: `u e^{-s u} ≤ 1/s` for `u ≥ 0`, `s > 0` giv
 
 **L2** (`llc_log_average`, `tendsto_llc_log_average`): if `Z` has learning pair `(λ, m)` then,
 for any fixed `t₀ > 0`,
-`∫_{t₀}^{T} E_t[K] dt = λ log T - (m-1) log log T + O(1)`, hence `(1/log T) ∫_{t₀}^{T} E_t[K] dt → λ`.
+`∫_{t₀}^{T} E_t[K] dt = λ log T - (m-1) log log T + O(1)`, hence
+`(1/log T) ∫_{t₀}^{T} E_t[K] dt → λ`.
 Since `E_t[K] dt = (t E_t[K]) dt/t`, this says the log-average of `t · E_t[K]` is `λ`; the
 multiplicity `m` appears in the `log log T` term.
 
@@ -61,10 +62,12 @@ section Finite
 
 variable [IsFiniteMeasure ν]
 
+/-- For finite `ν`, nonnegative `K` and `t ≥ 0`, `Z = ofReal (Zr)`. -/
 theorem Z_eq_ofReal_Zr (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) {t : ℝ} (ht : 0 ≤ t) :
     Z ν K t = ENNReal.ofReal (Zr ν K t) :=
   Z_eq_ofReal_integral (integrable_exp_neg_mul hK hK0 ht)
 
+/-- `Zr > 0` for finite nonzero `ν`, nonnegative `K` and `t ≥ 0`. -/
 theorem Zr_pos (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) (hν : ν ≠ 0) {t : ℝ} (ht : 0 ≤ t) :
     0 < Zr ν K t := by
   unfold Zr
@@ -75,7 +78,7 @@ theorem Zr_pos (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) (hν : ν �
   rw [this]
   exact Measure.measure_univ_pos.mpr hν
 
-theorem integrable_mul_exp_neg_mul (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) {t : ℝ}
+private theorem integrable_mul_exp_neg_mul (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) {t : ℝ}
     (ht : 0 < t) : Integrable (fun x => K x * Real.exp (-(t * K x))) ν := by
   refine Integrable.of_bound (by fun_prop : Measurable _).aestronglyMeasurable (1 / t) ?_
   filter_upwards [hK0] with x hx
@@ -83,16 +86,18 @@ theorem integrable_mul_exp_neg_mul (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 
   exact mul_exp_neg_mul_le ht hx
 
 omit [IsFiniteMeasure ν] in
+/-- The Gibbs numerator of a nonnegative loss is nonnegative. -/
 theorem gibbsNum_nonneg (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) (t : ℝ) : 0 ≤ gibbsNum ν K t :=
   integral_nonneg_of_ae (by filter_upwards [hK0] with x hx using mul_nonneg hx (Real.exp_pos _).le)
 
 omit [IsFiniteMeasure ν] in
+/-- The Gibbs mean of a nonnegative loss is nonnegative. -/
 theorem gibbsMean_nonneg (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) (t : ℝ) : 0 ≤ gibbsMean ν K t :=
   div_nonneg (gibbsNum_nonneg hK0 t) (integral_nonneg fun _ => (Real.exp_pos _).le)
 
 omit [IsFiniteMeasure ν] in
 /-- Domination on `s > t/2`: `|K e^{-s K}| ≤ 2/t`. -/
-theorem norm_mul_exp_neg_le (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) {t : ℝ} (ht : 0 < t) :
+private theorem norm_mul_exp_neg_le (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) {t : ℝ} (ht : 0 < t) :
     ∀ᵐ x ∂ν, ∀ s, t / 2 < s → ‖K x * Real.exp (-(s * K x))‖ ≤ 2 / t := by
   filter_upwards [hK0] with x hx s hs
   rw [Real.norm_of_nonneg (mul_nonneg hx (Real.exp_pos _).le)]
@@ -138,7 +143,7 @@ theorem hasDerivAt_log_Zr (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) 
   have := (hasDerivAt_Zr hK hK0 ht).log (Zr_pos hK hK0 hν ht.le).ne'
   rwa [neg_div] at this
 
-theorem continuousAt_gibbsNum (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) {t : ℝ}
+private theorem continuousAt_gibbsNum (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) {t : ℝ}
     (ht : 0 < t) : ContinuousAt (gibbsNum ν K) t := by
   refine continuousAt_of_dominated (bound := fun _ => 2 / t)
     (Eventually.of_forall fun s =>
@@ -147,12 +152,13 @@ theorem continuousAt_gibbsNum (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K
   filter_upwards [Ioi_mem_nhds (half_lt_self ht)] with s hs
   filter_upwards [norm_mul_exp_neg_le hK0 ht] with x hx using hx s hs
 
+/-- The Gibbs mean `E_t[K]` is continuous on `t > 0`. -/
 theorem continuousOn_gibbsMean (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) (hν : ν ≠ 0) :
     ContinuousOn (gibbsMean ν K) (Ioi 0) := fun _ ht =>
   ((continuousAt_gibbsNum hK hK0 ht).div (hasDerivAt_Zr hK hK0 ht).continuousAt
     (Zr_pos hK hK0 hν (le_of_lt ht)).ne').continuousWithinAt
 
-/-- **Integrated identity**: `∫_{t₀}^{T} E_t[K] dt = log Z(t₀) - log Z(T)` for `t₀, T > 0`. -/
+/-- (L1) **Integrated identity**: `∫_{t₀}^{T} E_t[K] dt = log Z(t₀) - log Z(T)` for `t₀, T > 0`. -/
 theorem integral_gibbsMean (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) (hν : ν ≠ 0)
     {t₀ T : ℝ} (ht₀ : 0 < t₀) (hT : 0 < T) :
     ∫ t in t₀..T, gibbsMean ν K t = Real.log (Zr ν K t₀) - Real.log (Zr ν K T) := by
@@ -171,12 +177,14 @@ end Finite
 
 /-! ### L2. The log-averaged identity -/
 
+/-- `log rate λ m T = -λ log T + (m - 1) log log T` for `T > 1`. -/
 theorem log_rate {lam : ℝ} {m : ℕ} (hm : 1 ≤ m) {T : ℝ} (hT : 1 < T) :
     Real.log (rate lam m T) = -lam * Real.log T + ((m : ℝ) - 1) * Real.log (Real.log T) := by
   have hl : 0 < Real.log T := Real.log_pos hT
   rw [rate, Real.log_mul (Real.rpow_pos_of_pos (by linarith) _).ne' (pow_pos hl _).ne',
     Real.log_rpow (by linarith), Real.log_pow, Nat.cast_sub hm, Nat.cast_one]
 
+/-- `Zr` is the Bochner partition function used by `HasLaplaceOrder`. -/
 theorem Zr_eq_integral : (fun N => ∫ x, Real.exp (-N * K x) ∂ν) = Zr ν K := by
   funext N; simp only [Zr, neg_mul]
 

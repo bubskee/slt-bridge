@@ -36,21 +36,23 @@ open MeasureTheory Filter Topology Real Set ProbabilityTheory
 variable {α : Type*} [MeasurableSpace α] {ν : Measure α} {K : α → ℝ} [IsFiniteMeasure ν]
 
 omit [IsFiniteMeasure ν] in
+/-- `Zr` is mathlib's moment generating function of `-K`. -/
 theorem mgf_neg_eq_Zr (t : ℝ) : mgf (fun x => -K x) ν t = Zr ν K t := by
   simp only [mgf, Zr, mul_neg]
 
 omit [IsFiniteMeasure ν] in
+/-- `log Zr` is mathlib's cumulant generating function of `-K`. -/
 theorem cgf_neg_eq_log_Zr : cgf (fun x => -K x) ν = fun t => Real.log (Zr ν K t) := by
   funext t; simp only [cgf, mgf_neg_eq_Zr]
 
-theorem Ioi_subset_interior_integrableExpSet (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) :
+private theorem Ioi_subset_interior_integrableExpSet (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) :
     Ioi 0 ⊆ interior (integrableExpSet (fun x => -K x) ν) := by
   rw [← interior_Ici]
   refine interior_mono fun t ht => ?_
   have := integrable_exp_neg_mul hK hK0 (N := t) ht
   simpa only [integrableExpSet, mem_ofPred_eq, mul_neg] using this
 
-/-- **`E_t[K]` is antitone** on `(0, ∞)`: `(d/dt) E_t[K] = -Var_t[K] ≤ 0`. -/
+/-- (L1) **`E_t[K]` is antitone** on `(0, ∞)`: `(d/dt) E_t[K] = -Var_t[K] ≤ 0`. -/
 theorem antitoneOn_gibbsMean (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 ≤ K x) (hν : ν ≠ 0) :
     AntitoneOn (gibbsMean ν K) (Ioi 0) := by
   set X : α → ℝ := fun x => -K x
@@ -95,7 +97,8 @@ theorem integral_gibbsMean_bounds (hK : Measurable K) (hK0 : ∀ᵐ x ∂ν, 0 �
 
 omit [IsFiniteMeasure ν] in
 /-- `log a / (a - 1) → 1` as `a → 1`, `a ≠ 1`. -/
-theorem tendsto_log_div_sub_one : Tendsto (fun a : ℝ => Real.log a / (a - 1)) (𝓝[≠] 1) (𝓝 1) := by
+private theorem tendsto_log_div_sub_one :
+    Tendsto (fun a : ℝ => Real.log a / (a - 1)) (𝓝[≠] 1) (𝓝 1) := by
   have h := hasDerivAt_iff_tendsto_slope.mp (Real.hasDerivAt_log one_ne_zero)
   rw [inv_one] at h
   refine h.congr fun a => ?_
@@ -128,7 +131,8 @@ theorem tendsto_mul_gibbsMean_of_regularVariation (hK : Measurable K) (hK0 : ∀
   constructor
   · intro l hl
     -- choose `a > 1` with `λ log a/(a-1) > l`
-    obtain ⟨a, hla, ha1⟩ := ((hg.mono_left hR).eventually (lt_mem_nhds hl) |>.and self_mem_nhdsWithin).exists
+    obtain ⟨a, hla, ha1⟩ :=
+      ((hg.mono_left hR).eventually (lt_mem_nhds hl) |>.and self_mem_nhdsWithin).exists
     have ha1' : (1 : ℝ) < a := ha1
     have hlim := ((hlog a (by linarith)).neg).div_const (a - 1)
     have he : -(-lam * Real.log a) / (a - 1) = lam * (Real.log a / (a - 1)) := by ring
@@ -139,7 +143,8 @@ theorem tendsto_mul_gibbsMean_of_regularVariation (hK : Measurable K) (hK0 : ∀
     rw [div_le_iff₀ (by linarith)]
     nlinarith [hb]
   · intro u hu
-    obtain ⟨b, hub, hb1⟩ := ((hg.mono_left hL).eventually (gt_mem_nhds hu) |>.and (Ioo_mem_nhdsLT zero_lt_one)).exists
+    obtain ⟨b, hub, hb1⟩ := ((hg.mono_left hL).eventually (gt_mem_nhds hu) |>.and
+      (Ioo_mem_nhdsLT zero_lt_one)).exists
     obtain ⟨hb0, hb1'⟩ := hb1
     have hlim := (hlog b hb0).div_const (1 - b)
     have he : -lam * Real.log b / (1 - b) = lam * (Real.log b / (b - 1)) := by
