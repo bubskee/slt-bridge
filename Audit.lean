@@ -277,3 +277,20 @@ public theorems that use them. Completeness is checked by `scripts/check_audit.s
 #print axioms SLT.Template.laplaceUpper_of_integrable
 #print axioms SLT.Template.hasLaplacePair_of_minLogBound
 #print axioms SLT.Template.lintegral_triangular
+
+/-! Brief 03, T2 (margin template). -/
+#print axioms SLT.Template.shell
+#print axioms SLT.Template.measurableSet_shell
+#print axioms SLT.Template.volume_shell_le
+#print axioms SLT.Template.lintegral_eq_shell_average
+#print axioms SLT.Template.exp_neg_le_rpow
+#print axioms SLT.Template.lintegral_radial_min_le
+#print axioms SLT.Template.AngularMargin
+#print axioms SLT.Template.marginConst
+#print axioms SLT.Template.lintegral_exp_le_of_angularMargin
+#print axioms SLT.Template.lintegral_exp_neg_sum_sq
+#print axioms SLT.Template.marginModel
+#print axioms SLT.Template.marginModel_laplaceUpper
+#print axioms SLT.Template.laplaceUpper_of_angularMargin
+#print axioms SLT.Template.hasLaplacePair_of_angularMargin
+#print axioms SLT.Template.angularMargin_norm_pow

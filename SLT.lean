@@ -26,3 +26,4 @@ public import SLT.Newton.Box
 public import SLT.Template.Elementary
 public import SLT.Template.Cone
 public import SLT.Template.Fibre
+public import SLT.Template.Margin

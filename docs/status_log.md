@@ -149,3 +149,31 @@ theorems and lemmas. Zero warnings in our sources, Batteries lint clean, no `sor
   source's `lemmaM5`, `pivotRow`, `two_rows`, `J_bound`, `UM_bound` and `theoremM` are not used.
   The source's coordinate plumbing (`rowBound`'s pivot covering, `UM_bound`'s Fubini, `theoremM`'s
   pointwise comparison) is reproduced in the zoo file with the template's constants.
+
+### Brief 03, T2: the margin template (2026-11-07, overnight run 04). Branch `overnight-templates`
+
+**Tags.** The template is **[LC]** conditional on the named hypothesis `AngularMargin`. The zoo instance is
+[COND: `PositionMargin`].
+
+**Checks.** Core 277/277 and zoo 56/56 audited, plus 10 source theorems, all on
+`[propext, Classical.choice, Quot.sound]`. Zero warnings, lint clean, no `sorry`.
+
+- **`SLT/Template/Margin.lean`.**
+  - `AngularMargin` (named hypothesis): weighted homogeneity `G(rξ) = r^{2d} H(r,ξ)` on the shell, and
+    `∫_shell H^{-s} ≤ M` uniformly in `r`.
+  - Proved:
+    - `lintegral_eq_shell_average`: radial coordinates without spheres, by averaging over dyadic shells;
+    - `exp_neg_le_rpow`;
+    - `lintegral_radial_min_le`;
+    - `lintegral_exp_le_of_angularMargin`: the radial split (K24), `N^{-D/(2d)}` with no log when `2ds > D`;
+    - `lintegral_exp_neg_sum_sq`: the active Gaussian factor;
+    - `laplaceUpper_of_angularMargin` and `hasLaplacePair_of_angularMargin`: rate `(a/2 + D/(2d), 1)`.
+  - `angularMargin_norm_pow` shows the hypothesis is satisfiable.
+- **Guardrail, `zoo/Zoo/TemplateMargin.lean`.**
+  - `PositionMargin` packages Theorem K §§1, 6 and Proposition N2's inputs at one position: the (K3) active
+    coordinates and comparison, plus `AngularMargin` with `D = 12`, `d = 3`, `s > 2`.
+  - `thmN_of_margin`, `thmKUpper_of_margin`, `thmK_of_margin`: `ThmN`/`ThmK` are instances, since
+    `4/2 + 12/6 = 4`.
+  - `mainTheorem_shear_of_margin`: the position table with margins in place of `ThmK`/`ThmN`.
+- **Hironaka.** `PLAN.md` §4.5 records the discharge route and a design risk: the paper transfers from complex to
+  real variables once, at the ambient level, while the hypothesis here is real and uniform in `r`.

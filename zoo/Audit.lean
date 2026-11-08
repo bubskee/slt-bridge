@@ -69,3 +69,13 @@ import Zoo
 #print axioms VectorSLT.Gdown
 #print axioms VectorSLT.UM_inner
 #print axioms VectorSLT.Zpos_one_lower
+
+/-! Brief 03, T2 guardrail: `ThmK`/`ThmN` as instances of the margin template. -/
+#print axioms SLT.Zoo.TemplateMargin.PositionMargin
+#print axioms SLT.Zoo.TemplateMargin.Zpos_le_marginModel
+#print axioms SLT.Zoo.TemplateMargin.Zpos_upper_of_margin
+#print axioms SLT.Zoo.TemplateMargin.thmN_of_margin
+#print axioms SLT.Zoo.TemplateMargin.thmKUpper_of_margin
+#print axioms SLT.Zoo.TemplateMargin.thmK_of_margin
+#print axioms SLT.Zoo.TemplateMargin.mainTheorem_shear_of_margin
+#print axioms VectorSLT.Zpos_lower_N4
