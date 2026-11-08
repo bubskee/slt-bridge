@@ -256,3 +256,54 @@ each stage independently.
   - Quasi-homogeneous T3 is unbuilt, with no consumer.
   - The two-block identity group is [unverified] at `(1/3, 1)`.
   - M3 stays on hold.
+
+## Brief 04, T5: MLP arrangement ideals at model level (2026-11-08)
+
+**Branch `t5-mlp-ideals`**, cut from `main` @ `21387ba`. It is not merged and not pushed. Bobby approved T5
+only ("Approve T5"); this does not cover (K3) or M3.
+
+**File:** `zoo/Zoo/MLPArrangement.lean`. **No core change.** It uses N2 (`newton_box_units`) and M1
+(`HasLaplacePair.prod`) as they are. The file adds zoo-level helpers:
+- `powΓ`, with `newtonDist_powΓ`, `optWeights_powΓ`, `pair_of_powΓ`: pure-power exponent sets give
+  `(Σ 1/kᵢ, 1)`;
+- `pair_of_Γ` and `newtonMult_eq_two`;
+- `regular_add_pair`: regular `(n/2, 1)` ⊕ residual.
+
+**[LC] at model level.** The chart reductions (eliminating regular coordinates) are paper-proved in resnet-bridge,
+AI-reviewed, and not formalized.
+
+| Source | Lean | Pair |
+|---|---|---|
+| S2′ (in, out), `J = (a, c)` | `s2p_inOut` (via `spare_inOut_pair`) | `(5/2, 1)` |
+| S2′ (out, in), `J = (B, q, r)` | `s2p_outIn` | `(3, 1)` |
+| S2′ (in, both), `J = (a, cq)` | `s2p_inBoth` | `(5/2, 2)` |
+| S2′ (both, in), `J = (q) + a(B, r)` | `s2p_bothIn` | `(5/2, 1)` |
+| S2′ (both, out), `J = (aB, c)` | `s2p_bothOut` | `(5/2, 2)` |
+| S2′ (out, both), `J = (B) + c(q, r)` | `s2p_outBoth` | `(5/2, 1)` |
+| S2″ M1, M4, `(ε²)` | `m1_m4_pair` | `(9/4, 1)` |
+| S2″ M2, `(w, p)²` | `m2_pair` | `(5/2, 1)` |
+| S2″ M3 (slice `ρ = 0`), `(ε², ρε)` | `m3_pair` | `(5/2, 2)` |
+| S2″ M3′ (`ρ* ≠ 0`), the same ideal at `(0, ρ*)` | `m3'_pair` | `(5/2, 1)` |
+| hunt T4 (dup, dup), `(g, ε)²` | `dupDup_pair` | `(2, 1)` |
+| headline: (out, in) vs (in, out) | `outIn_ne_inOut` (includes `¬ HasLaplacePair … (5/2) 1` at (out, in), via `unique`) | `(3,1)` vs `(5/2,1)` |
+| headline: M4 vs M3′ | `m4_ne_m3'` | `(9/4,1)` vs `(5/2,1)` |
+
+- **S2′ is stronger than the forum's transcription.** All six arrangements are points of **one** loss,
+  `(aB)² + (cq)² + (car)²`, on the five spare weights. The live weights are nonzero parameters and the units are
+  handled in Lean. So the localization step ("which edges must be cut") is also certified, not just the localized
+  ideals.
+- **Transcription check.** Every ideal and pair in `bridge_brief_04.md` matches the sources, and **the Lean agrees
+  with every pair**. One note: at (in, out) and (in, both), `r` is free and needs no nonzero hypothesis.
+- **Not done.**
+  - S2′ (both, both) `(5/2, 3)`. Its Newton data has a 2-dimensional optimal face. The source rates `m = 3` as
+    "plausible" only numerically, so certifying it would upgrade that rating. It would cost about 60 lines.
+  - (in, in) and (out, out).
+  - The hunt's special point T4s, and rows T1, T1b, T1c, T3.
+- **R0.2** (`docs/T5_R02_note.md`). It is **not** Newton-degenerate in the relevant sense. It is
+  non-monomial in `(w, y)`, but after the triangular unit-Jacobian shear `y₁ ↦ S` (the paper's own step)
+  `K ≍ S² + Σw¹² + Σ_{j≥2} y⁴`, which is pure-power and gives `J(p, q)` exactly. One wording fix for the source:
+  that shear is not linear. A Lean certificate is about 150 lines for `J(1,1)`; it is not built and needs Bobby's
+  OK.
+- **Audit.** Core 286/286 (unchanged). Zoo 165 public declarations plus 11 source theorems, 176/176, all on
+  `[propext, Classical.choice, Quot.sound]`. No `sorry`. The Batteries lint is clean and the new file has zero
+  warnings.
