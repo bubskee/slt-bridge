@@ -15,6 +15,7 @@ hypothesis `H`. The tag reflects what each file imports.
 | `Zoo/TemplateM.lean` | vector-slt-lean + core `SLT.Template` (brief 03, T1) | `2d545cdcb9f20c34bcb188ee496d6c0261fb7289` | [LC] **unconditional**: `ZN1_two_sided_template` (the source's `ZN1_two_sided`, same statement) and `position_one_pair_template` `(4,5)`, with the upper half through the elementary template instead of Lemma M5, `two_rows` and `theoremM` |
 | `Zoo/TemplateMargin.lean` | vector-slt-lean + core `SLT.Template.Margin` (brief 03, T2) | `2d545cdcb9f20c34bcb188ee496d6c0261fb7289` | [COND: `PositionMargin`]: `thmN_of_margin`, `thmKUpper_of_margin`, `thmK_of_margin` (the source's named hypotheses `ThmN`/`ThmK` as instances of the margin template), `mainTheorem_shear_of_margin` |
 | `Zoo/TemplateLeading.lean` | residual-slt + core `SLT.Template.Leading` (brief 03, T3) | `2865e70a9ca7f559dabfce6aa32e13cf4fc88259` | [LC]: `positive_homogeneous_laplace_order_template` (the source theorem on `Fin D → ℝ`, re-derived through T3 with zero remainder), `hasLaplacePair_of_homogeneous_add_remainder` (`Q + R`, with `R` of higher weight) |
+| `Zoo/ReadWrite.lean` | resnet-bridge `readwrite/R0_scalar.md` (R0.1, read only, not a dependency) + core N2 | — | [LC]: one block `c = u v³`, `K = (u v³)²`: crossing `(1/6,1)`, read-dead `(1/6,1)`, write-dead `(1/2,1)` (`crossing_readDead_ne_writeDead`) |
 
 Every statement here is a corollary. The mathematics lives in the source library; the zoo only
 translates it, and the core's `HasLaplacePair.unique` then shows the certified pair is the
@@ -33,5 +34,5 @@ lake env lean Audit.lean   # or ../scripts/check_audit.sh for both packages
 ```
 
 Pins match `lake-manifest.json`: Lean `v4.35.0`, mathlib `56a005855ea17e0b0958f73ec801ae140b0a1679`, and the two
-source pins above. Audit: 60/60 zoo declarations, plus the 11 source theorems and lemmas re-checked, on
+source pins above. Audit: 76/76 zoo declarations, plus the 11 source theorems and lemmas re-checked, on
 `[propext, Classical.choice, Quot.sound]`.

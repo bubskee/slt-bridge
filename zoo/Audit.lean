@@ -87,3 +87,21 @@ import Zoo
 #print axioms SLT.Zoo.TemplateLeading.positive_homogeneous_laplace_order_template
 -- the source theorem, re-checked here
 #print axioms ResidualSLT.positive_homogeneous_laplace_order
+
+/-! Brief 03, T4: one factored read/write block `c = u v³`. -/
+#print axioms SLT.Zoo.ReadWrite.Z_translate
+#print axioms SLT.Zoo.ReadWrite.crossing_readDead_ne_writeDead
+#print axioms SLT.Zoo.ReadWrite.measurable_oneBlockLoss
+#print axioms SLT.Zoo.ReadWrite.monoSum_crossing
+#print axioms SLT.Zoo.ReadWrite.monoSum_readDead
+#print axioms SLT.Zoo.ReadWrite.monoSum_writeDead
+#print axioms SLT.Zoo.ReadWrite.newtonDist_crossing
+#print axioms SLT.Zoo.ReadWrite.newtonDist_readDead
+#print axioms SLT.Zoo.ReadWrite.newtonMult_eq_one_of_singleton
+#print axioms SLT.Zoo.ReadWrite.oneBlockLoss
+#print axioms SLT.Zoo.ReadWrite.oneBlock_crossing_pair
+#print axioms SLT.Zoo.ReadWrite.oneBlock_readDead_pair
+#print axioms SLT.Zoo.ReadWrite.oneBlock_writeDead_pair
+#print axioms SLT.Zoo.ReadWrite.optWeights_crossing
+#print axioms SLT.Zoo.ReadWrite.optWeights_readDead
+#print axioms SLT.Zoo.ReadWrite.withDensity_one_box

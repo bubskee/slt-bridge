@@ -36,7 +36,7 @@ SLT/Template/      Elementary (weak-L¹, MinLogBound), Cone (critical weights on
                    Leading (nondegenerate leading map + higher-weight remainder ⇒ same pair) (T3)
 Audit.lean         #print axioms for every public core declaration
 zoo/Zoo/           ResidualNetwork, VectorShear, LLC, TemplateM, TemplateMargin,
-                   TemplateLeading         zoo/Audit.lean  the same for the zoo
+                   TemplateLeading, ReadWrite         zoo/Audit.lean  the same for the zoo
 scripts/           check_audit.sh (audit completeness + axioms), DumpDecls.lean, Lint.lean, LintZoo.lean
 docs/status_log.md per-milestone log          PLAN.md  Phase 0 plan, roadmap, questions (§7)
 ```
@@ -59,7 +59,7 @@ has a `#print axioms` line (exclusions go in `scripts/audit_exclude.txt`, curren
 reported axiom is among `propext`, `Classical.choice`, `Quot.sound`; and there is no
 `sorry`/`admit`/`native_decide`.
 
-**Current counts:** core 286/286 public declarations audited; zoo 60/60, plus 11 source theorems
+**Current counts:** core 286/286 public declarations audited; zoo 76/76, plus 11 source theorems
 re-checked. All are on `[propext, Classical.choice, Quot.sound]`. `#print axioms` is transitive, so
 the `private` helpers are covered by the public theorems that use them.
 
@@ -130,6 +130,7 @@ statement passed as an argument. **[STMT]** statement only.
 | LLC, scalar ResNet (population) | `residualNetwork_llc_log_average`, `residualNetwork_llc`, `cubic_depth6_three_active_llc` | residual-slt + core L2 | [LC] |
 | LLC, vector position 1 (population) | `position_one_llc` (→ 4, with `-4 log log T`) | vector-slt-lean + core L2 | [LC], **unconditional** |
 | LLC, vector position table (population) | `mainTheorem_shear_llc` | vector-slt-lean + core L2 | [COND: `ThmK`, `ThmN`] |
+| T4 one read/write block `c = u v³` (resnet-bridge R0.1): crossing `(1/6,1)`, read-dead `(1/6,1)`, write-dead `(1/2,1)` | `ReadWrite.oneBlock_crossing_pair`, `oneBlock_readDead_pair`, `oneBlock_writeDead_pair`, `crossing_readDead_ne_writeDead` | core N2 (`newton_box_units`) only | [LC] |
 | T3 guardrail: residual-slt's `positive_homogeneous_laplace_order` re-derived (zero remainder); the remainder form for new architectures | `TemplateLeading.positive_homogeneous_laplace_order_template`, `hasLaplacePair_of_homogeneous_add_remainder` | residual-slt `2865e70` + core T3 | [LC] |
 | T2 guardrail: `ThmN`, `ThmKUpper`, `ThmK` as instances of the margin template; the position table with margins in place of `ThmK`/`ThmN` | `TemplateMargin.thmN_of_margin`, `thmKUpper_of_margin`, `thmK_of_margin`, `mainTheorem_shear_of_margin` | vector-slt-lean `2d545cd` + core T2 | [COND: `PositionMargin` at positions 2–4] |
 | T1 guardrail: `ZN1_two_sided` re-derived through the template | `TemplateM.ZN1_two_sided_template` (source statement), `TemplateM.position_one_pair_template` `(4,5)`; row bound `pivotRow_template` | vector-slt-lean `2d545cd` (Lemmas M4, M3, (G↓), F1–F3, L′) + core T1 | [LC], **unconditional**. Lemma M5, `two_rows` and `theoremM` are not used |

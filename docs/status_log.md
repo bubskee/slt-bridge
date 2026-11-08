@@ -199,3 +199,60 @@ Zero warnings, lint clean.
   - The (K3) construction for `PositionMargin` is costed at 600–1000 lines per position.
 - **Tooling.** `scripts/check_audit.sh` now joins the pretty-printer's wrapped axiom lists. Long theorem names
   had made it misreport clean entries as unexpected.
+
+### Brief 03, T4: one factored read/write block (2026-11-07, overnight run 04). Branch `overnight-templates`
+
+**[LC]**: zoo 76/76 plus 11 source theorems; core unchanged at 286/286. All on
+`[propext, Classical.choice, Quot.sound]`. Zero warnings, lint clean.
+
+`zoo/Zoo/ReadWrite.lean` covers one block `c = u v³` with target `c* = 0` and local loss `K = (u v³)²`, from
+resnet-bridge R0.1 (read only). It uses the core's `newton_box_units` and Lebesgue prior on a box around
+the point; `Z_translate` moves the box to the origin.
+
+| Stratum | `Γ` | Lean | Pair |
+|---|---|---|---|
+| Crossing `(0,0)` | `{(2,6)}` | `oneBlock_crossing_pair` | `(1/6, 1)` |
+| Read-dead `(u*,0)` | `{(0,6)}` | `oneBlock_readDead_pair`, `δ ≤ \|u*\|/2` | `(1/6, 1)` |
+| Write-dead `(0,v*)` | `{(2,0)}` | `oneBlock_writeDead_pair`, `δ ≤ \|v*\|/2` | `(1/2, 1)` |
+
+`crossing_readDead_ne_writeDead` states R0.1's dichotomy.
+
+**Two-block identity group `K = (u₁v₁³ + u₂v₂³)²` at the origin: [unverified], not built.**
+- **Not comparable to a monomial sum.** `K` vanishes on the cancellation hypersurface `u₁v₁³ = -u₂v₂³`, not
+  only on coordinate planes. So N2 does not apply.
+- **The Newton polygon gives `t* = 3`.** `Γ(K) = {(2,6,0,0), (0,0,2,6), (1,3,1,3)}`. The cross term is the
+  average of the other two, so `t* = max_u min(2u₁+6u₂, 2u₃+6u₄) = 3` at `u = (0,½,0,½)`, giving `1/t* = 1/3`.
+- **But the face is degenerate.** Its principal part `u₁v₁³ + u₂v₂³` has real zeros in the torus, so
+  Varchenko's equality is not guaranteed.
+- **An independent heuristic gives the same value.** Each `cᵢ` has density `≍ |cᵢ|^{-2/3}` (R0.1). The sum
+  `s = c₁ + c₂` then has density `≍ |s|^{-1/3}`, and `∫ e^{-Ns²} |s|^{-1/3} ds ≍ N^{-1/3}`.
+- **Expected pair: `(1/3, 1)`. This is AI-computed and not Lean-certified.** The forum's guess of `1/6` does not
+  match either computation.
+- **Route to a certificate.** The cancellation is exactly the T2/T3 degenerate case. A certificate could go
+  through the pushforward sandwich (R0.0) plus a 1-D convolution bound; neither is built.
+
+## Brief 03: closing summary (proof templates, overnight run 04)
+
+**Branch `overnight-templates`**, cut from `1d21178`. It is not merged and not pushed; Bobby merges. The commits
+are T1 `df4501d`, T2 `85285a4` plus `ddcbca8` (notes), T3 `d0b6096`, and T4 (this entry). The forum verified
+each stage independently.
+
+| Stage | Template (core) | Guardrail (zoo) | Tag |
+|---|---|---|---|
+| T1 elementary | `SLT/Template/{Elementary,Cone,Fibre}`: `MinLogBound`, the pivot-cone M5, slice ⇒ rate, triangular Fubini, `hasLaplacePair_of_minLogBound` | `ZN1_two_sided_template`: vector-slt-lean's `ZN1_two_sided` re-derived without `lemmaM5`/`two_rows`/`theoremM`; same statement | [LC] |
+| T2 margin | `SLT/Template/Margin`: named hypothesis `AngularMargin`; the radial split (K24) is proved | `thmN_of_margin`, `thmKUpper_of_margin`, `thmK_of_margin`, `mainTheorem_shear_of_margin`: the source's `ThmK`/`ThmN`, unrestated | [COND: `AngularMargin` / `PositionMargin`] |
+| T3 leading + remainder | `SLT/Template/Leading`: a nondegenerate leading part discharges `AngularMargin`, giving pair `(D/(2d), 1)` | residual-slt's `positive_homogeneous_laplace_order` re-derived (zero remainder) | [LC] |
+| T4 read/write block | (core N2 only) | one block `u v³`: crossing and read-dead `(1/6,1)`, write-dead `(1/2,1)` | [LC] |
+
+- **Counts.** Core 243 → 286 audited; zoo 25 → 76, plus 11 source theorems re-checked.
+- **Routing for new architectures.**
+  - Nondegenerate weighted-homogeneous leading map: T3, all hypotheses checkable.
+  - Loss comparable to a monomial sum: N2.
+  - Degenerate leading map: T2 with `AngularMargin` as a named hypothesis. It needs Phong–Sturm stability plus
+    a real transfer (`PLAN.md` §4.5).
+- **Open items.**
+  - The real transfer has to be uniform in `r` (design risk, `PLAN.md` §4.5).
+  - The (K3) construction for `PositionMargin` is costed at 600–1000 lines per position.
+  - Quasi-homogeneous T3 is unbuilt, with no consumer.
+  - The two-block identity group is [unverified] at `(1/3, 1)`.
+  - M3 stays on hold.
