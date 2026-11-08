@@ -1,6 +1,6 @@
 # T5 note: Lemma R0.2 (mixed identity group) is monomial-comparable after a shear (brief 04)
 
-**Source.** resnet-bridge `readwrite/R0_scalar.md`, Lemma R0.2 (read only):
+**Source.** resnet-bridge `readwrite/R0_scalar.md` at `c55350b`, Lemma R0.2 (read only):
 `K = S² + Q²`, with `S = Σ wᵢ³ + Σ yⱼ` and `Q = Σ wᵢ⁶ + Σ yⱼ²`, where `w ∈ ℝ^p`, `y ∈ ℝ^q` and `q ≥ 1`. The claimed pair is
 `J(p, q) = (1/2 + p/12 + (q−1)/4, 1)`.
 

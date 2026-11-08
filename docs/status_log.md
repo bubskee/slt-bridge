@@ -307,3 +307,24 @@ AI-reviewed, and not formalized.
 - **Audit.** Core 286/286 (unchanged). Zoo 165 public declarations plus 11 source theorems, 176/176, all on
   `[propext, Classical.choice, Quot.sound]`. No `sorry`. The Batteries lint is clean and the new file has zero
   warnings.
+
+### T5 cleanup (2026-11-08, Bobby's request before the merge)
+
+- **Sources pinned.** The docstrings and READMEs now name the resnet-bridge commits the Lean was matched against:
+  `4a7060c` for S2′ and S2″, `f23016c` for the hunt, and `c55350b` for R0.2. resnet-bridge HEAD was `e96f766`, and
+  these are the last commits that touched each file.
+- **Labels.** The `MLPArrangement` header now has a "What is not certified here" paragraph, and the README rows say
+  "[LC] for the model losses only". The network-to-model chart lemma is paper-proved and AI-reviewed, not
+  Lean-certified. Its rank condition is a Python check, and its exceptional set is not shown to be complete.
+- **`m4_ne_m3'`.** The docstring now says it compares two different functions in two coordinate systems. The claim
+  that they share one parameter space at equal codimension rests on the source; `outIn_ne_inOut` does not have
+  this caveat.
+- **Duplicates removed.**
+  - The MLP file's `Z_translate` copy and `newtonMult_eq_one` are gone. It now imports `Zoo.ReadWrite` and uses
+    `Z_translate`, `withDensity_one_box` and `newtonMult_eq_one_of_singleton`.
+  - `newtonMult_eq_one_of_singleton` is generalized from `Fin 2` to any `Fin d`. This is non-breaking: `d` is
+    implicit.
+- **19 file-local helpers made private**, following the brief 02 precedent. These are box and unit bounds, the
+  `Γ…_nonneg` lemmas, `spareLoss_add`, and so on. Zoo public declarations drop 165 → 144.
+- **Not moved to the core:** the general Newton helpers `powΓ`, `pair_of_powΓ`, `pair_of_Γ`, `newtonMult_eq_two`
+  and `regular_add_pair`. Moving them would be a core change outside T5. They are a candidate for a later core pass.

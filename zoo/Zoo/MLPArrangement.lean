@@ -5,13 +5,15 @@ Released under Apache 2.0 license.
 module
 
 public import SLT
+public import Zoo.ReadWrite
 
 /-!
 # Zoo: the 1-2-2-1 MLP arrangement ideals at model level (brief 04, T5)
 
-Source: resnet-bridge `mlp/` (scout `mlp-scout`, run 04, AI-reviewed; read only, not a dependency):
-`s2prime_arrangement.md` (S2′, dead types), `s2pp_merged.md` (S2″, merged types),
-`hunt_cancellation.md` (the `(dup, dup)` point). Each realization is reduced **on paper** (chart
+Source: resnet-bridge `mlp/` (scout `mlp-scout`, run 04, AI-reviewed; read only, not a dependency),
+matched against these versions: `s2prime_arrangement.md` (S2′, dead types) and `s2pp_merged.md`
+(S2″, merged types) at `4a7060c`, `hunt_cancellation.md` (the `(dup, dup)` point) at `f23016c`.
+If those files change, re-check the tables below. Each realization is reduced **on paper** (chart
 lemma: an analytic left inverse eliminates the regular coordinates) to
 
   `(regular coordinates y) + J`,  `J` a monomial ideal in the remaining coordinates,
@@ -19,8 +21,15 @@ lemma: an analytic left inverse eliminates the regular coordinates) to
 and `(λ, m)` is read off as `(n_reg/2 + λ_J, m_J)`. Here the **model level** is Lean-certified: the
 loss `Σ yᵢ² + K_J`, with `K_J` the sum of squares of the generators of `J`, has the stated pair,
 through the core's two-sided Newton theorem (`SLT.Newton.newton_box_units`) for the `J` part and
-the disjoint-block rule (`SLT.HasLaplacePair.prod`, M1) for the regular part. The chart reductions
-themselves stay on paper.
+the disjoint-block rule (`SLT.HasLaplacePair.prod`, M1) for the regular part.
+
+**What is not certified here.** The step from the 1-2-2-1 network `f(θ) − f*` to the model is
+the source's chart lemma, and it is **paper-proved and AI-reviewed only**. Its rank condition is
+checked by exact rational rank at generic values in Python. The exceptional set is not shown to be
+complete (`s2prime_arrangement.md` §1). Every pair is a claim about generic points of a
+stratum. So a theorem below says "the model loss has this pair", **not** "the network has this
+pair". In particular, the S2″ facts that M4 and M3′ lie in one parameter space at equal
+codimension are not in Lean.
 
 **S2′.** The spare ideal is **one function** of the five spare weights `(a, B, q, r, c)`:
 `J = (aB, cq, car)`, `spareLoss = (aB)² + (cq)² + (car)²`. Each arrangement is a *point* of the
@@ -62,6 +71,7 @@ comparison needs it.
 namespace SLT.Zoo.MLP
 
 open MeasureTheory Set SLT SLT.Newton SLT.NC
+open SLT.Zoo.ReadWrite (Z_translate withDensity_one_box newtonMult_eq_one_of_singleton)
 open scoped ENNReal
 
 variable {d : ℕ}
@@ -73,7 +83,7 @@ noncomputable def powΓ (s : Finset (Fin d)) (k : Fin d → ℝ) : Finset (Fin d
   s.image fun i => Pi.single i (k i)
 
 /-- The exponents of a pure-power set are nonnegative. -/
-theorem powΓ_nonneg {s : Finset (Fin d)} {k : Fin d → ℝ} (hk : ∀ i ∈ s, 0 < k i) :
+private theorem powΓ_nonneg {s : Finset (Fin d)} {k : Fin d → ℝ} (hk : ∀ i ∈ s, 0 < k i) :
     ∀ α ∈ powΓ s k, ∀ j, 0 ≤ α j := by
   intro α hα j
   obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hα
@@ -82,7 +92,7 @@ theorem powΓ_nonneg {s : Finset (Fin d)} {k : Fin d → ℝ} (hk : ∀ i ∈ s,
   · simp [h]
 
 /-- `⟨kᵢ eᵢ, u⟩ = kᵢ uᵢ`. -/
-theorem dot_single (i : Fin d) (a : ℝ) (u : Fin d → ℝ) :
+private theorem dot_single (i : Fin d) (a : ℝ) (u : Fin d → ℝ) :
     ∑ j, (Pi.single i a : Fin d → ℝ) j * u j = a * u i := by
   simp [Pi.single_apply, ite_mul]
 
@@ -91,7 +101,7 @@ noncomputable def powCert (s : Finset (Fin d)) (k : Fin d → ℝ) : Fin d → �
   fun j => if j ∈ s then (∑ i ∈ s, (k i)⁻¹)⁻¹ * (k j)⁻¹ else 0
 
 /-- `Σ_{i ∈ s} 1/kᵢ > 0`. -/
-theorem powSum_pos {s : Finset (Fin d)} {k : Fin d → ℝ} (hs : s.Nonempty)
+private theorem powSum_pos {s : Finset (Fin d)} {k : Fin d → ℝ} (hs : s.Nonempty)
     (hk : ∀ i ∈ s, 0 < k i) : 0 < ∑ i ∈ s, (k i)⁻¹ :=
   Finset.sum_pos (fun i hi => inv_pos.mpr (hk i hi)) hs
 
@@ -114,7 +124,7 @@ theorem isNewtonCert_powCert {s : Finset (Fin d)} {k : Fin d → ℝ} (hs : s.No
     rw [mul_comm, mul_assoc, inv_mul_cancel₀ this, mul_one]
 
 /-- Every certificate for `t` has `t / kᵢ ≤ uᵢ` on `s`. -/
-theorem le_of_isNewtonCert {s : Finset (Fin d)} {k : Fin d → ℝ} (hk : ∀ i ∈ s, 0 < k i)
+private theorem le_of_isNewtonCert {s : Finset (Fin d)} {k : Fin d → ℝ} (hk : ∀ i ∈ s, 0 < k i)
     {t : ℝ} {u : Fin d → ℝ} (h : IsNewtonCert (powΓ s k) t u) :
     ∀ i ∈ s, t * (k i)⁻¹ ≤ u i := by
   intro i hi
@@ -156,11 +166,6 @@ theorem optWeights_powΓ {s : Finset (Fin d)} {k : Fin d → ℝ} (hs : s.Nonemp
     funext j; linarith [this j (Finset.mem_univ _)]
   · rintro rfl; exact isNewtonCert_powCert hs hk
 
-/-- A single optimal weight vector gives multiplicity one. -/
-theorem newtonMult_eq_one {Γ : Finset (Fin d → ℝ)} {p : Fin d → ℝ} (h : optWeights Γ = {p}) :
-    newtonMult Γ = 1 := by
-  rw [newtonMult, h, direction_affineSpan, vectorSpan_singleton, finrank_bot]
-
 /-- The monomial sum of a pure-power set. -/
 theorem monoSum_powΓ {s : Finset (Fin d)} {k : Fin d → ℝ} (hk : ∀ i ∈ s, 0 < k i)
     (y : Fin d → ℝ) : monoSum (powΓ s k) y = ∑ i ∈ s, |y i| ^ k i := by
@@ -188,9 +193,8 @@ theorem pair_of_powΓ {s : Finset (Fin d)} {k : Fin d → ℝ} (hs : s.Nonempty)
     (f := fun _ => 1) (a := 1) (b := 1) one_pos hc
     (fun y hy => by rw [monoSum_powΓ hk]; exact hlo y hy)
     (fun y hy => by rw [monoSum_powΓ hk]; exact hhi y hy) (fun y _ => by simp) (fun y _ => by simp)
-  rw [show ((volume.restrict (box δ)).withDensity fun _ => (1 : ℝ≥0∞)) =
-      volume.restrict (box δ) from withDensity_one, newtonDist_powΓ hs hk, inv_inv,
-    newtonMult_eq_one (optWeights_powΓ hs hk)] at h
+  rw [withDensity_one_box, newtonDist_powΓ hs hk, inv_inv,
+    newtonMult_eq_one_of_singleton (optWeights_powΓ hs hk)] at h
   exact h
 
 /-! ### The regular factor and the disjoint-block rule -/
@@ -221,26 +225,13 @@ theorem regular_add_pair {β : Type*} [MeasurableSpace β] {n : ℕ} (hn : 1 ≤
   have h := (regLoss_pair hn hδ).prod (measurable_regLoss n) hK H
   rwa [show 1 + m - 1 = m by omega] at h
 
-/-- **Moving the box to the origin** (as in `Zoo.ReadWrite.Z_translate`). -/
-theorem Z_translate (p : Fin d → ℝ) (δ : ℝ) (K : (Fin d → ℝ) → ℝ) :
-    Z (volume.restrict {θ | θ - p ∈ box δ}) K =
-      Z (volume.restrict (box δ)) (fun y => K (p + y)) := by
-  funext N
-  simp only [Z]
-  have e := (measurePreserving_add_left (volume : Measure (Fin d → ℝ)) p)
-    |>.setLIntegral_comp_preimage_emb (MeasurableEquiv.addLeft p).measurableEmbedding
-    (fun θ => ENNReal.ofReal (Real.exp (-(N * K θ)))) {θ | θ - p ∈ box δ}
-  have hpre : (fun y => p + y) ⁻¹' {θ | θ - p ∈ box δ} = box δ := by
-    ext y; simp
-  rw [hpre] at e
-  exact e.symm
-
 /-- A coordinate of a box point is at most `δ` in absolute value. -/
-theorem abs_le_of_mem_box {δ : ℝ} {y : Fin d → ℝ} (hy : y ∈ box δ) (i : Fin d) : |y i| ≤ δ :=
+private theorem abs_le_of_mem_box {δ : ℝ} {y : Fin d → ℝ} (hy : y ∈ box δ) (i : Fin d) :
+    |y i| ≤ δ :=
   abs_le.mpr (hy i (mem_univ _))
 
 /-- **Units**: on the box, `x* + yᵢ` stays between `|x*|/2` and `3|x*|/2`, squared. -/
-theorem unit_sq_bounds {x δ t : ℝ} (hδx : δ ≤ |x| / 2) (ht : |t| ≤ δ) :
+private theorem unit_sq_bounds {x δ t : ℝ} (hδx : δ ≤ |x| / 2) (ht : |t| ≤ δ) :
     x ^ 2 / 4 ≤ (x + t) ^ 2 ∧ (x + t) ^ 2 ≤ 9 * x ^ 2 / 4 := by
   have h1 : |x| / 2 ≤ |x + t| := by
     have := abs_add_le (x + t) (-t)
@@ -253,18 +244,19 @@ theorem unit_sq_bounds {x δ t : ℝ} (hδx : δ ≤ |x| / 2) (ht : |t| ≤ δ) 
   · rw [← sq_abs (x + t), ← sq_abs x]; nlinarith [abs_nonneg (x + t)]
 
 /-- On a box with `δ ≤ 1`, `yᵢ² ≤ 1`. -/
-theorem sq_le_one_of_mem_box {δ : ℝ} (hδ1 : δ ≤ 1) {y : Fin d → ℝ} (hy : y ∈ box δ) (i : Fin d) :
+private theorem sq_le_one_of_mem_box {δ : ℝ} (hδ1 : δ ≤ 1) {y : Fin d → ℝ} (hy : y ∈ box δ)
+    (i : Fin d) :
     y i ^ 2 ≤ 1 := by
   have := abs_le_of_mem_box hy i
   rw [← sq_abs]; nlinarith [abs_nonneg (y i)]
 
 /-- The pure-power sum with all exponents `2` is a sum of squares. -/
-theorem sum_abs_rpow_two (s : Finset (Fin d)) (y : Fin d → ℝ) :
+private theorem sum_abs_rpow_two (s : Finset (Fin d)) (y : Fin d → ℝ) :
     ∑ i ∈ s, |y i| ^ ((fun _ => (2 : ℝ)) i) = ∑ i ∈ s, y i ^ 2 := by
   simp only [Real.rpow_two, sq_abs]
 
 /-- `(x + t)² ≤ 2x² + 2` when `|t| ≤ 1`. -/
-theorem add_sq_le {x t : ℝ} (ht : t ^ 2 ≤ 1) : (x + t) ^ 2 ≤ 2 * x ^ 2 + 2 := by
+private theorem add_sq_le {x t : ℝ} (ht : t ^ 2 ≤ 1) : (x + t) ^ 2 ≤ 2 * x ^ 2 + 2 := by
   nlinarith [sq_nonneg (x - t)]
 
 /-! ### S2′: the spare ideal `J = (aB, cq, car)` -/
@@ -277,7 +269,7 @@ theorem measurable_spareLoss : Measurable spareLoss := by
   unfold spareLoss; fun_prop
 
 /-- The spare loss near a point `(a, B, q, r, c)`, expanded. -/
-theorem spareLoss_add (a B q r c : ℝ) (y : Fin 5 → ℝ) :
+private theorem spareLoss_add (a B q r c : ℝ) (y : Fin 5 → ℝ) :
     spareLoss (![a, B, q, r, c] + y) = (a + y 0) ^ 2 * (B + y 1) ^ 2 +
       (c + y 4) ^ 2 * (q + y 2) ^ 2 + (c + y 4) ^ 2 * (r + y 3) ^ 2 * (a + y 0) ^ 2 := by
   simp only [spareLoss, Pi.add_apply]
@@ -293,7 +285,7 @@ noncomputable def s2pPrior (pt : Fin 5 → ℝ) (δ : ℝ) : Measure ((Fin 3 →
   (volume.restrict (box δ)).prod (volume.restrict {z | z - pt ∈ box δ})
 
 /-- An S2′ spare pair `(λ, m)` gives the total pair `(3/2 + λ, m)`. -/
-theorem s2p_pair_of_spare {pt : Fin 5 → ℝ} {δ : ℝ} (hδ : 0 < δ) {lam : ℝ} {m : ℕ}
+private theorem s2p_pair_of_spare {pt : Fin 5 → ℝ} {δ : ℝ} (hδ : 0 < δ) {lam : ℝ} {m : ℕ}
     (H : HasLaplacePair (Z (volume.restrict {z | z - pt ∈ box δ}) spareLoss) lam m) :
     HasLaplacePair (Z (s2pPrior pt δ) s2pLoss) (3 / 2 + lam) m := by
   have := regular_add_pair (n := 3) (by norm_num) hδ measurable_spareLoss H
@@ -384,11 +376,10 @@ theorem pair_of_Γ {Γ : Finset (Fin d → ℝ)} (hΓ : ∀ α ∈ Γ, ∀ i, 0 
     HasLaplacePair (Z (volume.restrict (box δ)) K) (newtonDist Γ)⁻¹ (newtonMult Γ) := by
   have h := newton_box_units hδ hΓ hd hK (f := fun _ => 1) (a := 1) (b := 1) one_pos hc hlo hhi
     (fun y _ => by simp) (fun y _ => by simp)
-  rwa [show ((volume.restrict (box δ)).withDensity fun _ => (1 : ℝ≥0∞)) =
-      volume.restrict (box δ) from withDensity_one] at h
+  rwa [withDensity_one_box] at h
 
 /-- A monomial in five variables, written out. -/
-theorem monomial_five (α y : Fin 5 → ℝ) :
+private theorem monomial_five (α y : Fin 5 → ℝ) :
     monomial α y = |y 0| ^ α 0 * |y 1| ^ α 1 * |y 2| ^ α 2 * |y 3| ^ α 3 * |y 4| ^ α 4 := by
   simp [monomial, Fin.prod_univ_five]
 
@@ -404,19 +395,19 @@ noncomputable def ΓoutBoth : Finset (Fin 5 → ℝ) :=
   {![0, 2, 0, 0, 0], ![0, 0, 2, 0, 2], ![0, 0, 0, 2, 2]}
 
 /-- The exponents of `ΓinBoth` are nonnegative. -/
-theorem ΓinBoth_nonneg : ∀ α ∈ ΓinBoth, ∀ i, 0 ≤ α i := by
+private theorem ΓinBoth_nonneg : ∀ α ∈ ΓinBoth, ∀ i, 0 ≤ α i := by
   intro α hα i; simp only [ΓinBoth, Finset.mem_insert, Finset.mem_singleton] at hα
   rcases hα with rfl | rfl <;> fin_cases i <;> norm_num
 /-- The exponents of `ΓbothIn` are nonnegative. -/
-theorem ΓbothIn_nonneg : ∀ α ∈ ΓbothIn, ∀ i, 0 ≤ α i := by
+private theorem ΓbothIn_nonneg : ∀ α ∈ ΓbothIn, ∀ i, 0 ≤ α i := by
   intro α hα i; simp only [ΓbothIn, Finset.mem_insert, Finset.mem_singleton] at hα
   rcases hα with rfl | rfl | rfl <;> fin_cases i <;> norm_num
 /-- The exponents of `ΓbothOut` are nonnegative. -/
-theorem ΓbothOut_nonneg : ∀ α ∈ ΓbothOut, ∀ i, 0 ≤ α i := by
+private theorem ΓbothOut_nonneg : ∀ α ∈ ΓbothOut, ∀ i, 0 ≤ α i := by
   intro α hα i; simp only [ΓbothOut, Finset.mem_insert, Finset.mem_singleton] at hα
   rcases hα with rfl | rfl <;> fin_cases i <;> norm_num
 /-- The exponents of `ΓoutBoth` are nonnegative. -/
-theorem ΓoutBoth_nonneg : ∀ α ∈ ΓoutBoth, ∀ i, 0 ≤ α i := by
+private theorem ΓoutBoth_nonneg : ∀ α ∈ ΓoutBoth, ∀ i, 0 ≤ α i := by
   intro α hα i; simp only [ΓoutBoth, Finset.mem_insert, Finset.mem_singleton] at hα
   rcases hα with rfl | rfl | rfl <;> fin_cases i <;> norm_num
 
@@ -575,7 +566,8 @@ theorem monoSum_outBoth (y : Fin 5 → ℝ) :
 /-! ### The four non-diagonal spare points -/
 
 /-- `y₃² y₄² ≤ 1`-type bound for two box coordinates. -/
-theorem sq_mul_sq_le_one {δ : ℝ} (hδ1 : δ ≤ 1) {y : Fin d → ℝ} (hy : y ∈ box δ) (i j : Fin d) :
+private theorem sq_mul_sq_le_one {δ : ℝ} (hδ1 : δ ≤ 1) {y : Fin d → ℝ} (hy : y ∈ box δ)
+    (i j : Fin d) :
     y i ^ 2 * y j ^ 2 ≤ 1 := by
   have := sq_le_one_of_mem_box hδ1 hy i
   have := sq_le_one_of_mem_box hδ1 hy j
@@ -611,7 +603,7 @@ theorem spare_bothIn_pair {c δ : ℝ} (hc : c ≠ 0) (hδ : 0 < δ) (hδc : δ 
     (K := fun y => spareLoss (![0, 0, 0, 0, c] + y))
     (measurable_spareLoss.comp (measurable_const_add _))
     (c := min 1 (c ^ 2 / 4)) (C := 1 + 9 * c ^ 2 / 4) (lt_min one_pos (by positivity)) ?_ ?_
-  · rwa [newtonDist_bothIn, newtonMult_eq_one optWeights_bothIn, inv_one] at h
+  · rwa [newtonDist_bothIn, newtonMult_eq_one_of_singleton optWeights_bothIn, inv_one] at h
   all_goals intro y hy
   all_goals rw [monoSum_bothIn, spareLoss_add]
   all_goals simp only [zero_add]
@@ -658,7 +650,7 @@ theorem spare_outBoth_pair {a δ : ℝ} (ha : a ≠ 0) (hδ : 0 < δ) (hδa : δ
     (K := fun y => spareLoss (![a, 0, 0, 0, 0] + y))
     (measurable_spareLoss.comp (measurable_const_add _))
     (c := min (a ^ 2 / 4) 1) (C := 9 * a ^ 2 / 4 + 1) (lt_min (by positivity) one_pos) ?_ ?_
-  · rwa [newtonDist_outBoth, newtonMult_eq_one optWeights_outBoth, inv_one] at h
+  · rwa [newtonDist_outBoth, newtonMult_eq_one_of_singleton optWeights_outBoth, inv_one] at h
   all_goals intro y hy
   all_goals rw [monoSum_outBoth, spareLoss_add]
   all_goals simp only [zero_add]
@@ -738,7 +730,7 @@ noncomputable def regPrior {β : Type*} [MeasurableSpace β] (n : ℕ) (δ : ℝ
   (volume.restrict (box δ)).prod ν
 
 /-- `|t|^n = tⁿ` for even `n`. -/
-theorem even_abs_rpow {t : ℝ} {n : ℕ} (hn : Even n) : |t| ^ (n : ℝ) = t ^ n := by
+private theorem even_abs_rpow {t : ℝ} {n : ℕ} (hn : Even n) : |t| ^ (n : ℝ) = t ^ n := by
   rw [Real.rpow_natCast, hn.pow_abs]
 
 /-- The duplicate residual `(ε²)`: loss `ε⁴` (M1, M4). -/
@@ -777,7 +769,7 @@ def cplLoss (z : Fin 2 → ℝ) : ℝ := z 0 ^ 4 + z 1 ^ 2 * z 0 ^ 2
 noncomputable def ΓM3 : Finset (Fin 2 → ℝ) := {![4, 0], ![2, 2]}
 
 /-- The exponents of `ΓM3` are nonnegative. -/
-theorem ΓM3_nonneg : ∀ α ∈ ΓM3, ∀ i, 0 ≤ α i := by
+private theorem ΓM3_nonneg : ∀ α ∈ ΓM3, ∀ i, 0 ≤ α i := by
   intro α hα i; simp only [ΓM3, Finset.mem_insert, Finset.mem_singleton] at hα
   rcases hα with rfl | rfl <;> fin_cases i <;> norm_num
 
@@ -890,10 +882,13 @@ theorem dupDup_pair (hδ : 0 < δ) :
     (sqIdealLoss_pair hδ)
   rw [show (2 : ℝ) = ((3 : ℕ) : ℝ) / 2 + 1 / 2 by norm_num]; exact this
 
-/-- **S2″'s headline dichotomy.** At equal codimension (5), M4 (L1 dead-in, L2 duplicate) has
-`(9/4, 1)` and M3′ (L1 duplicate, L2 input cancelled) has `(5/2, 1)`: the arrangement changes `λ`
-through the *order* of the duplicate's degeneracy, not through codimension. (The reduction of each
-realization to its model is on paper.) -/
+/-- **S2″'s headline dichotomy, model level only.** M4's model (4 regular ⊕ `(δ²)`) has
+`(9/4, 1)`, and M3′'s model (4 regular ⊕ `(ε², ρε)` at `ρ* ≠ 0`) has `(5/2, 1)`. These are two
+different functions in two different local coordinate systems. That they are charts of one
+parameter space, at equal codimension 5, is the source's claim (paper-proved, AI-reviewed) and is
+not formalized here. So the Lean content is only the two model pairs; the "non-codimensional
+arrangement effect" reading rests on the source. Compare `outIn_ne_inOut`, where both points lie on
+one Lean function. -/
 theorem m4_ne_m3' {ρ : ℝ} (hρ : ρ ≠ 0) (hδ : 0 < δ) (hδ1 : δ ≤ 1) (hδρ : δ ≤ |ρ| / 2) :
     HasLaplacePair (Z (regPrior 4 δ (volume.restrict (box δ))) (regPlus 4 dupLoss)) (9 / 4) 1 ∧
       HasLaplacePair (Z (regPrior 4 δ (volume.restrict {z | z - ![0, ρ] ∈ box δ}))

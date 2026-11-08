@@ -62,7 +62,7 @@ theorem Z_translate {d : ℕ} (p : Fin d → ℝ) (δ : ℝ) (K : (Fin d → ℝ
 /-! ### Newton data of the three strata -/
 
 /-- A singleton set of optimal weights gives multiplicity one. -/
-theorem newtonMult_eq_one_of_singleton {Γ : Finset (Fin 2 → ℝ)} {p : Fin 2 → ℝ}
+theorem newtonMult_eq_one_of_singleton {d : ℕ} {Γ : Finset (Fin d → ℝ)} {p : Fin d → ℝ}
     (h : optWeights Γ = {p}) : newtonMult Γ = 1 := by
   simp [newtonMult, h]
 

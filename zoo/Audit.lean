@@ -107,19 +107,13 @@ import Zoo
 #print axioms SLT.Zoo.ReadWrite.withDensity_one_box
 
 /-! Brief 04, T5 (MLP arrangement ideals). -/
-#print axioms SLT.Zoo.MLP.Z_translate
-#print axioms SLT.Zoo.MLP.abs_le_of_mem_box
-#print axioms SLT.Zoo.MLP.add_sq_le
 #print axioms SLT.Zoo.MLP.cplLoss
 #print axioms SLT.Zoo.MLP.cplLoss_generic_pair
 #print axioms SLT.Zoo.MLP.cplLoss_slice_pair
-#print axioms SLT.Zoo.MLP.dot_single
 #print axioms SLT.Zoo.MLP.dupDup_pair
 #print axioms SLT.Zoo.MLP.dupLoss
 #print axioms SLT.Zoo.MLP.dupLoss_pair
-#print axioms SLT.Zoo.MLP.even_abs_rpow
 #print axioms SLT.Zoo.MLP.isNewtonCert_powCert
-#print axioms SLT.Zoo.MLP.le_of_isNewtonCert
 #print axioms SLT.Zoo.MLP.m1_m4_pair
 #print axioms SLT.Zoo.MLP.m2_pair
 #print axioms SLT.Zoo.MLP.m3'_pair
@@ -133,7 +127,6 @@ import Zoo
 #print axioms SLT.Zoo.MLP.monoSum_inBoth
 #print axioms SLT.Zoo.MLP.monoSum_outBoth
 #print axioms SLT.Zoo.MLP.monoSum_powΓ
-#print axioms SLT.Zoo.MLP.monomial_five
 #print axioms SLT.Zoo.MLP.newtonDist_M3
 #print axioms SLT.Zoo.MLP.newtonDist_bothIn
 #print axioms SLT.Zoo.MLP.newtonDist_bothOut
@@ -142,7 +135,6 @@ import Zoo
 #print axioms SLT.Zoo.MLP.newtonDist_powΓ
 #print axioms SLT.Zoo.MLP.newtonMult_M3
 #print axioms SLT.Zoo.MLP.newtonMult_bothOut
-#print axioms SLT.Zoo.MLP.newtonMult_eq_one
 #print axioms SLT.Zoo.MLP.newtonMult_eq_two
 #print axioms SLT.Zoo.MLP.newtonMult_inBoth
 #print axioms SLT.Zoo.MLP.optWeights_M3
@@ -155,9 +147,7 @@ import Zoo
 #print axioms SLT.Zoo.MLP.pair_of_powΓ
 #print axioms SLT.Zoo.MLP.pair_of_Γ
 #print axioms SLT.Zoo.MLP.powCert
-#print axioms SLT.Zoo.MLP.powSum_pos
 #print axioms SLT.Zoo.MLP.powΓ
-#print axioms SLT.Zoo.MLP.powΓ_nonneg
 #print axioms SLT.Zoo.MLP.regLoss
 #print axioms SLT.Zoo.MLP.regLoss_pair
 #print axioms SLT.Zoo.MLP.regPlus
@@ -171,9 +161,7 @@ import Zoo
 #print axioms SLT.Zoo.MLP.s2p_inOut
 #print axioms SLT.Zoo.MLP.s2p_outBoth
 #print axioms SLT.Zoo.MLP.s2p_outIn
-#print axioms SLT.Zoo.MLP.s2p_pair_of_spare
 #print axioms SLT.Zoo.MLP.spareLoss
-#print axioms SLT.Zoo.MLP.spareLoss_add
 #print axioms SLT.Zoo.MLP.spare_bothIn_pair
 #print axioms SLT.Zoo.MLP.spare_bothOut_pair
 #print axioms SLT.Zoo.MLP.spare_inBoth_pair
@@ -182,17 +170,8 @@ import Zoo
 #print axioms SLT.Zoo.MLP.spare_outIn_pair
 #print axioms SLT.Zoo.MLP.sqIdealLoss
 #print axioms SLT.Zoo.MLP.sqIdealLoss_pair
-#print axioms SLT.Zoo.MLP.sq_le_one_of_mem_box
-#print axioms SLT.Zoo.MLP.sq_mul_sq_le_one
-#print axioms SLT.Zoo.MLP.sum_abs_rpow_two
-#print axioms SLT.Zoo.MLP.unit_sq_bounds
 #print axioms SLT.Zoo.MLP.ΓM3
-#print axioms SLT.Zoo.MLP.ΓM3_nonneg
 #print axioms SLT.Zoo.MLP.ΓbothIn
-#print axioms SLT.Zoo.MLP.ΓbothIn_nonneg
 #print axioms SLT.Zoo.MLP.ΓbothOut
-#print axioms SLT.Zoo.MLP.ΓbothOut_nonneg
 #print axioms SLT.Zoo.MLP.ΓinBoth
-#print axioms SLT.Zoo.MLP.ΓinBoth_nonneg
 #print axioms SLT.Zoo.MLP.ΓoutBoth
-#print axioms SLT.Zoo.MLP.ΓoutBoth_nonneg
