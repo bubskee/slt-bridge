@@ -342,3 +342,21 @@ Branch `mlp-both-both`, cut from `main` @ `8b050b0`. (`main` had already been fa
 - **This is the first `m = 3` in the zoo.** The source's toy integral rated it only "plausible" (slowly drifting
   second differences). It is now [LC] at model level, with the same chart-lemma caveat as the rest of T5.
 - **New general lemma:** `convex_optWeights`.
+
+### R0.2 certificate, `J(1, 1) = (7/12, 1)` (2026-11-08, Bobby's go-ahead)
+
+Branch `r02-certificate`, cut from `main` @ `fd0b247`. **File:** `zoo/Zoo/MixedGroup.lean`. **No core change.**
+
+- **[LC] `mixedGroup_pair`.** The loss `(w³ + y)² + (w⁶ + y²)²` has pair `(7/12, 1)` on every box `[-δ, δ]²`
+  with `0 < δ ≤ 1/2`. `mixedGroup_pair_formula` restates it in the source's `J(p, q)` form.
+- **Route.** In `(w, y)` the loss is not monomial-comparable (`docs/T5_R02_note.md` §1).
+  - The shear `y = s − w³` preserves measure (`measurePreserving_shear`, via the Mathlib skew product).
+  - The shear's preimage of the box lies between two boxes.
+  - On those boxes `shearLoss ≍ w¹² + s²`, so N2 gives the pair, and the original box gets it by
+    `HasLaplacePair.squeeze`.
+- **This confirms the source's pair**, including `m = 1`, which `R0_scalar.md` says it did not check
+  numerically ("Lemma R0.2's m = 1 is proved by quasi-homogeneity").
+- **Not built.** General `(p, q)`, which needs `Fin.append` bookkeeping only. Also the "linear" wording fix in the
+  source, which is not ours to edit.
+- **Audit.** Core 286/286. Zoo 169 public declarations plus 11 source theorems, 180/180, all on
+  `[propext, Classical.choice, Quot.sound]`. Lint clean, zero warnings.

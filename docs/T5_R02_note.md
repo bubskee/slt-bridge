@@ -41,15 +41,19 @@ of half-width `ρ` contains the box of half-width `ρ/(p + q)` and lies inside t
 `(p + q)ρ`. (`|S| ≤ qρ + pρ³`, and conversely `|y₁| ≤ |S| + Σ|wᵢ|³ + Σ_{j≥2}|yⱼ|`.) So the argument is fine as
 written, apart from the word "linear".
 
-## 4. Not built, and what it would take
+## 4. Certified for `p = q = 1` (2026-11-08, Bobby's go-ahead)
 
-I did not Lean-certify R0.2, because the brief's instruction for this item was a short look. A certificate for
-`J(1, 1) = 7/12` would need three pieces:
-- the shear, `MeasurePreserving` on `Fin 2 → ℝ` by Fubini plus translation invariance in `y`;
-- a two-box sandwich lemma (`Z` on a box ≤ `Z` on the image ≤ `Z` on a larger box, all with the same pair);
-- the comparison `S² + Q² ≍ S² + w¹²` on the shear box, which is elementary.
+`zoo/Zoo/MixedGroup.lean`, `SLT.Zoo.MixedGroup.mixedGroup_pair` (**[LC]**): on every box `[-δ, δ]²` with
+`0 < δ ≤ 1/2`, `(w³ + y)² + (w⁶ + y²)²` has pair `J(1, 1) = (7/12, 1)`. `mixedGroup_pair_formula` states it in
+the source's `1/2 + p/12 + (q−1)/4` form. The proof follows §2:
+- `measurePreserving_shear`: `(w, s) ↦ (w, s − w³)` preserves Lebesgue measure. This is a Mathlib skew
+  product on `ℝ × ℝ`, conjugated by `finTwoArrow`.
+- `Z_mixed_eq_shear`: the box integral equals the integral of `shearLoss` over the shear's preimage of the box.
+- `box_half_subset` and `preimage_subset_box_two`: that preimage lies between `[-δ/2, δ/2]²` and
+  `[-2δ, 2δ]²`.
+- `shearLoss_pair`: on boxes with `ρ ≤ 1`, `shearLoss ≍ w¹² + s²`, with constants `1` and `18`. N2 then gives
+  `(1/12 + 1/2, 1)` through `pair_of_powΓ`.
+- `HasLaplacePair.squeeze`: a function between two functions with the same pair has that pair.
 
-That is roughly 150 lines. General `(p, q)` adds index bookkeeping (`Fin.append`).
-
-The approval covers T5 only. This is a candidate follow-up for Bobby to approve or not, not something I am
-doing now.
+This is about 200 lines, with no core change. **General `(p, q)` is not built.** It is the same argument with
+`Fin.append` bookkeeping: the shear acts in one coordinate, and the comparison is `P² ≍ Σw¹² + Σy⁴`.

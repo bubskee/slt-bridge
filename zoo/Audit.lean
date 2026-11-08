@@ -185,3 +185,20 @@ import Zoo
 #print axioms SLT.Zoo.MLP.monoSum_bothBoth
 #print axioms SLT.Zoo.MLP.spare_bothBoth_pair
 #print axioms SLT.Zoo.MLP.s2p_bothBoth
+
+/-! R0.2 certificate, J(1,1) (2026-11-08). -/
+#print axioms SLT.Zoo.MixedGroup.HasLaplacePair.squeeze
+#print axioms SLT.Zoo.MixedGroup.mixedLoss
+#print axioms SLT.Zoo.MixedGroup.shearLoss
+#print axioms SLT.Zoo.MixedGroup.shear
+#print axioms SLT.Zoo.MixedGroup.mixedLoss_shear
+#print axioms SLT.Zoo.MixedGroup.measurable_shearLoss
+#print axioms SLT.Zoo.MixedGroup.measurable_mixedLoss
+#print axioms SLT.Zoo.MixedGroup.shearEquiv
+#print axioms SLT.Zoo.MixedGroup.measurePreserving_shear
+#print axioms SLT.Zoo.MixedGroup.Z_mixed_eq_shear
+#print axioms SLT.Zoo.MixedGroup.box_half_subset
+#print axioms SLT.Zoo.MixedGroup.preimage_subset_box_two
+#print axioms SLT.Zoo.MixedGroup.shearLoss_pair
+#print axioms SLT.Zoo.MixedGroup.mixedGroup_pair
+#print axioms SLT.Zoo.MixedGroup.mixedGroup_pair_formula
