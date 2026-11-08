@@ -294,3 +294,14 @@ public theorems that use them. Completeness is checked by `scripts/check_audit.s
 #print axioms SLT.Template.laplaceUpper_of_angularMargin
 #print axioms SLT.Template.hasLaplacePair_of_angularMargin
 #print axioms SLT.Template.angularMargin_norm_pow
+
+/-! Brief 03, T3 (leading map + higher-weight remainder). -/
+#print axioms SLT.Template.HigherWeightRemainder
+#print axioms SLT.Template.IsHomogeneous
+#print axioms SLT.Template.angularMargin_of_leading
+#print axioms SLT.Template.exists_hasLaplacePair_of_leading
+#print axioms SLT.Template.hasLaplacePair_of_leading
+#print axioms SLT.Template.laplaceLower_of_leading
+#print axioms SLT.Template.laplaceUpper_of_leading
+#print axioms SLT.Template.le_of_homogeneous
+#print axioms SLT.Template.shell_bounds_of_homogeneous

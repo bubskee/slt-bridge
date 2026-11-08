@@ -27,6 +27,9 @@ check() { # $1 = package dir, $2 = root module, $3 = label
   grep -E "^$ns" "$TMP/$label.audited" | { [ "$label" = core ] && grep -vE '^SLT\.Zoo\.' || cat; } \
     | comm -23 - "$TMP/$label.decls" > "$TMP/$label.stale" || true
   (cd "$dir" && lake env lean Audit.lean) > "$TMP/$label.out" 2>&1 || { echo "[$label] audit reported errors:"; grep -E "error" "$TMP/$label.out" | sed "s/^/    /"; fail=1; }
+  # join the pretty-printer's continuation lines (long names wrap the axiom list)
+  awk 'NR>1 && /^ /{sub(/^ +/," "); printf "%s",$0; next} {if (NR>1) print ""; printf "%s",$0} END{print ""}' \
+    "$TMP/$label.out" > "$TMP/$label.joined" && mv "$TMP/$label.joined" "$TMP/$label.out"
   local entries clean
   entries=$(grep -c "depends on axioms\|does not depend on any axioms" "$TMP/$label.out" || true)
   clean=$(grep -cE "does not depend on any axioms|depends on axioms: \[(propext|Classical\.choice|Quot\.sound)(, (propext|Classical\.choice|Quot\.sound))*\]" "$TMP/$label.out" || true)

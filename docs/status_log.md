@@ -177,3 +177,25 @@ theorems and lemmas. Zero warnings in our sources, Batteries lint clean, no `sor
   - `mainTheorem_shear_of_margin`: the position table with margins in place of `ThmK`/`ThmN`.
 - **Hironaka.** `PLAN.md` §4.5 records the discharge route and a design risk: the paper transfers from complex to
   real variables once, at the ambient level, while the hypothesis here is real and uniform in `r`.
+
+### Brief 03, T3: leading map plus higher-weight remainder (2026-11-07, overnight run 04). Branch `overnight-templates`
+
+**[LC]**: core 286/286, zoo 60/60 plus 11 source theorems, all on `[propext, Classical.choice, Quot.sound]`.
+Zero warnings, lint clean.
+- **`SLT/Template/Leading.lean`.**
+  - `IsHomogeneous`, `HigherWeightRemainder`.
+  - `shell_bounds_of_homogeneous`: compactness on the shell.
+  - `angularMargin_of_leading`: T2's named hypothesis, discharged for nondegenerate leading parts.
+  - `laplaceUpper_of_leading`, and `laplaceLower_of_leading` (a ball of radius `N^{-1/(2d)}`).
+  - `hasLaplacePair_of_leading`, `exists_hasLaplacePair_of_leading`.
+- **Guardrail, `zoo/Zoo/TemplateLeading.lean`.** `positive_homogeneous_laplace_order_template` re-derives
+  `ResidualSLT.positive_homogeneous_laplace_order` on `Fin D → ℝ` with Lebesgue measure: both halves, zero
+  remainder, the source statement. `hasLaplacePair_of_homogeneous_add_remainder` is the form a new
+  architecture checks.
+- **Obstruction note, `docs/T3_obstruction.md`.**
+  - The degenerate case needs stability.
+  - rw-bridge's `u v³` blocks are degenerate and go through N2.
+  - Anisotropic weights are not built.
+  - The (K3) construction for `PositionMargin` is costed at 600–1000 lines per position.
+- **Tooling.** `scripts/check_audit.sh` now joins the pretty-printer's wrapped axiom lists. Long theorem names
+  had made it misreport clean entries as unexpected.

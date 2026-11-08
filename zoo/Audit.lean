@@ -79,3 +79,11 @@ import Zoo
 #print axioms SLT.Zoo.TemplateMargin.thmK_of_margin
 #print axioms SLT.Zoo.TemplateMargin.mainTheorem_shear_of_margin
 #print axioms VectorSLT.Zpos_lower_N4
+
+/-! Brief 03, T3 guardrail: positive homogeneous losses through the leading-map template. -/
+#print axioms SLT.Zoo.TemplateLeading.hasLaplacePair_of_homogeneous_add_remainder
+#print axioms SLT.Zoo.TemplateLeading.ofReal_ball_integral
+#print axioms SLT.Zoo.TemplateLeading.one_le_of_nontrivial
+#print axioms SLT.Zoo.TemplateLeading.positive_homogeneous_laplace_order_template
+-- the source theorem, re-checked here
+#print axioms ResidualSLT.positive_homogeneous_laplace_order
