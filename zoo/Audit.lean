@@ -175,3 +175,13 @@ import Zoo
 #print axioms SLT.Zoo.MLP.ΓbothOut
 #print axioms SLT.Zoo.MLP.ΓinBoth
 #print axioms SLT.Zoo.MLP.ΓoutBoth
+#print axioms SLT.Zoo.MLP.convex_optWeights
+#print axioms SLT.Zoo.MLP.ΓbothBoth
+#print axioms SLT.Zoo.MLP.newtonDist_bothBoth
+#print axioms SLT.Zoo.MLP.bothBothVertex
+#print axioms SLT.Zoo.MLP.optWeights_bothBoth
+#print axioms SLT.Zoo.MLP.affineIndependent_bothBothVertex
+#print axioms SLT.Zoo.MLP.newtonMult_bothBoth
+#print axioms SLT.Zoo.MLP.monoSum_bothBoth
+#print axioms SLT.Zoo.MLP.spare_bothBoth_pair
+#print axioms SLT.Zoo.MLP.s2p_bothBoth

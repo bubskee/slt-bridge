@@ -45,6 +45,7 @@ parameters. So the Lean also certifies the localization step ("which edges must 
 | (both, in) | `(0, 0, 0, 0, c)` | `a²B² + q² + a²r²` | `(1, 1)` | `(5/2, 1)` |
 | (both, out) | `(0, 0, q, 0, 0)` | `a²B² + c²` | `(1, 2)` | `(5/2, 2)` |
 | (out, both) | `(a, 0, 0, 0, 0)` | `B² + c²q² + c²r²` | `(1, 1)` | `(5/2, 1)` |
+| (both, both) | `(0, 0, 0, 0, 0)` | the whole `K_J` | `(1, 3)` | `(5/2, 3)` |
 
 **S2″ and the hunt.** The residual ideals live in the source's own local coordinates:
 
@@ -897,5 +898,130 @@ theorem m4_ne_m3' {ρ : ℝ} (hρ : ρ ≠ 0) (hδ : 0 < δ) (hδ1 : δ ≤ 1) (
   ⟨m1_m4_pair hδ, m3'_pair hρ hδ hδ1 hδρ, by norm_num⟩
 
 end S2pp
+
+/-! ### S2′ (both, both): a triangular optimal face, `m = 3` -/
+
+/-- The optimal weights are convex (an intersection of half-spaces with the simplex). -/
+theorem convex_optWeights (Γ : Finset (Fin d → ℝ)) : Convex ℝ (optWeights Γ) := by
+  intro u hu v hv a b ha hb hab
+  obtain ⟨hu0, hu1, hu2⟩ := hu
+  obtain ⟨hv0, hv1, hv2⟩ := hv
+  refine ⟨fun i => ?_, ?_, fun α hα => ?_⟩
+  · simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+    exact add_nonneg (mul_nonneg ha (hu0 i)) (mul_nonneg hb (hv0 i))
+  · simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
+    rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum, hu1, hv1, mul_one, mul_one, hab]
+  · simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, mul_add]
+    rw [Finset.sum_add_distrib]
+    have e1 : ∑ i, α i * (a * u i) = a * ∑ i, α i * u i := by
+      rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun i _ => by ring
+    have e2 : ∑ i, α i * (b * v i) = b * ∑ i, α i * v i := by
+      rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun i _ => by ring
+    rw [e1, e2]
+    have ht : newtonDist Γ = a * newtonDist Γ + b * newtonDist Γ := by rw [← add_mul, hab, one_mul]
+    linarith [mul_le_mul_of_nonneg_left (hu2 α hα) ha, mul_le_mul_of_nonneg_left (hv2 α hα) hb]
+
+/-- `(both, both)`: `Γ = {2e_a + 2e_B, 2e_q + 2e_c, 2e_a + 2e_r + 2e_c}`, the whole spare ideal at
+the all-zero point. -/
+noncomputable def ΓbothBoth : Finset (Fin 5 → ℝ) :=
+  {![2, 2, 0, 0, 0], ![0, 0, 2, 0, 2], ![2, 0, 0, 2, 2]}
+
+private theorem ΓbothBoth_nonneg : ∀ α ∈ ΓbothBoth, ∀ i, 0 ≤ α i := by
+  intro α hα i; simp only [ΓbothBoth, Finset.mem_insert, Finset.mem_singleton] at hα
+  rcases hα with rfl | rfl | rfl <;> fin_cases i <;> norm_num
+
+/-- (both, both): `t* = 1`. -/
+theorem newtonDist_bothBoth : newtonDist ΓbothBoth = 1 := by
+  refine newtonDist_eq (u := ![1 / 2, 0, 1 / 2, 0, 0]) ⟨fun i => by fin_cases i <;> norm_num,
+    by simp [Fin.sum_univ_five]; norm_num, ?_⟩ ?_
+  · intro α hα; simp only [ΓbothBoth, Finset.mem_insert, Finset.mem_singleton] at hα
+    rcases hα with rfl | rfl | rfl <;> simp [Fin.sum_univ_five]
+  · rintro t u ⟨h0, h1, h2⟩
+    have a1 := h2 ![2, 2, 0, 0, 0] (by simp [ΓbothBoth])
+    have a2 := h2 ![0, 0, 2, 0, 2] (by simp [ΓbothBoth])
+    simp [Fin.sum_univ_five] at h1 a1 a2
+    linarith [h0 3]
+
+/-- The three vertices of the optimal face of `ΓbothBoth`. -/
+noncomputable def bothBothVertex : Fin 3 → Fin 5 → ℝ :=
+  ![![1 / 2, 0, 1 / 2, 0, 0], ![0, 1 / 2, 0, 0, 1 / 2], ![1 / 2, 0, 0, 0, 1 / 2]]
+
+/-- (both, both): `O` is the triangle on `bothBothVertex`: `u_r = 0`, `u_a + u_B = u_q + u_c = 1/2`,
+`u_a + u_c ≥ 1/2`. -/
+theorem optWeights_bothBoth :
+    optWeights ΓbothBoth = convexHull ℝ (Set.range bothBothVertex) := by
+  apply Subset.antisymm
+  · intro u hu
+    have hu' := hu
+    rw [optWeights, newtonDist_bothBoth] at hu'
+    obtain ⟨h0, h1, h2⟩ := hu'
+    have a1 := h2 ![2, 2, 0, 0, 0] (by simp [ΓbothBoth])
+    have a2 := h2 ![0, 0, 2, 0, 2] (by simp [ΓbothBoth])
+    have a3 := h2 ![2, 0, 0, 2, 2] (by simp [ΓbothBoth])
+    simp only [Fin.sum_univ_five, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Matrix.cons_val, zero_mul, add_zero, zero_add] at h1 a1 a2 a3
+    have := h0 0; have := h0 1; have := h0 2; have := h0 3; have := h0 4
+    have hw := (convex_convexHull ℝ (Set.range bothBothVertex)).sum_mem (t := Finset.univ)
+      (w := ![2 * u 2, 2 * u 1, 1 - 2 * u 1 - 2 * u 2]) (z := bothBothVertex)
+      (fun i _ => by fin_cases i <;> simp <;> linarith)
+      (by simp [Fin.sum_univ_three]; ring)
+      (fun i _ => subset_convexHull ℝ _ ⟨i, rfl⟩)
+    convert hw using 1
+    funext j
+    simp only [Finset.sum_apply, Fin.sum_univ_three, Pi.smul_apply, smul_eq_mul, bothBothVertex]
+    fin_cases j <;> simp <;> linarith
+  · refine convexHull_min ?_ (convex_optWeights _)
+    rintro _ ⟨i, rfl⟩
+    rw [optWeights, newtonDist_bothBoth]
+    refine ⟨fun j => by fin_cases i <;> fin_cases j <;> norm_num [bothBothVertex], by
+      fin_cases i <;> simp [bothBothVertex, Fin.sum_univ_five] <;> norm_num, fun α hα => ?_⟩
+    simp only [ΓbothBoth, Finset.mem_insert, Finset.mem_singleton] at hα
+    rcases hα with rfl | rfl | rfl <;> fin_cases i <;>
+      simp [bothBothVertex, Fin.sum_univ_five]
+
+/-- The three vertices are affinely independent. -/
+theorem affineIndependent_bothBothVertex : AffineIndependent ℝ bothBothVertex := by
+  rw [affineIndependent_iff_of_fintype]
+  intro w hw hs
+  rw [Finset.weightedVSub_eq_linear_combination _ hw] at hs
+  have c1 := congrFun hs 1
+  have c2 := congrFun hs 2
+  simp [Fin.sum_univ_three, bothBothVertex] at c1 c2 hw
+  intro i; fin_cases i <;> simp <;> linarith
+
+/-- (both, both): `m = dim O + 1 = 3`. -/
+theorem newtonMult_bothBoth : newtonMult ΓbothBoth = 3 := by
+  rw [newtonMult, optWeights_bothBoth, affineSpan_convexHull, direction_affineSpan,
+    affineIndependent_bothBothVertex.finrank_vectorSpan (n := 2) (by simp)]
+
+/-- (both, both): the monomial sum is the spare loss itself. -/
+theorem monoSum_bothBoth (y : Fin 5 → ℝ) : monoSum ΓbothBoth y = spareLoss y := by
+  rw [monoSum, ΓbothBoth, Finset.sum_insert (by
+      simp only [Finset.mem_insert, Finset.mem_singleton, not_or]
+      exact ⟨fun h => absurd (congrFun h 0) (by norm_num),
+        fun h => absurd (congrFun h 1) (by norm_num)⟩),
+    Finset.sum_pair (fun h => absurd (congrFun h 0) (by norm_num))]
+  simp [monomial_five, spareLoss]
+  ring
+
+/-- **(both, both)**: all five spare weights zero. `K_J` is the whole spare loss, and its Newton
+face is a triangle, so the spare pair is `(1, 3)`. -/
+theorem spare_bothBoth_pair {δ : ℝ} (hδ : 0 < δ) :
+    HasLaplacePair (Z (volume.restrict {z | z - ![0, 0, 0, 0, 0] ∈ box δ}) spareLoss) 1 3 := by
+  rw [Z_translate]
+  have h := pair_of_Γ ΓbothBoth_nonneg (by rw [newtonDist_bothBoth]; norm_num) hδ
+    (K := fun y => spareLoss (![0, 0, 0, 0, 0] + y))
+    (measurable_spareLoss.comp (measurable_const_add _)) (c := 1) (C := 1) one_pos
+    (fun y _ => by
+      rw [monoSum_bothBoth, one_mul, spareLoss_add]; simp only [zero_add, spareLoss]; nlinarith)
+    (fun y _ => by
+      rw [monoSum_bothBoth, one_mul, spareLoss_add]; simp only [zero_add, spareLoss]; nlinarith)
+  rwa [newtonDist_bothBoth, newtonMult_bothBoth, inv_one] at h
+
+/-- **(both, both) total: `(5/2, 3)`.** The source reads this from its Newton script; its
+toy-integral check rated `m = 3` only "plausible". Here it is Lean-certified at model level. -/
+theorem s2p_bothBoth {δ : ℝ} (hδ : 0 < δ) :
+    HasLaplacePair (Z (s2pPrior ![0, 0, 0, 0, 0] δ) s2pLoss) (5 / 2) 3 := by
+  convert s2p_pair_of_spare hδ (spare_bothBoth_pair hδ) using 1; norm_num
 
 end SLT.Zoo.MLP

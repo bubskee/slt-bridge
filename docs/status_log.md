@@ -328,3 +328,17 @@ AI-reviewed, and not formalized.
   `Γ…_nonneg` lemmas, `spareLoss_add`, and so on. Zoo public declarations drop 165 → 144.
 - **Not moved to the core:** the general Newton helpers `powΓ`, `pair_of_powΓ`, `pair_of_Γ`, `newtonMult_eq_two`
   and `regular_add_pair`. Moving them would be a core change outside T5. They are a candidate for a later core pass.
+
+### S2′ (both, both) (2026-11-08, Bobby's go-ahead)
+
+Branch `mlp-both-both`, cut from `main` @ `8b050b0`. (`main` had already been fast-forwarded to `8b050b0` from
+`t5-mlp-ideals` at 09:24, before this request.)
+
+- **`s2p_bothBoth`: total `(5/2, 3)`.** At the all-zero spare point, `K_J` is the whole spare loss,
+  `Γ = {2e_a + 2e_B, 2e_q + 2e_c, 2e_a + 2e_r + 2e_c}`, with `t* = 1`.
+- **The optimal face is a triangle**: `u_r = 0`, `u_a + u_B = u_q + u_c = 1/2`, `u_a + u_c ≥ 1/2`
+  (`optWeights_bothBoth`). Its three vertices are affinely independent (`affineIndependent_bothBothVertex`), so
+  `m = dim O + 1 = 3`.
+- **This is the first `m = 3` in the zoo.** The source's toy integral rated it only "plausible" (slowly drifting
+  second differences). It is now [LC] at model level, with the same chart-lemma caveat as the rest of T5.
+- **New general lemma:** `convex_optWeights`.
