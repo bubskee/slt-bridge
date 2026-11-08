@@ -256,3 +256,24 @@ public theorems that use them. Completeness is checked by `scripts/check_audit.s
 #print axioms SLT.gibbsNum
 #print axioms SLT.gibbsNum_nonneg
 #print axioms SLT.mgf_neg_eq_Zr
+
+/-! Brief 03, T1 (elementary template). -/
+#print axioms SLT.Template.WeakL1
+#print axioms SLT.Template.weakL1_of_lintegral_le
+#print axioms SLT.Template.lintegral_Ioc_div
+#print axioms SLT.Template.lintegral_min_le_of_weakL1
+#print axioms SLT.Template.MinLogBound
+#print axioms SLT.Template.WeakL1.minLogBound
+#print axioms SLT.Template.MinLogBound.comp_preimage
+#print axioms SLT.Template.pivotCone
+#print axioms SLT.Template.measurableSet_pivotCone
+#print axioms SLT.Template.lintegral_eq_smul_rescale
+#print axioms SLT.Template.lintegral_min_pow_div_le
+#print axioms SLT.Template.minLogBound_pivotCone
+#print axioms SLT.Template.fibreConst
+#print axioms SLT.Template.posLog_inv_rate_le
+#print axioms SLT.Template.lintegral_le_rate_of_minLogBound
+#print axioms SLT.Template.laplaceUpper_of_minLogBound
+#print axioms SLT.Template.laplaceUpper_of_integrable
+#print axioms SLT.Template.hasLaplacePair_of_minLogBound
+#print axioms SLT.Template.lintegral_triangular

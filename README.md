@@ -30,8 +30,10 @@ SLT/NormalCrossing Step (one-coordinate integration), Cube ((0,1]^d), Box ([-δ,
 SLT/LLC/           Identity (L1, L2), Pointwise (antitonicity, regular-variation limit)
 SLT/Newton/        Lower (N1), Statement (N2 as a Prop), Sanity, TwoSided (N2 proof), Box (N2 with units);
                    Polytope, Tube, LogCoords, Upper, LowerTwo are the N2 proof's intermediate steps
+SLT/Template/      Elementary (weak-L¹, MinLogBound), Cone (critical weights on a pivot cone),
+                   Fibre (slice bound ⇒ rate, triangular Fubini): the elementary template (brief 03, T1)
 Audit.lean         #print axioms for every public core declaration
-zoo/Zoo/           ResidualNetwork, VectorShear, LLC          zoo/Audit.lean  the same for the zoo
+zoo/Zoo/           ResidualNetwork, VectorShear, LLC, TemplateM         zoo/Audit.lean  the same for the zoo
 scripts/           check_audit.sh (audit completeness + axioms), DumpDecls.lean, Lint.lean, LintZoo.lean
 docs/status_log.md per-milestone log          PLAN.md  Phase 0 plan, roadmap, questions (§7)
 ```
@@ -54,7 +56,7 @@ has a `#print axioms` line (exclusions go in `scripts/audit_exclude.txt`, curren
 reported axiom is among `propext`, `Classical.choice`, `Quot.sound`; and there is no
 `sorry`/`admit`/`native_decide`.
 
-**Current counts:** core 243/243 public declarations audited; zoo 25/25, plus 4 source theorems
+**Current counts:** core 262/262 public declarations audited; zoo 49/49, plus 9 source theorems
 re-checked. All are on `[propext, Classical.choice, Quot.sound]`. `#print axioms` is transitive, so
 the `private` helpers are covered by the public theorems that use them.
 
@@ -103,6 +105,9 @@ statement passed as an argument. **[STMT]** statement only.
 | N2 two-sided Newton theorem | `NewtonTwoSided d : Prop`, proved as `newtonTwoSided`; `hasLaplacePair_monoSum` | [LC] |
 | N2 with units on `[-δ,δ]^d` | `newton_box_units` | [LC] |
 | N2 multiplicity sanity | `optWeights_*`, `newtonMult_*` | [LC] |
+| T1 elementary template: slice bound `min(T, A·rate(λ,m)·w)` + log min-integral bound on `w` ⇒ upper `(λ, m+1)`; with a lower core ⇒ pair | `lintegral_le_rate_of_minLogBound`, `laplaceUpper_of_minLogBound`, `hasLaplacePair_of_minLogBound`; integrable weight: `laplaceUpper_of_integrable` | [LC] |
+| T1 sources of the log min-integral bound | `WeakL1.minLogBound` (weak-L¹ weight), `minLogBound_pivotCone` (critical weight `\|r\|^{-(n+1)} h_r` on a pivot cone, `∫ h_r ≤ H` uniformly: Theorem M's M5 in general form) | [LC] |
+| T1 triangular Fubini (rows coupled one way) | `lintegral_triangular` | [LC] |
 | `m = dim O + 1 ⇔ m = d − dim F` (LP duality) | not in Lean | not formalised |
 | M3 monomialization ⇒ `(λ, m)` exists | not started | on hold |
 
@@ -120,10 +125,12 @@ statement passed as an argument. **[STMT]** statement only.
 | LLC, scalar ResNet (population) | `residualNetwork_llc_log_average`, `residualNetwork_llc`, `cubic_depth6_three_active_llc` | residual-slt + core L2 | [LC] |
 | LLC, vector position 1 (population) | `position_one_llc` (→ 4, with `-4 log log T`) | vector-slt-lean + core L2 | [LC], **unconditional** |
 | LLC, vector position table (population) | `mainTheorem_shear_llc` | vector-slt-lean + core L2 | [COND: `ThmK`, `ThmN`] |
+| T1 guardrail: `ZN1_two_sided` re-derived through the template | `TemplateM.ZN1_two_sided_template` (source statement), `TemplateM.position_one_pair_template` `(4,5)`; row bound `pivotRow_template` | vector-slt-lean `2d545cd` (Lemmas M4, M3, (G↓), F1–F3, L′) + core T1 | [LC], **unconditional**. Lemma M5, `two_rows` and `theoremM` are not used |
 
 The four source theorems the zoo uses (`ResidualSLT.unified_residual_network_certificate`,
 `VectorSLT.ZN1_two_sided_moments`, `VectorSLT.mainTheorem_shear`,
-`VectorSLT.mainTheorem_shear_gaussian`) are re-audited in `zoo/Audit.lean`. `ThmK` and `ThmN` are
+`VectorSLT.mainTheorem_shear_gaussian`) are re-audited in `zoo/Audit.lean`, as are the five source
+lemmas `TemplateM` uses (`lemmaM4`, `m3Int_Echart`, `Gdown`, `UM_inner`, `Zpos_one_lower`). `ThmK` and `ThmN` are
 hypotheses, not axioms, so they do not appear in any audit line.
 
 ## Licence

@@ -37,3 +37,35 @@ import Zoo
 
 /-! Brief 02 (cleanliness pass). -/
 #print axioms SLT.Zoo.posPrior
+
+/-! Brief 03, T1 guardrail: Theorem M through the elementary template. -/
+#print axioms SLT.Zoo.TemplateM.chartD
+#print axioms SLT.Zoo.TemplateM.rowWeight
+#print axioms SLT.Zoo.TemplateM.angW
+#print axioms SLT.Zoo.TemplateM.pivotRegion_eq
+#print axioms SLT.Zoo.TemplateM.e2_symm_apply
+#print axioms SLT.Zoo.TemplateM.angW_int
+#print axioms SLT.Zoo.TemplateM.Bcone
+#print axioms SLT.Zoo.TemplateM.rowWeight_minLogBound
+#print axioms SLT.Zoo.TemplateM.CrowT
+#print axioms SLT.Zoo.TemplateM.pivotRow_template
+#print axioms SLT.Zoo.TemplateM.rowBound_template
+#print axioms SLT.Zoo.TemplateM.rowBound_M6_template
+#print axioms SLT.Zoo.TemplateM.BrowT
+#print axioms SLT.Zoo.TemplateM.BrowT_ne_top
+#print axioms SLT.Zoo.TemplateM.J_bound_template
+#print axioms SLT.Zoo.TemplateM.UM_c_template
+#print axioms SLT.Zoo.TemplateM.Fbox
+#print axioms SLT.Zoo.TemplateM.Fbox_le
+#print axioms SLT.Zoo.TemplateM.CrowT_nonneg
+#print axioms SLT.Zoo.TemplateM.Fbox_laplaceUpper
+#print axioms SLT.Zoo.TemplateM.Zpos_le_Fbox
+#print axioms SLT.Zoo.TemplateM.Zpos_one_laplaceUpper
+#print axioms SLT.Zoo.TemplateM.ZN1_two_sided_template
+#print axioms SLT.Zoo.TemplateM.position_one_pair_template
+-- the source lemmas the re-derivation uses as hypothesis dischargers, re-checked here
+#print axioms VectorSLT.lemmaM4
+#print axioms VectorSLT.m3Int_Echart
+#print axioms VectorSLT.Gdown
+#print axioms VectorSLT.UM_inner
+#print axioms VectorSLT.Zpos_one_lower

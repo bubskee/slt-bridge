@@ -23,3 +23,6 @@ public import SLT.Newton.Upper
 public import SLT.Newton.LowerTwo
 public import SLT.Newton.TwoSided
 public import SLT.Newton.Box
+public import SLT.Template.Elementary
+public import SLT.Template.Cone
+public import SLT.Template.Fibre

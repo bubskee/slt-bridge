@@ -125,3 +125,27 @@ first target. Vector shear position 1 is *not* N2-comparable (`m = 5` ≠ N2's `
 | `Newton/Box.lean` | Bobby's addition 2: `newton_box_units`, on `[−δ,δ]^d` with a prior density between constants, via reflections and scaling |
 
 Core audit: 226/226 clean. The zoo rebuilds. About 2050 lines in `SLT/Newton/`.
+
+### Brief 03, T1: the elementary template (2026-11-07, overnight run 04). Branch `overnight-templates`
+
+**[LC]** on `[propext, Classical.choice, Quot.sound]`: core 262/262, zoo 49/49 plus 9 source
+theorems and lemmas. Zero warnings in our sources, Batteries lint clean, no `sorry`.
+
+- `SLT/Template/Elementary.lean`: `WeakL1`, `lintegral_min_le_of_weakL1` (weak-L¹ costs one log,
+  by the layer cake), `MinLogBound` (`∫ min(T, s w) ≤ s(B + D log⁺(1/s))`), `WeakL1.minLogBound`,
+  `MinLogBound.comp_preimage`.
+- `SLT/Template/Cone.lean`: `minLogBound_pivotCone`. A weight `|r|^{-(n+1)} h_r(q)` on the pivot
+  cone, with `∫ h_r ≤ H` uniformly in `r`, satisfies `MinLogBound`. This is Theorem M's M5 in general
+  form. The first draft asked for weak-L¹ instead; that is false when `h_r` depends on `r` (the
+  weights move with the amplitudes), so the min-integral form is the right hypothesis.
+- `SLT/Template/Fibre.lean`: `lintegral_le_rate_of_minLogBound` (explicit constant `fibreConst`,
+  uniform over any family sharing `(A, B, D, λ)`), `laplaceUpper_of_minLogBound`,
+  `laplaceUpper_of_integrable`, `hasLaplacePair_of_minLogBound` (the template), and
+  `lintegral_triangular` (two blocks coupled one way, Theorem M's F5).
+- Guardrail, `zoo/Zoo/TemplateM.lean`: `ZN1_two_sided_template` has the source statement of
+  `VectorSLT.ZN1_two_sided`. The upper half goes through the template: `pivotRow_template` (Lemma M4
+  + Lemma M3 through `minLogBound_pivotCone` + `lintegral_le_rate_of_minLogBound`),
+  `J_bound_template` (`lintegral_triangular`), and `LaplaceUpper` calculus for the assembly. The
+  source's `lemmaM5`, `pivotRow`, `two_rows`, `J_bound`, `UM_bound` and `theoremM` are not used.
+  The source's coordinate plumbing (`rowBound`'s pivot covering, `UM_bound`'s Fubini, `theoremM`'s
+  pointwise comparison) is reproduced in the zoo file with the template's constants.
