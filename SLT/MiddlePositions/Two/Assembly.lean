@@ -21,7 +21,7 @@ prefix cubics `p^k = l_k³` and suffix cubics `q^k = Ψ(g_k)`.
    suffix mass of every unit box is at most `C · Msuf`, uniformly in the centre.
 4. `sublevel_two_le`: Tonelli, in the order `g₂`, then `g₁`, then `(l₁, l₂)`, gives
    `∫_{‖R₂‖ < 1} ‖w‖^{1/4} ≤ (C Msuf)² ∫∫ V 𝟙_{preSet}`, and the last integral is finite
-   (`lintegral_pre_lt_top`).
+   (`lintegral_pre_lt_top`). The headline `sublevelTwo` is in `SLT/MiddlePositions/Two.lean`.
 
 The note instead reduces to `∬_{|Q₁ - Q₂| < 1} N₂(Q₁) N₂(Q₂) P₂(-Q₁)` and applies its Lemma
 "Local averaging of a planar bound" with the decay of `N₂` and `P₂`. Here the generator
@@ -268,21 +268,5 @@ theorem sublevel_two_le {C K₀ K₁ K₂ : ℝ} (hW : WeightedTwoCubeBound C)
         rw [← lintegral_const_mul' _ _ (ENNReal.mul_ne_top hM hM)]
         refine lintegral_congr fun l₂ => ?_
         ring
-
-/-- **Theorem (position two)** of `complex_middle_positions.tex`, from the interface:
-`∫_{‖R₂ w‖ < 1} ‖w‖^{1/4} dw < ∞` on `Row2 × Row2 ≃ ℂ¹²`. Only `WeightedTwoCubeBound` and
-`FullPlaneQuadratic` at `t = 9/8, 4/3, 11/8` are used; `LocallyIntegrableF` is not needed. -/
-theorem sublevelTwo {C : ℝ} (hW : WeightedTwoCubeBound C)
-    (hQ : ∀ t : ℝ, 1 < t → t < 2 → ∃ K, FullPlaneQuadratic t K) : SublevelTwo := by
-  obtain ⟨K₀, hK₀⟩ := hQ (9 / 8) (by norm_num) (by norm_num)
-  obtain ⟨K₁, hK₁⟩ := hQ (4 / 3) (by norm_num) (by norm_num)
-  obtain ⟨K₂, hK₂⟩ := hQ (11 / 8) (by norm_num) (by norm_num)
-  refine (sublevel_two_le hW (fullPlaneQuadratic_mono hK₀ (le_max_left K₀ 0))
-    (fullPlaneQuadratic_mono hK₁ (le_max_left K₁ 0))
-    (fullPlaneQuadratic_mono hK₂ (le_max_left K₂ 0)) (le_max_right _ _) (le_max_right _ _)
-    (le_max_right _ _)).trans_lt ?_
-  exact ENNReal.mul_lt_top (ENNReal.mul_lt_top
-    (ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top)
-    (ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top)) lintegral_pre_lt_top
 
 end SLT.MiddlePositions.Two

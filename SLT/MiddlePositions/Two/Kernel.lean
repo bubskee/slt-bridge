@@ -12,7 +12,8 @@ public import SLT.MiddlePositions.Two.Planar
 Section 3 of `complex_middle_positions.tex`: Lemma "An explicit two-variable integral" and Lemma
 "Weighted two-form suffix". Write a cubic as `P = (z, Q, u, v)` (moment coordinates) and
 `h = u² - Q v`. As a quadratic in the free coefficient `z = P₀`,
-`𝔇(z, Q, u, v) = v² ((z - c)² - δ)` with `c = u(u² - 3h)/v²` and `δ = 4h³/v⁴` (`disc_coords`).
+`𝔇(z, Q, u, v) = v² ((z - c)² - δ)` with `c = u(u² - 3h)/v²` and `δ = 4h³/v⁴` (`disc_coords`,
+in `Suffix.lean`).
 
 * `L t z = ∫_{|u| < 1} |u² - z|^{-t}` and `L_le`: `L t z ≤ C |z|^{-s}` for every `z`, when
   `0 ≤ t ≤ 9/8` and `1/8 ≤ s ≤ t`. This replaces the note's case split on `|z| ≤ 2` and its
@@ -25,7 +26,10 @@ Section 3 of `complex_middle_positions.tex`: Lemma "An explicit two-variable int
   `∫∫_{|u|, |v| < 1} G ≤ C (|Q|^{-1/8} + |Q|^{-1/4} + |Q|^{-1/2})`. Each `J_{a,t}(Q)` is bounded by
   `C |Q|^{-s}` for one exponent `s` with `a + s < 2`; no large-`|Q|` decay is needed, since the
   assembly only uses a uniform bound on unit `Q`-discs.
-The uniform bound on unit `Q`-discs, `setLIntegral_box_F_le`, is in `Suffix.lean`.
+* `setLIntegral_N2b_le`: that uniform bound for `N2b`, by the shifted-disc estimate.
+
+The bound for the suffix kernel itself on unit `Q`-discs, `setLIntegral_box_F_le`, is in
+`Suffix.lean`.
 -/
 
 @[expose] public section
