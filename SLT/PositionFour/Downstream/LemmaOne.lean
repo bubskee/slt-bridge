@@ -28,7 +28,7 @@ exactly the threshold `p > 10/(6-β)`.
 
 @[expose] public section
 
-namespace SLT.PositionFour
+namespace SLT.PositionFour.Downstream
 
 open MeasureTheory Set Real Metric
 open scoped ENNReal NNReal
@@ -256,4 +256,4 @@ theorem lemma_one {β p : ℝ} (hβ0 : 0 ≤ β) (hβ2 : β < 2) (hp : 10 / (6 -
         rw [lintegral_add_left hFcm]
         exact ENNReal.add_lt_top.mpr ⟨hFc, hFo⟩
 
-end SLT.PositionFour
+end SLT.PositionFour.Downstream

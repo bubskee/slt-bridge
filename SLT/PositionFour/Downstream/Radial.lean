@@ -26,7 +26,7 @@ this is `∞` for `s > 0`.
 
 @[expose] public section
 
-namespace SLT.PositionFour
+namespace SLT.PositionFour.Downstream
 
 open MeasureTheory Set Real Metric
 open scoped ENNReal NNReal
@@ -173,4 +173,4 @@ theorem lintegral_norm_gt_inv_rpow {γ c : ℝ} (hγ : 2 < γ) (hc : 0 < c) :
   have : (γ - 2) ≠ 0 := by linarith
   field_simp
 
-end SLT.PositionFour
+end SLT.PositionFour.Downstream

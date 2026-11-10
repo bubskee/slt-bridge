@@ -30,7 +30,7 @@ The note's logarithm `1 + log(1/ε)` is replaced by `|P₀|^{η/2}` for an arbit
 
 @[expose] public section
 
-namespace SLT.PositionFour
+namespace SLT.PositionFour.Downstream
 
 open MeasureTheory Set Real Metric
 open scoped ENNReal NNReal
@@ -451,4 +451,4 @@ theorem transverseMarginal_le_outer {β : ℝ} (hβ0 : 0 ≤ β) (hβ2 : β < 2)
     ← ENNReal.ofReal_mul (by positivity)]
   exact ENNReal.ofReal_le_ofReal (le_of_eq (outer_identity hy0 ha_def))
 
-end SLT.PositionFour
+end SLT.PositionFour.Downstream

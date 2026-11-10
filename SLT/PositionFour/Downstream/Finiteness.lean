@@ -32,7 +32,7 @@ In row-cubic coordinates `R = (λ₁ - λ₂, y₁, y₂)`, so the sublevel set 
 
 @[expose] public section
 
-namespace SLT.PositionFour
+namespace SLT.PositionFour.Downstream
 
 open MeasureTheory Set Real Metric
 open scoped ENNReal NNReal
@@ -490,4 +490,4 @@ theorem volume_sublevel_lt_top {C₀ : ℝ} (hD₀ : DensityBound 0 C₀) (hL₀
   refine (ENNReal.mul_lt_top_iff.mp h).elim (fun h' => h'.2) fun h' => h'.elim
     (fun h'' => absurd h'' (by norm_num)) fun h'' => h''.symm ▸ ENNReal.zero_lt_top
 
-end SLT.PositionFour
+end SLT.PositionFour.Downstream

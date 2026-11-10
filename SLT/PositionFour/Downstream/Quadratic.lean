@@ -26,7 +26,7 @@ gives the two estimates it needs, **for every radius** (the note derives them on
 
 @[expose] public section
 
-namespace SLT.PositionFour
+namespace SLT.PositionFour.Downstream
 
 open MeasureTheory Set Real Metric
 open scoped ENNReal NNReal
@@ -267,4 +267,4 @@ theorem lintegral_ball_one_inv_quadratic_le {A B C : ℂ} (hB : B ≠ 0) (hAB : 
     _ = ENNReal.ofReal ((‖B‖ / 4) ^ (-a) * (2 * π / (2 - a) + π)) := by
         rw [Real.one_rpow, mul_one, ← ENNReal.ofReal_mul (by positivity)]
 
-end SLT.PositionFour
+end SLT.PositionFour.Downstream

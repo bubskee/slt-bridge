@@ -31,7 +31,7 @@ Taking `β ∈ (6s - 24, 2)` gives every `s < 13/3`.
 
 @[expose] public section
 
-namespace SLT.PositionFour
+namespace SLT.PositionFour.Downstream
 
 open MeasureTheory Set Real Metric
 open scoped ENNReal NNReal Pointwise
@@ -380,4 +380,4 @@ theorem integrableOn_shell {s β C₀ C : ℝ} (hβ0 : 0 ≤ β) (hβ2 : β < 2)
   rw [Real.enorm_of_nonneg (Real.rpow_nonneg (norm_nonneg _) _), ← ofReal_norm]
   exact ofReal_rpow_neg_le (norm_nonneg _) _
 
-end SLT.PositionFour
+end SLT.PositionFour.Downstream
