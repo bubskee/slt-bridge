@@ -5,6 +5,7 @@ Released under Apache 2.0 license.
 module
 
 public import SLT.PositionFour.Defs
+public import SLT.PositionFour.Upstream.Algebra
 public import SLT.Pushforward.QuadraticDisc
 
 /-!
@@ -45,11 +46,6 @@ theorem disc_toCubic (lam y : ℂ × ℂ) :
     disc (toCubic lam y) = lam.1 ^ 2 * y.2 ^ 2 + (4 * lam.2 ^ 3 - 6 * lam.1 * lam.2 * y.1) * y.2 +
       (4 * lam.1 * y.1 ^ 3 - 3 * lam.2 ^ 2 * y.1 ^ 2) := by
   simp [disc, toCubic]; ring
-
-/-- The `P₃`-discriminant of `𝔇` is `16 (P₁² - P₀P₂)³`. -/
-theorem discr_disc (P₀ P₁ P₂ : ℂ) :
-    (4 * P₁ ^ 3 - 6 * P₀ * P₁ * P₂) ^ 2 - 4 * P₀ ^ 2 * (4 * P₀ * P₂ ^ 3 - 3 * P₁ ^ 2 * P₂ ^ 2) =
-      16 * (P₁ ^ 2 - P₀ * P₂) ^ 3 := by ring
 
 /-- The hint's form of the root structure:
 `4 P₀² 𝔇 = (2P₀²P₃ + 4P₁³ - 6P₀P₁P₂)² - 16(P₁² - P₀P₂)³`. -/

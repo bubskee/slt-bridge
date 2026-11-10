@@ -67,4 +67,14 @@ theorem ofReal_rpow_mul_inv_rpow_le (x : ℂ) {u v : ℝ} (hu : 0 ≤ u) :
       ← ENNReal.ofReal_mul (by positivity), ← Real.rpow_add (norm_pos_iff.mpr hx)]
     exact le_of_eq (by ring_nf)
 
+/-- `x y ≤ x² + y²` in `ℝ≥0∞`. -/
+theorem mul_le_sq_add_sq (x y : ℝ≥0∞) : x * y ≤ x ^ 2 + y ^ 2 := by
+  rcases le_total x y with h | h
+  · calc x * y ≤ y * y := by gcongr
+      _ = y ^ 2 := (sq y).symm
+      _ ≤ x ^ 2 + y ^ 2 := le_add_self
+  · calc x * y ≤ x * x := by gcongr
+      _ = x ^ 2 := (sq x).symm
+      _ ≤ x ^ 2 + y ^ 2 := le_self_add
+
 end SLT.Pushforward

@@ -115,12 +115,6 @@ theorem disc_eq_quadratic (P : Cubic) :
       (4 * P 0 * P 2 ^ 3 - 3 * P 1 ^ 2 * P 2 ^ 2) := by
   simp only [disc]; ring
 
-/-- The discriminant of `𝔇` in `P₃` is `16 (P₁² - P₀P₂)³`. -/
-theorem discr_disc (q0 q1 q2 : ℂ) :
-    (4 * q1 ^ 3 - 6 * q0 * q1 * q2) ^ 2 - 4 * q0 ^ 2 * (4 * q0 * q2 ^ 3 - 3 * q1 ^ 2 * q2 ^ 2) =
-      16 * (q1 ^ 2 - q0 * q2) ^ 3 := by
-  ring
-
 /-- `rpow` of an `enorm` with negative exponent is nonzero. -/
 theorem enorm_rpow_neg_ne_zero (z : ℂ) {a : ℝ} (ha : 0 < a) : ‖z‖ₑ ^ (-a) ≠ 0 := by
   rw [Ne, ENNReal.rpow_eq_zero_iff]

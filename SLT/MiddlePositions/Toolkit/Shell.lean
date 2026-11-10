@@ -4,7 +4,7 @@ Released under Apache 2.0 license.
 -/
 module
 
-public import SLT.MiddlePositions.Defs
+public import SLT.MiddlePositions.Basic
 public import SLT.PositionFour.Downstream.Shell
 public import SLT.Pushforward.Shell
 
@@ -55,31 +55,6 @@ theorem norm_R2_smul {c : ℝ} (hc : 0 < c) (w : Row2 × Row2) : ‖R2 (c • w)
 /-- `‖R₃ (c w)‖ = c³ ‖R₃ w‖` for `c > 0`. -/
 theorem norm_R3_smul {c : ℝ} (hc : 0 < c) (w : Row3 × Row3) : ‖R3 (c • w)‖ = c ^ 3 * ‖R3 w‖ := by
   rw [R3_smul, norm_smul, Real.norm_of_nonneg (by positivity)]
-
-/-- `generators` is continuous in the four cubics. -/
-theorem continuous_generators :
-    Continuous fun x : (Cubic × Cubic) × (Cubic × Cubic) =>
-      generators x.1.1 x.1.2 x.2.1 x.2.2 := by
-  refine continuous_pi fun i => ?_
-  fin_cases i <;> simp only [generators] <;> fun_prop
-
-/-- `R₂` is continuous. -/
-theorem continuous_R2 : Continuous R2 := by
-  have hc : Continuous cube := by unfold cube; fun_prop
-  have ht : Continuous twoCube := by unfold twoCube cube; fun_prop
-  have : R2 = (fun x : (Cubic × Cubic) × (Cubic × Cubic) => generators x.1.1 x.1.2 x.2.1 x.2.2) ∘
-      fun w : Row2 × Row2 => ((cube w.1.1, twoCube w.1.2), (cube w.2.1, twoCube w.2.2)) := rfl
-  rw [this]
-  exact continuous_generators.comp (by fun_prop)
-
-/-- `R₃` is continuous. -/
-theorem continuous_R3 : Continuous R3 := by
-  have hc : Continuous cube := by unfold cube; fun_prop
-  have ht : Continuous twoCube := by unfold twoCube cube; fun_prop
-  have : R3 = (fun x : (Cubic × Cubic) × (Cubic × Cubic) => generators x.1.1 x.1.2 x.2.1 x.2.2) ∘
-      fun w : Row3 × Row3 => ((twoCube w.1.1, cube w.1.2), (twoCube w.2.1, cube w.2.2)) := rfl
-  rw [this]
-  exact continuous_generators.comp (by fun_prop)
 
 /-- `Row2 × Row2` has real dimension `24`. -/
 theorem finrank_row2Pair : Module.finrank ℝ (Row2 × Row2) = 24 := by

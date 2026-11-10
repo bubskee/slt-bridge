@@ -308,7 +308,6 @@ public theorems that use them. Completeness is checked by `scripts/check_audit.s
 
 /-! Complex integrability margins (`SLT/Pushforward`, `SLT/PositionFour`, `SLT/MiddlePositions`):
 one line per public declaration of these directories, generated with `scripts/DumpDecls.lean`. -/
-
 #print axioms ContinuousLinearMap.toContinuousLinearEquivOfDetNeZero.congr_simp
 #print axioms SLT.MiddlePositions.F
 #print axioms SLT.MiddlePositions.F_eq
@@ -325,7 +324,6 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.MiddlePositions.Three.F_eq
 #print axioms SLT.MiddlePositions.Three.boxInd
 #print axioms SLT.MiddlePositions.Three.centralRegion
-#print axioms SLT.MiddlePositions.Three.continuous_R3
 #print axioms SLT.MiddlePositions.Three.discInt
 #print axioms SLT.MiddlePositions.Three.discInt_eq
 #print axioms SLT.MiddlePositions.Three.discInt_le_central
@@ -366,7 +364,6 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.MiddlePositions.Three.measurableSet_outerRegion
 #print axioms SLT.MiddlePositions.Three.measurableSet_sublevelThree
 #print axioms SLT.MiddlePositions.Three.measurableSet_suffixSet
-#print axioms SLT.MiddlePositions.Three.measurable_F
 #print axioms SLT.MiddlePositions.Three.measurable_W1
 #print axioms SLT.MiddlePositions.Three.measurable_W2
 #print axioms SLT.MiddlePositions.Three.measurable_boxInd
@@ -390,12 +387,10 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.MiddlePositions.Three.measurable_suffixWeight_div_mul
 #print axioms SLT.MiddlePositions.Three.measurable_twoCube
 #print axioms SLT.MiddlePositions.Three.measurePreserving_shuffle
-#print axioms SLT.MiddlePositions.Three.mul_le_sq_add_sq
 #print axioms SLT.MiddlePositions.Three.norm_le_W1_pow
 #print axioms SLT.MiddlePositions.Three.norm_le_W2_pow
 #print axioms SLT.MiddlePositions.Three.norm_toCubic_le_of
 #print axioms SLT.MiddlePositions.Three.one_le_W1
-#print axioms SLT.MiddlePositions.Three.one_le_W2
 #print axioms SLT.MiddlePositions.Three.outerRegion
 #print axioms SLT.MiddlePositions.Three.prefixInner
 #print axioms SLT.MiddlePositions.Three.prefixInner_eq
@@ -430,7 +425,6 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.MiddlePositions.Two.V
 #print axioms SLT.MiddlePositions.Two.V_le
 #print axioms SLT.MiddlePositions.Two.box
-#print axioms SLT.MiddlePositions.Two.continuous_R2
 #print axioms SLT.MiddlePositions.Two.coordsEquiv
 #print axioms SLT.MiddlePositions.Two.disc_coords
 #print axioms SLT.MiddlePositions.Two.enorm_inv_rpow_ne_zero
@@ -453,7 +447,6 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.MiddlePositions.Two.measurableSet_preSet
 #print axioms SLT.MiddlePositions.Two.measurable_Bsuf
 #print axioms SLT.MiddlePositions.Two.measurable_Bsuf_right
-#print axioms SLT.MiddlePositions.Two.measurable_F
 #print axioms SLT.MiddlePositions.Two.measurable_W2
 #print axioms SLT.MiddlePositions.Two.measurable_box_indicator
 #print axioms SLT.MiddlePositions.Two.measurable_pre
@@ -466,7 +459,6 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.MiddlePositions.Two.norm_rpow_le_weight
 #print axioms SLT.MiddlePositions.Two.ofCoords
 #print axioms SLT.MiddlePositions.Two.ofReal_one_add_rpow_mul_le
-#print axioms SLT.MiddlePositions.Two.one_le_W2
 #print axioms SLT.MiddlePositions.Two.pre
 #print axioms SLT.MiddlePositions.Two.pre1
 #print axioms SLT.MiddlePositions.Two.preSet
@@ -500,7 +492,6 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.MiddlePositions.borelSpace_row3Pair
 #print axioms SLT.MiddlePositions.continuous_R2
 #print axioms SLT.MiddlePositions.continuous_R3
-#print axioms SLT.MiddlePositions.continuous_generators
 #print axioms SLT.MiddlePositions.enorm_inv_rpow_eq_ofReal
 #print axioms SLT.MiddlePositions.finrank_row2Pair
 #print axioms SLT.MiddlePositions.finrank_row3Pair
@@ -515,6 +506,7 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.MiddlePositions.isAddHaarMeasure_volume_row3Pair
 #print axioms SLT.MiddlePositions.lintegral_W2_twoCube_le
 #print axioms SLT.MiddlePositions.locallyIntegrableF
+#print axioms SLT.MiddlePositions.measurable_F
 #print axioms SLT.MiddlePositions.measurable_twoCubeWeight
 #print axioms SLT.MiddlePositions.norm_R2_smul
 #print axioms SLT.MiddlePositions.norm_R3_smul
@@ -522,6 +514,7 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.MiddlePositions.norm_hess_le
 #print axioms SLT.MiddlePositions.norm_mul_norm_det2_le
 #print axioms SLT.MiddlePositions.ofReal_W2_le
+#print axioms SLT.MiddlePositions.one_le_W2
 #print axioms SLT.MiddlePositions.quadC
 #print axioms SLT.MiddlePositions.quadC_pos
 #print axioms SLT.MiddlePositions.shellThree_lintegral_lt_top
@@ -552,7 +545,6 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.PositionFour.Downstream.cubicMap
 #print axioms SLT.PositionFour.Downstream.densityBound_toCubic_le
 #print axioms SLT.PositionFour.Downstream.disc_toCubic
-#print axioms SLT.PositionFour.Downstream.discr_disc
 #print axioms SLT.PositionFour.Downstream.farMarginal
 #print axioms SLT.PositionFour.Downstream.finrank_rowPair
 #print axioms SLT.PositionFour.Downstream.four_mul_sq_mul_disc
@@ -727,7 +719,6 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.PositionFour.measurePreserving_rowEquiv
 #print axioms SLT.PositionFour.mem_image_rootMap
 #print axioms SLT.PositionFour.middle_eq_zero_of_hess
-#print axioms SLT.PositionFour.mul_le_sq_add_sq
 #print axioms SLT.PositionFour.mul_mul_le_amgm
 #print axioms SLT.PositionFour.norm_cube
 #print axioms SLT.PositionFour.norm_det2_chartPair
@@ -816,6 +807,7 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.Pushforward.lintegral_twoPoint_lt_top
 #print axioms SLT.Pushforward.measurableSet_homLayer
 #print axioms SLT.Pushforward.measurableSet_homShell
+#print axioms SLT.Pushforward.mul_le_sq_add_sq
 #print axioms SLT.Pushforward.norm_leadingMap_eq_generators
 #print axioms SLT.Pushforward.ofReal_inv_rpow_of_pos
 #print axioms SLT.Pushforward.ofReal_rpow_mul_inv_rpow_le

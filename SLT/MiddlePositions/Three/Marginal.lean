@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 -/
 module
 
+public import SLT.MiddlePositions.Basic
 public import SLT.MiddlePositions.Three.Suffix
 public import SLT.PositionFour.Downstream.Finiteness
 public import SLT.MiddlePositions.Toolkit.Quadratic
@@ -46,11 +47,6 @@ theorem F_eq (P : Cubic) :
     F P = ‖disc P‖ₑ⁻¹ ^ (4 / 3 : ℝ) +
       ENNReal.ofReal (‖P‖ ^ (1 / 4 : ℝ)) * ‖disc P‖ₑ⁻¹ ^ (11 / 8 : ℝ) := by
   rw [F, twoCubeDensity, enorm_eq_nnnorm]
-
-/-- `F` is measurable. -/
-theorem measurable_F : Measurable F := by
-  have := continuous_disc.measurable
-  unfold F; fun_prop
 
 /-! ### The marginal -/
 

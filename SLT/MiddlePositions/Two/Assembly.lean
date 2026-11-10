@@ -117,14 +117,6 @@ theorem norm_rpow_le_W2 (g : Form × Form) : ‖g‖ ^ (1 / 4 : ℝ) ≤ W2 g - 
   rw [Prod.norm_def g]
   unfold W2; linarith
 
-/-- `W₂ ≥ 1`. -/
-theorem one_le_W2 (g : Form × Form) : 1 ≤ W2 g := by
-  unfold W2; have := Real.rpow_nonneg (norm_nonneg g.1.1) (1 / 4 : ℝ)
-  have := Real.rpow_nonneg (norm_nonneg g.1.2) (1 / 4 : ℝ)
-  have := Real.rpow_nonneg (norm_nonneg g.2.1) (1 / 4 : ℝ)
-  have := Real.rpow_nonneg (norm_nonneg g.2.2) (1 / 4 : ℝ)
-  linarith
-
 /-- **The product weight dominates the weight of the theorem**:
 `‖w‖^{1/4} ≤ V(l₁, l₂) W₂(g₁) W₂(g₂)`. -/
 theorem norm_rpow_le_weight (w : Row2 × Row2) :
@@ -147,11 +139,6 @@ theorem norm_rpow_le_weight (w : Row2 × Row2) :
     unfold V; ring
   nlinarith [mul_nonneg hx hy, mul_nonneg hy hz, mul_nonneg hx hz,
     mul_nonneg (mul_nonneg hx hy) hz]
-
-/-- `R₂` is continuous. -/
-theorem continuous_R2 : Continuous R2 := by
-  unfold R2 generators twoCube cube
-  fun_prop
 
 /-- The suffix-box integrand of the second suffix row. -/
 noncomputable def Bsuf (Q₀ : ℂ) (g : Form × Form) : ℝ≥0∞ :=

@@ -40,6 +40,7 @@ public import SLT.PositionFour.Upstream
 public import SLT.PositionFour.Downstream
 public import SLT.PositionFour.Threshold
 public import SLT.MiddlePositions.Defs
+public import SLT.MiddlePositions.Basic
 public import SLT.MiddlePositions.Toolkit
 public import SLT.MiddlePositions.Two
 public import SLT.MiddlePositions.Three

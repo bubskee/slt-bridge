@@ -106,7 +106,10 @@ Removed as special cases of a general lemma:
   `discConstP p`). Neither is an instance of the other as stated; both proofs are kept.
 * `Pushforward.lintegral_ball_rpow_neg_lt_top` (finiteness) and `Pushforward.lintegral_ball_inv_rpow`
   (exact value) cover the same integral in two forms.
-* Outside the planar toolkit, some helpers are proved twice under different namespaces, for example
-  `SLT.MiddlePositions.Two.measurable_F` / `SLT.MiddlePositions.Three.measurable_F`,
-  `SLT.MiddlePositions.Three.F_eq` / `SLT.MiddlePositions.F_eq`, and
-  `SLT.MiddlePositions.Two.one_le_W2` / `SLT.MiddlePositions.Three.one_le_W2`. They were left alone.
+* Helpers that were proved twice under different namespaces now have one copy each:
+  `measurable_F`, `one_le_W2`, `continuous_R2` and `continuous_R3` in
+  `SLT/MiddlePositions/Basic.lean`; `discr_disc` in `SLT/PositionFour/Upstream/Algebra.lean`;
+  `mul_le_sq_add_sq` in `SLT/Pushforward/Basic.lean`. `continuous_generators` was removed with the
+  longer continuity proofs that used it. Some names still occur in two namespaces with different
+  statements (for example `F_eq`, `measurable_W2`, `sublevel_indicator_le`); those are not
+  duplicates.

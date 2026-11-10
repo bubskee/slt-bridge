@@ -41,16 +41,6 @@ theorem le_one_add_sq (a : ℝ≥0∞) : a ≤ 1 + a ^ 2 := by
       _ = a ^ 2 := (sq a).symm
       _ ≤ 1 + a ^ 2 := le_add_self
 
-/-- `a b ≤ a² + b²`. -/
-theorem mul_le_sq_add_sq (a b : ℝ≥0∞) : a * b ≤ a ^ 2 + b ^ 2 := by
-  rcases le_total a b with h | h
-  · calc a * b ≤ b * b := by gcongr
-      _ = b ^ 2 := (sq b).symm
-      _ ≤ a ^ 2 + b ^ 2 := le_add_self
-  · calc a * b ≤ a * a := by gcongr
-      _ = a ^ 2 := (sq a).symm
-      _ ≤ a ^ 2 + b ^ 2 := le_self_add
-
 /-! ### The translated kernel bound -/
 
 /-- The translated unit kernel `𝟙{‖x - y - z‖ < 1}`, as a function of `y`. -/
@@ -112,7 +102,7 @@ theorem lintegral_kernel_le {m f g : E → ℝ≥0∞} (hf : Measurable f) (hg :
             have e1 : f x * g y ≤ f x * (1 + g y ^ 2) := by gcongr; exact le_one_add_sq _
             have e2 : g x * f y ≤ f y * (1 + g x ^ 2) := by
               rw [mul_comm]; gcongr; exact le_one_add_sq _
-            have e3 := mul_le_sq_add_sq (g x) (g y)
+            have e3 := Pushforward.mul_le_sq_add_sq (g x) (g y)
             exact add_le_add (add_le_add (add_le_add le_rfl e1) e2) e3
         _ = _ := by ring
     · have h0 : k x y = 0 := by simp only [hk, indicator_of_notMem hxy]
@@ -177,15 +167,6 @@ theorem measurable_twoCube : Measurable twoCube := by unfold twoCube cube; fun_p
 
 /-- `W₂` is measurable. -/
 theorem measurable_W2 : Measurable W2 := by unfold W2; fun_prop
-
-/-- `W₂ ≥ 1`. -/
-theorem one_le_W2 (g : Form × Form) : 1 ≤ W2 g := by
-  unfold W2
-  have := Real.rpow_nonneg (norm_nonneg g.1.1) (1 / 4 : ℝ)
-  have := Real.rpow_nonneg (norm_nonneg g.1.2) (1 / 4 : ℝ)
-  have := Real.rpow_nonneg (norm_nonneg g.2.1) (1 / 4 : ℝ)
-  have := Real.rpow_nonneg (norm_nonneg g.2.2) (1 / 4 : ℝ)
-  linarith
 
 /-- **`WeightedTwoCubeBound` in integral form**: for measurable `φ ≥ 0` on cubic space,
 `∫ W₂(g) φ(Ψ(g)) dg ≤ C ∫ F(P) φ(P) dP`. -/

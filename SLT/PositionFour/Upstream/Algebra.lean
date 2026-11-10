@@ -130,4 +130,9 @@ theorem quadAct_st (g : Form × Form) : quadAct g ![0, 1, 0] = formMul g.1 g.2 :
   ext i
   fin_cases i <;> simp [quadAct, formMul]
 
+/-- The discriminant of `𝔇` as a quadratic in `P₃` is `16 (P₁² - P₀P₂)³`. -/
+theorem discr_disc (P₀ P₁ P₂ : ℂ) :
+    (4 * P₁ ^ 3 - 6 * P₀ * P₁ * P₂) ^ 2 - 4 * P₀ ^ 2 * (4 * P₀ * P₂ ^ 3 - 3 * P₁ ^ 2 * P₂ ^ 2) =
+      16 * (P₁ ^ 2 - P₀ * P₂) ^ 3 := by ring
+
 end SLT.PositionFour

@@ -307,10 +307,6 @@ theorem measurable_shuffledBound : Measurable shuffledBound := by
     measurable_suffixFactor.comp measurable_snd
   exact measurable_prefixFactor.mul h
 
-/-- `R₃` is continuous. -/
-theorem continuous_R3 : Continuous R3 := by
-  unfold R3 generators twoCube cube; fun_prop
-
 /-- The unit sublevel set of `R₃` is measurable. -/
 theorem measurableSet_sublevelThree : MeasurableSet {w : Row3 × Row3 | ‖R3 w‖ < 1} :=
   measurableSet_lt continuous_R3.norm.measurable measurable_const

@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 -/
 module
 
+public import SLT.MiddlePositions.Basic
 public import SLT.MiddlePositions.Two.Kernel
 
 /-!
@@ -98,13 +99,6 @@ theorem norm_coords_le {z Q u v : ℂ} (hu : ‖u‖ < 1) (hv : ‖v‖ < 1) :
     ‖(![z, Q, u, v] : Cubic)‖ ≤ ‖z‖ + (1 + ‖Q‖) := by
   refine (pi_norm_le_iff_of_nonneg (by positivity)).mpr fun i => ?_
   fin_cases i <;> simp <;> linarith [norm_nonneg z, norm_nonneg Q]
-
-/-- The bounding density `F` is measurable. -/
-theorem measurable_F : Measurable F := by
-  have hd : Measurable fun P : Cubic => ((‖disc P‖₊ : ℝ≥0∞)⁻¹) ^ (11 / 8 : ℝ) :=
-    (continuous_disc.measurable.nnnorm.coe_nnreal_ennreal.inv.pow_const _)
-  unfold F
-  exact measurable_twoCubeDensity.add ((measurable_norm.pow_const _).ennreal_ofReal.mul hd)
 
 /-- `F(P) ≤ |𝔇|^{-4/3} + (a^{1/4} + b^{1/4}) |𝔇|^{-11/8}` when `‖P‖ ≤ a + b`. -/
 theorem F_le {P : Cubic} {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hP : ‖P‖ ≤ a + b) :

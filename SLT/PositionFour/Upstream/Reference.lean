@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 -/
 module
 
+public import SLT.Pushforward.Basic
 public import SLT.Pushforward.Planar
 
 /-!
@@ -82,16 +83,6 @@ theorem lintegral_refKernel_sq_lt_top : ∫⁻ z, refKernel z ^ 2 < ∞ := by
     rw [← ENNReal.rpow_natCast, ← ENNReal.rpow_mul]
     norm_num
   · simp [refKernel, indicator_of_notMem hz]
-
-/-- `x y ≤ x² + y²` in `ℝ≥0∞`. -/
-theorem mul_le_sq_add_sq (x y : ℝ≥0∞) : x * y ≤ x ^ 2 + y ^ 2 := by
-  rcases le_total x y with h | h
-  · calc x * y ≤ y * y := mul_le_mul_left h y
-      _ = y ^ 2 := (sq y).symm
-      _ ≤ x ^ 2 + y ^ 2 := le_add_self
-  · calc x * y ≤ x * x := mul_le_mul_right h x
-      _ = x ^ 2 := (sq x).symm
-      _ ≤ x ^ 2 + y ^ 2 := le_self_add
 
 /-- The pointwise replacement for Young: `A B k ≤ (A B)^{4/3} + (A^{4/3} + B^{4/3}) k²`. -/
 theorem mul_mul_le_amgm (A B k : ℝ≥0∞) :
