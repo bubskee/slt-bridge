@@ -489,4 +489,80 @@ theorem lintegral_closedBall_twoCubeDensity_lt_top (R : ℝ) :
         congr 1; funext j; exact lintegral_comp_cubicAct (norm_det2_chartPair j) (hG j)
     _ < ∞ := ENNReal.sum_lt_top.mpr fun j _ => lintegral_chart_lt_top (hC j) _
 
+/-! ### Local finiteness -/
+
+/-- **The bounding density is dominated by `|𝔇|^{-4/3}` on balls**, for `0 ≤ β < 2`: both
+exponents `1` and `1 + β/6` are at most `4/3`, and `‖P‖`, `‖H(P)‖`, `|𝔇(P)|` are bounded. -/
+theorem densityBound_le_on_ball {β : ℝ} (hβ0 : 0 ≤ β) (hβ : β < 2) (R : ℝ) :
+    ∃ K : ℝ≥0∞, K < ∞ ∧ ∀ P ∈ closedBall (0 : Cubic) R,
+      densityBound β P ≤ K * twoCubeDensity P := by
+  obtain ⟨Md, hMd⟩ := (isCompact_closedBall (0 : Cubic) R).exists_bound_of_continuousOn
+    (f := disc) (by unfold disc; fun_prop)
+  obtain ⟨Mh, hMh⟩ := (isCompact_closedBall (0 : Cubic) R).exists_bound_of_continuousOn
+    (f := hess) (by unfold hess; fun_prop)
+  set M := max Md 0 + 1
+  have hM : 1 ≤ M := by simp only [M]; linarith [le_max_right Md 0]
+  set R' := max R 0
+  set Mh' := max Mh 0
+  set k1 := R' ^ (β / 3) * M ^ (1 / 3 : ℝ)
+  set k2 := Mh' ^ (β / 2) * M ^ (1 / 3 - β / 6)
+  have hk1 : 0 ≤ k1 := by positivity
+  have hk2 : 0 ≤ k2 := by positivity
+  refine ⟨ENNReal.ofReal (k1 + k2 + 1), ENNReal.ofReal_lt_top, fun P hP => ?_⟩
+  by_cases hd : disc P = 0
+  · have : twoCubeDensity P = ⊤ := by
+      simp [twoCubeDensity, hd, ENNReal.top_rpow_of_pos (by norm_num : (0 : ℝ) < 4 / 3)]
+    rw [this, ENNReal.mul_top (ENNReal.ofReal_ne_zero_iff.mpr (by positivity))]
+    exact le_top
+  have hdpos : 0 < ‖disc P‖ := norm_pos_iff.mpr hd
+  have hdM : ‖disc P‖ ≤ M := by
+    have := hMd P hP; simp only [M]; linarith [le_max_left Md 0]
+  have hPR : ‖P‖ ≤ R' := (mem_closedBall_zero_iff.mp hP).trans (le_max_left _ _)
+  have hHM : ‖hess P‖ ≤ Mh' := (hMh P hP).trans (le_max_left _ _)
+  -- convert to real numbers
+  have hinv : ∀ e : ℝ, ((‖disc P‖₊ : ℝ≥0∞)⁻¹) ^ e = ENNReal.ofReal (‖disc P‖ ^ (-e)) := by
+    intro e; rw [inv_nnnorm_rpow, enorm_rpow_eq_ofReal hd]
+  have hdb : densityBound β P = ENNReal.ofReal (‖P‖ ^ (β / 3) * ‖disc P‖ ^ (-(1 : ℝ)) +
+      ‖hess P‖ ^ (β / 2) * ‖disc P‖ ^ (-(1 + β / 6))) := by
+    rw [densityBound, hinv (1 + β / 6), ← ENNReal.rpow_one ((‖disc P‖₊ : ℝ≥0∞)⁻¹), hinv 1,
+      ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity),
+      ← ENNReal.ofReal_add (by positivity) (by positivity)]
+  rw [hdb, twoCubeDensity, hinv, ← ENNReal.ofReal_mul (by positivity)]
+  refine ENNReal.ofReal_le_ofReal ?_
+  set d := ‖disc P‖
+  have e1 : d ^ (-(1 : ℝ)) = d ^ (1 / 3 : ℝ) * d ^ (-(4 / 3 : ℝ)) := by
+    rw [← Real.rpow_add hdpos]; norm_num
+  have e2 : d ^ (-(1 + β / 6)) = d ^ (1 / 3 - β / 6) * d ^ (-(4 / 3 : ℝ)) := by
+    rw [← Real.rpow_add hdpos]; congr 1; ring
+  have b1 : ‖P‖ ^ (β / 3) * d ^ (1 / 3 : ℝ) ≤ k1 := by
+    change ‖P‖ ^ (β / 3) * d ^ (1 / 3 : ℝ) ≤ R' ^ (β / 3) * M ^ (1 / 3 : ℝ)
+    gcongr
+  have b2 : ‖hess P‖ ^ (β / 2) * d ^ (1 / 3 - β / 6) ≤ k2 := by
+    have : 0 ≤ 1 / 3 - β / 6 := by linarith
+    change ‖hess P‖ ^ (β / 2) * d ^ (1 / 3 - β / 6) ≤ Mh' ^ (β / 2) * M ^ (1 / 3 - β / 6)
+    gcongr
+  have hd43 : 0 ≤ d ^ (-(4 / 3 : ℝ)) := by positivity
+  rw [e1, e2]
+  nlinarith [mul_le_mul_of_nonneg_right b1 hd43, mul_le_mul_of_nonneg_right b2 hd43]
+
+/-- **Interface, part 2, proved.** For `0 ≤ β < 2`, `rowMeasure β` is finite on closed balls. -/
+theorem locallyFiniteRow {β : ℝ} (hβ0 : 0 ≤ β) (hβ : β < 2) : LocallyFiniteRow β := by
+  intro r
+  obtain ⟨K, hK, hb⟩ := densityBound_le_on_ball hβ0 hβ r
+  have hD := densityBound_holds hβ0 hβ
+  calc rowMeasure β (closedBall 0 r)
+      ≤ (ENNReal.ofReal (densityConst β) • (volume : Measure Cubic).withDensity
+          (densityBound β)) (closedBall 0 r) := Measure.le_iff'.mp hD _
+    _ = ENNReal.ofReal (densityConst β) * ∫⁻ P in closedBall (0 : Cubic) r, densityBound β P := by
+        rw [Measure.smul_apply, withDensity_apply _ measurableSet_closedBall, smul_eq_mul]
+    _ ≤ ENNReal.ofReal (densityConst β) *
+          ∫⁻ P in closedBall (0 : Cubic) r, K * twoCubeDensity P := by
+        gcongr 1
+        exact setLIntegral_mono' measurableSet_closedBall hb
+    _ = ENNReal.ofReal (densityConst β) *
+          (K * ∫⁻ P in closedBall (0 : Cubic) r, twoCubeDensity P) := by
+        rw [lintegral_const_mul _ measurable_twoCubeDensity]
+    _ < ∞ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top
+        (ENNReal.mul_lt_top hK (lintegral_closedBall_twoCubeDensity_lt_top r))
+
 end SLT.PositionFour
