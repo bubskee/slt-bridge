@@ -38,7 +38,7 @@ open scoped ENNReal
 /-- The real determinant of a complex-linear map is the squared modulus of its complex
 determinant. -/
 theorem det_restrictScalars_complex {V : Type*} [AddCommGroup V] [Module ℂ V]
-    [Module.Finite ℂ V] (L : V →ₗ[ℂ] V) :
+    (L : V →ₗ[ℂ] V) :
     (L.restrictScalars ℝ).det = Complex.normSq L.det := by
   rw [LinearMap.det_restrictScalars, Algebra.norm_complex_apply]
 
