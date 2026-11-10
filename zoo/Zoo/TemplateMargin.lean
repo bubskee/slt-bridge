@@ -29,9 +29,10 @@ and `ThmKUpper`. With the proved lower bound (`Zpos_lower_N4`) it gives `ThmK`.
 three position margins.
 
 The comparison step is part of `PositionMargin` here. `Zoo/LossComparison.lean` discharges it
-from `vector-slt-lean` (`VectorSLT/LossCompare`), leaving the angular margin of three explicit
-functions. The angular margin is the step that needs resolution and stability (see the project
-plan, kept outside this repository).
+from `vector-slt-lean` (`VectorSLT/LossCompare`), leaving a Laplace bound for three explicit
+polynomials on `ℝ¹²`, for which the angular margin is a sufficient condition. That bound is the
+step that needs stability and resolution (see `Zoo/LossComparison.lean` and the project plan,
+kept outside this repository).
 (`VectorSLT` is not written in the `module` system, so this file is a plain, non-`module` file.)
 -/
 

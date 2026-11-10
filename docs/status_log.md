@@ -361,7 +361,7 @@ Branch `r02-certificate`, cut from `main` @ `fd0b247`. **File:** `zoo/Zoo/MixedG
 - **Audit.** Core 286/286. Zoo 169 public declarations plus 11 source theorems, 180/180, all on
   `[propext, Classical.choice, Quot.sound]`. Lint clean, zero warnings.
 
-### The position table from three shell margins (2026-11-10, Papers forum, Bobby's go-ahead)
+### The position table from three inactive Laplace bounds (2026-11-10, Papers forum, Bobby's go-ahead)
 
 Branch `loss-glue`, cut from `main` @ `e032936`. **File:** `zoo/Zoo/LossComparison.lean`. **No core change.**
 The zoo's VectorSLT pin moves to `7ac38c6`, which adds `VectorSLT/LossCompare`.
@@ -369,14 +369,21 @@ The zoo's VectorSLT pin moves to `7ac38c6`, which adds `VectorSLT/LossCompare`.
 - **What changed upstream.** `vector-slt-lean` now proves the loss comparison at positions two to four for every
   shear target: coordinates `(𝐜, w)` with a bounded change of variables, `κ (‖𝐜‖² + G_p(w)) ≤ K`, and
   `G_p(r ξ) = r⁶ H_p(r, ξ)` for explicit polynomials. That is `PositionMargin` without the angular margin.
-- **[COND: `ShellMargin`] `mainTheorem_shear_of_shellMargin`.** The table `(4,5), (4,1), (4,1), (4,1)` from
-  `ShellMargin (Hmid 1)`, `ShellMargin (Hmid 2)`, `ShellMargin H4`: for some `s > 2`, `∫_{shell} H_p(r, ·)^{-s}`
-  is bounded uniformly in small `r > 0`. The hypotheses mention no network, target, input law, prior or cutoff.
-  `thmN_of_shellMargin` and `thmKUpper_of_shellMargin` give the source's two named hypotheses.
+- **[COND: `InactiveLaplace`] `mainTheorem_shear_of_inactiveLaplace`.** The table `(4,5), (4,1), (4,1), (4,1)` from
+  `InactiveLaplace (Gmid 1)`, `InactiveLaplace (Gmid 2)`, `InactiveLaplace G4`: on some ball of `ℝ¹²`,
+  `∫ e^{-N G_p} ≤ C N⁻²`. The hypotheses mention no network, target, input law, prior or cutoff.
+  `thmN_of_inactiveLaplace` and `thmKUpper_of_inactiveLaplace` give the source's two named hypotheses.
+- **Why this hypothesis and not the angular margin.** The first version of this file (`ccca232`) was conditional
+  on `ShellMargin H_p`, the template's `AngularMargin` for the explicit angular parts. That is a real bound,
+  uniform in the radius `r`. Paper 2 does not prove it. Its analytic step works over `ℂ`: the stability theorem
+  of Phong and Sturm gives a uniform complex margin, hence `N⁻⁴` for the integral over a polydisk of `ℂ¹²`, and
+  a transfer through a real resolution of singularities turns that Laplace bound into `N⁻²` over `ℝ¹²`. What
+  it delivers is `InactiveLaplace`. `ShellMargin` implies it (`inactiveLaplace_of_angularMargin`,
+  `mainTheorem_shear_of_shellMargin`) and stays in the file as a sufficient condition. Note for M3: discharging
+  `AngularMargin` itself from a complex threshold bound would need a real stability statement that the two
+  cited theorems do not supply; `InactiveLaplace` needs only what they state.
 - **[LC] `H4_zero_eq_core`, `Hmid_one_zero_eq_core`, `Hmid_two_zero_eq_core`.** At `r = 0`, `H_p` is the squared
   norm of the core's complex leading map at the real point.
-- **Not built.** The shell margins themselves. The core has the strict complex margins
-  (`strictShellMargin_leadingMaps`); going from those to the real shell, uniformly in `r`, uses the stability
-  theorem of Phong and Sturm and a complex-to-real transfer.
-- **Audit.** Core 797/797. Zoo 196 public declarations plus 16 source theorems, 212/212, all on
+- **Not built.** The inactive bounds themselves.
+- **Audit.** Core 797/797. Zoo 205 public declarations plus 16 source theorems, 221/221, all on
   `[propext, Classical.choice, Quot.sound]`. Lint clean.
