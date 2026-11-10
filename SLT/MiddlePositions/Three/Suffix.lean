@@ -30,7 +30,7 @@ form `l = (a, b)` of a row at position three has cube `(a³, a²b, ab², b³)`. 
 
 namespace SLT.MiddlePositions.Three
 
-open MeasureTheory Set Real Metric SLT.PositionFour SLT.PositionFour.Downstream
+open MeasureTheory Set Real Metric SLT.PositionFour SLT.PositionFour.Downstream SLT.Pushforward
 open scoped ENNReal NNReal
 
 /-! ### The suffix constraints and weight -/

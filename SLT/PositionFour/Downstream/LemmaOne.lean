@@ -30,7 +30,7 @@ exactly the threshold `p > 10/(6-β)`.
 
 namespace SLT.PositionFour.Downstream
 
-open MeasureTheory Set Real Metric
+open MeasureTheory Set Real Metric SLT.Pushforward
 open scoped ENNReal NNReal
 
 /-- `{v : |v|ⁿ ≤ r}` lies in the closed disc of radius `r^{1/n}`. -/

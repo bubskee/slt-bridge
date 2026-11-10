@@ -36,7 +36,7 @@ The bound for the suffix kernel itself on unit `Q`-discs, `setLIntegral_box_F_le
 
 namespace SLT.MiddlePositions.Two
 
-open MeasureTheory Set Real Metric SLT.PositionFour SLT.PositionFour.Downstream
+open MeasureTheory Set Real Metric SLT.PositionFour SLT.PositionFour.Downstream SLT.Pushforward
 open scoped ENNReal NNReal
 
 /-! ### Small facts in `ℝ≥0∞` -/

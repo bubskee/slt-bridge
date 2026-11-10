@@ -28,6 +28,8 @@ public import SLT.Template.Cone
 public import SLT.Template.Fibre
 public import SLT.Template.Margin
 public import SLT.Template.Leading
+public import SLT.Pushforward.Basic
+public import SLT.Pushforward.Shell
 public import SLT.PositionFour.Defs
 public import SLT.PositionFour.Upstream
 public import SLT.PositionFour.Downstream

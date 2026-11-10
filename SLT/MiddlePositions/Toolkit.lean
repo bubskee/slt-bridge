@@ -23,8 +23,8 @@ with no hypotheses:
 
 The shell corollary (note §6) for both middle positions, from the headline statements:
 
-* `toolkit_shell_two`: `SublevelTwo → ∀ s < 97/24, ∫_{shell} ‖R₂‖^{-2s} < ∞`;
-* `toolkit_shell_three`: `SublevelThree → ∀ s < 97/24, ∫_{shell} ‖R₃‖^{-2s} < ∞`.
+* `shell_two`: `SublevelTwo → ∀ s < 97/24, ∫_{shell} ‖R₂‖^{-2s} < ∞`;
+* `shell_three`: `SublevelThree → ∀ s < 97/24, ∫_{shell} ‖R₃‖^{-2s} < ∞`.
 
 Where each part of the note lives:
 
@@ -36,8 +36,8 @@ Where each part of the note lives:
 * the same lemma, second half: `lintegral_last_le_rpow`, `lintegral_middle_le_rpow`,
   `lintegral_chart_discDensity_lt_top`, `lintegral_closedBall_discDensity_lt_top`,
   `locallyIntegrableF` (`Local`);
-* §6 "A shell corollary without polar coordinates": `lintegral_homShell_lt_top_of_moment`,
-  `shell_two`, `shell_three` (`Shell`).
+* §6 "A shell corollary without polar coordinates": `shell_two`, `shell_three` (`Shell`), from
+  the general `SLT.Pushforward.lintegral_homShell_lt_top_of_moment`.
 -/
 
 @[expose] public section
@@ -55,15 +55,5 @@ theorem toolkit_locallyIntegrableF : LocallyIntegrableF := locallyIntegrableF
 constant. -/
 theorem toolkit_fullPlaneQuadratic : ∀ t : ℝ, 1 < t → t < 2 → ∃ C, FullPlaneQuadratic t C :=
   fullPlaneQuadratic
-
-/-- **The shell corollary at position two.** -/
-theorem toolkit_shell_two (h : SublevelTwo) {s : ℝ} (hs : s < 97 / 24) :
-    ∫⁻ w in homShell (Row2 × Row2), ‖R2 w‖ₑ⁻¹ ^ (2 * s) < ⊤ :=
-  shell_two h hs
-
-/-- **The shell corollary at position three.** -/
-theorem toolkit_shell_three (h : SublevelThree) {s : ℝ} (hs : s < 97 / 24) :
-    ∫⁻ w in homShell (Row3 × Row3), ‖R3 w‖ₑ⁻¹ ^ (2 * s) < ⊤ :=
-  shell_three h hs
 
 end SLT.MiddlePositions

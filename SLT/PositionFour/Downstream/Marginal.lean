@@ -32,7 +32,7 @@ The note's logarithm `1 + log(1/ε)` is replaced by `|P₀|^{η/2}` for an arbit
 
 namespace SLT.PositionFour.Downstream
 
-open MeasureTheory Set Real Metric
+open MeasureTheory Set Real Metric SLT.Pushforward
 open scoped ENNReal NNReal
 
 /-! ### Coordinates and algebra -/

@@ -32,7 +32,7 @@ it is proved by splitting the plane at `|z - c| = 2|δ|^{1/2}`: inside, `|z|^γ`
 
 namespace SLT.MiddlePositions.Two
 
-open MeasureTheory Set Real Metric SLT.PositionFour SLT.PositionFour.Downstream
+open MeasureTheory Set Real Metric SLT.PositionFour SLT.PositionFour.Downstream SLT.Pushforward
 open scoped ENNReal NNReal
 
 /-! ### Real powers -/

@@ -25,7 +25,7 @@ in `Q = q₁`.
 
 namespace SLT.MiddlePositions.Two
 
-open MeasureTheory Set Real Metric SLT.PositionFour SLT.PositionFour.Downstream
+open MeasureTheory Set Real Metric SLT.PositionFour SLT.PositionFour.Downstream SLT.Pushforward
 open scoped ENNReal NNReal
 
 /-! ### Coordinates `(z, Q, u, v)` -/

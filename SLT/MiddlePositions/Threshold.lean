@@ -30,7 +30,7 @@ transfer steps of the paper.
 
 namespace SLT.MiddlePositions
 
-open MeasureTheory
+open MeasureTheory SLT.Pushforward
 open scoped ENNReal
 
 /-- **Position two.** `∫_{‖R₂ w‖ < 1} ‖w‖^{1/4} dw < ∞` over `ℂ¹²`. -/
@@ -47,12 +47,12 @@ theorem sublevelThree : SublevelThree := by
 the shell `{1/2 ≤ ‖w‖ < 1}`. The integrand is `∞` on the zero set of `R₂` when `s > 0`. -/
 theorem shellTwo_lintegral_lt_top {s : ℝ} (hs : s < 97 / 24) :
     ∫⁻ w in homShell (Row2 × Row2), ‖R2 w‖ₑ⁻¹ ^ (2 * s) < ∞ :=
-  toolkit_shell_two sublevelTwo hs
+  shell_two sublevelTwo hs
 
 /-- **The margin at position three.** For every `s < 97/24`, `‖R₃‖^{-2s}` has finite integral
 over the shell `{1/2 ≤ ‖w‖ < 1}`. -/
 theorem shellThree_lintegral_lt_top {s : ℝ} (hs : s < 97 / 24) :
     ∫⁻ w in homShell (Row3 × Row3), ‖R3 w‖ₑ⁻¹ ^ (2 * s) < ∞ :=
-  toolkit_shell_three sublevelThree hs
+  shell_three sublevelThree hs
 
 end SLT.MiddlePositions

@@ -35,7 +35,7 @@ The near part is only used in `L¹`; it is never squared.
 
 namespace SLT.MiddlePositions.Three
 
-open MeasureTheory Set Real Metric SLT.PositionFour SLT.PositionFour.Downstream
+open MeasureTheory Set Real Metric SLT.PositionFour SLT.PositionFour.Downstream SLT.Pushforward
 open scoped ENNReal NNReal
 
 /-! ### The bounding density and planar volumes -/
