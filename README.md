@@ -34,6 +34,11 @@ SLT/Template/      Elementary (weak-L¹, MinLogBound), Cone (critical weights on
                    Fibre (slice bound ⇒ rate, triangular Fubini): the elementary template (brief 03, T1);
                    Margin (angular margin ⇒ log-free radial split): the margin template (T2);
                    Leading (nondegenerate leading map + higher-weight remainder ⇒ same pair) (T3)
+SLT/PositionFour/  complex integrability margin of the position-four leading map on ℂ¹²: Defs (the map,
+                   the row pushforward, the density interface), Upstream (the interface, note §1),
+                   Downstream (sublevel volume and shell, §2–3), Threshold (the two composed)
+SLT/MiddlePositions/ the same at positions two and three: Defs (R2, R3, the interface), Toolkit
+                   (the interface), Two, Three (the sublevel integrals), Threshold (composed)
 Audit.lean         #print axioms for every public core declaration
 zoo/Zoo/           ResidualNetwork, VectorShear, LLC, TemplateM, TemplateMargin,
                    TemplateLeading, ReadWrite,
@@ -60,7 +65,7 @@ has a `#print axioms` line (exclusions go in `scripts/audit_exclude.txt`, curren
 reported axiom is among `propext`, `Classical.choice`, `Quot.sound`; and there is no
 `sorry`/`admit`/`native_decide`.
 
-**Current counts:** core 286/286 public declarations audited; zoo 76/76, plus 11 source theorems
+**Current counts:** core 827/827 public declarations audited; zoo 76/76, plus 11 source theorems
 re-checked. All are on `[propext, Classical.choice, Quot.sound]`. `#print axioms` is transitive, so
 the `private` helpers are covered by the public theorems that use them.
 
@@ -116,6 +121,27 @@ statement passed as an argument. **[STMT]** statement only.
 | T2 margin template: `a` active coordinates + inactive `G` with a strict angular margin (`2ds > D`) ⇒ upper `(a/2 + D/(2d), 1)`, no log; with a lower core ⇒ pair | `laplaceUpper_of_angularMargin`, `hasLaplacePair_of_angularMargin`; the radial split `lintegral_exp_le_of_angularMargin`; `lintegral_eq_shell_average` | [COND: `AngularMargin`]. The margin is the named hypothesis; everything else is proved. `angularMargin_norm_pow` shows it is satisfiable |
 | `m = dim O + 1 ⇔ m = d − dim F` (LP duality) | not in Lean | not formalised |
 | M3 monomialization ⇒ `(λ, m)` exists | not started | on hold |
+
+### Complex integrability margins (`SLT/PositionFour`, `SLT/MiddlePositions`)
+
+Sources: `complex_position_four.tex` and `complex_middle_positions.tex` (forum, 2026-11-09). Each
+statement is about a **leading map as defined in the directory's `Defs.lean`**: `leadingMap` on
+`Row × Row` (position four, values in `ℂ⁶`), `R2` and `R3` on `Row2 × Row2`, `Row3 × Row3`
+(positions two and three, the eleven `generators`). All three domains are `ℂ¹²` and all norms are
+sup norms. **Lean does not prove that these maps are the leading part of the network error**; that
+step, the Euclidean-sphere form of the shell statements, and any sharpness are not formalised. The
+working notes (`NOTES_*.md` in each directory) map every step of the two notes to Lean.
+
+| Item | Lean | Tag |
+|---|---|---|
+| Position four, density interface (`0 ≤ β < 2`): `W_β · Leb` pushed to cubic space is `≤ C · densityBound β · Leb` and finite on balls | `PositionFour.interface`, `upstream_densityBound`, `upstream_locallyFiniteRow`; the two-cube step `twoCubeBound` | [LC] |
+| Position four, Lemma 1 (transverse marginal in `L^p`, `p > 10/(6-β)`) | `PositionFour.Downstream.lemma_one` | [LC] |
+| Position four, sublevel volume: `Leb{‖R‖ < 1} < ∞`, `∫_{‖R‖<1} (W_β(w₁) + W_β(w₂)) < ∞` | `PositionFour.volume_sublevel_lt_top`, `sublevel_weighted_lt_top` | [LC] |
+| Position four, shell margin: `‖R‖^{-2s}` integrable on `{1/2 ≤ ‖w‖ < 1}` for `s < 13/3` | `PositionFour.shell_lintegral_lt_top`, `integrableOn_shell` | [LC] |
+| Middle positions, interface (weighted two-cube bound, `F ∈ L¹_loc`, full-plane quadratic integrals for `1 < t < 2`) | `MiddlePositions.toolkit_weightedTwoCubeBound`, `toolkit_locallyIntegrableF`, `toolkit_fullPlaneQuadratic` | [LC] |
+| Positions two and three, sublevel integral: `∫_{‖R_j w‖<1} ‖w‖^{1/4} < ∞` | `MiddlePositions.sublevelTwo`, `sublevelThree` | [LC] |
+| Positions two and three, shell margin: `‖R_j‖^{-2s}` integrable on the shell for `s < 97/24` (`> 4`, a strict margin) | `MiddlePositions.shellTwo_lintegral_lt_top`, `shellThree_lintegral_lt_top` | [LC] |
+| These maps are the leading part of the network error | not in Lean | not formalised |
 
 ### Zoo (`Zoo`), tagged by what each row imports
 

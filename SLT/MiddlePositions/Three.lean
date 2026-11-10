@@ -30,7 +30,7 @@ Module map:
   integral and the theorem.
 
 Notes, with the note-versus-Lean correspondence and every departure:
-`SLT/MiddlePositions/NOTES_three.md`. Axiom audit: `SLT/MiddlePositions/AuditThree.lean`.
+`SLT/MiddlePositions/NOTES_three.md`. Axiom audit: the root `Audit.lean`.
 -/
 
 @[expose] public section

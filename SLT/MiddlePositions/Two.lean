@@ -26,7 +26,7 @@ Module map: `Planar` (shifted discs, tails, the note's `eq:quad0` and `eq:quadw`
 disc integral `L_t` and the `J` bounds), `Suffix` (the free-`q₀` integration and the suffix
 kernel on unit `Q`-discs), `Prefix` (finiteness of the weighted prefix volume), `Assembly` (the
 weight, the sublevel set, the interface and Tonelli). Notes: `SLT/MiddlePositions/NOTES_two.md`.
-Audit: `SLT/MiddlePositions/AuditTwo.lean`.
+Audit: the root `Audit.lean`.
 -/
 
 @[expose] public section
