@@ -49,7 +49,7 @@ zoo/Zoo/           ResidualNetwork, VectorShear, LLC, TemplateM, TemplateMargin,
                    TemplateLeading, ReadWrite,
                    MLPArrangement, MixedGroup         zoo/Audit.lean  the same for the zoo
 scripts/           check_audit.sh (audit completeness + axioms), DumpDecls.lean, Lint.lean, LintZoo.lean
-docs/status_log.md per-milestone log          PLAN.md  Phase 0 plan, roadmap, questions (§7)
+docs/status_log.md per-milestone log
 ```
 
 ## Build and audit
@@ -176,7 +176,7 @@ The four source theorems the zoo uses (`ResidualSLT.unified_residual_network_cer
 `VectorSLT.mainTheorem_shear_gaussian`) are re-audited in `zoo/Audit.lean`, as are the five source
 lemmas `TemplateM` uses (`lemmaM4`, `m3Int_Echart`, `Gdown`, `UM_inner`, `Zpos_one_lower`) and
 `Zpos_lower_N4` (used by `TemplateMargin`), and `ResidualSLT.positive_homogeneous_laplace_order` (the T3
-guardrail's source). `PLAN.md` §4.5 lists the named hypotheses and what would discharge
+guardrail's source). The project plan (kept outside this repository) lists the named hypotheses and what would discharge
 them. `ThmK` and `ThmN` are
 hypotheses, not axioms, so they do not appear in any audit line.
 

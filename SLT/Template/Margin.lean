@@ -30,7 +30,8 @@ stability enter. In the paper it comes from three ingredients:
 * Bierstone–Milman real transfer.
 
 Here item 3 is the **named hypothesis** `AngularMargin`, stated in Mathlib-only real vocabulary.
-`PLAN.md` §7 ("T2") records what a future `hironaka` import would discharge. Everything else is
+The project plan (kept outside this repository) records what a future `hironaka` import would
+discharge. Everything else is
 proved:
 * `lintegral_eq_shell_average`: polar-free radial coordinates, by averaging over dyadic shells;
 * `lintegral_exp_le_of_angularMargin`: the radial split, with an explicit constant;
@@ -220,7 +221,8 @@ theorem lintegral_radial_min_le {D : ℕ} (hD : 1 ≤ D) {V B p ρ : ℝ} (hV : 
 weighted homogeneous of degree `2d` near `0`, `G(r ξ) = r^{2d} H(r, ξ)` on the shell for
 `0 < r ≤ ε`, and the angular part has a margin `s`: `∫_{shell} H(r, ·)^{-s} ≤ M` uniformly in `r`.
 With `2 d s > D` this is the strict margin of cubic-chaos (K4)/(N2). It is the only
-non-elementary input of the margin template. `PLAN.md` §7 records how `hironaka` (real transfer)
+non-elementary input of the margin template. The project plan (kept outside this repository)
+records how `hironaka` (real transfer)
 together with a stability theorem would discharge it from a complex threshold bound. -/
 def AngularMargin {D : ℕ} (G : (Fin D → ℝ) → ℝ) (d : ℕ) (s ε M : ℝ) : Prop :=
   ∃ H : ℝ → (Fin D → ℝ) → ℝ,

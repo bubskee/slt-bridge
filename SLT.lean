@@ -1,5 +1,5 @@
 /-
-slt-bridge: shared singular-learning-theory core (G1). See PLAN.md.
+slt-bridge: shared singular-learning-theory core (G1).
 -/
 module
 

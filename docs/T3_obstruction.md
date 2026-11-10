@@ -54,4 +54,4 @@ the only named hypothesis in the shear table. That needs three pieces:
 
 Estimate: 600–1000 lines per position, mostly the network's explicit coefficient polynomials at positions
 2–4 (vector-slt-lean has them only for position one, through the M2 coordinates). It is recorded in
-`PLAN.md` §4.5 and was stopped there, as the forum allowed.
+the project plan (kept outside this repository) and was stopped there, as the forum allowed.

@@ -18,7 +18,7 @@ name = "mathlib"
 scope = "leanprover-community"
 rev = "56a005855ea17e0b0958f73ec801ae140b0a1679"
 
-# G2 only (not yet enabled; see PLAN.md §4): hironaka at tag v4.35.0 = 044d89c, same mathlib pin.
+# G2 only (not yet enabled; see the project plan, kept outside this repository): hironaka at tag v4.35.0 = 044d89c, same mathlib pin.
 # [[require]]
 # name = "hironaka"
 # git = "https://github.com/resolutionorg/hironaka"

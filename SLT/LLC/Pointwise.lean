@@ -22,8 +22,8 @@ Proof of the second: by antitonicity, `∫_t^{at} E = log Z(t) - log Z(at)` lies
 `a, b → 1`.
 
 Regular variation is **not** proved here for analytic `K`. It needs exact leading-coefficient
-asymptotics `Z(t) ~ C t^{-λ} (log t)^{m-1}`, which is strictly more than `HasLaplacePair`
-(PLAN.md §4.3). As in `SLT.LLC.Identity`, this is a population, deterministic statement and not
+asymptotics `Z(t) ~ C t^{-λ} (log t)^{m-1}`, which is strictly more than `HasLaplacePair`.
+As in `SLT.LLC.Identity`, this is a population, deterministic statement and not
 a statement about the SGLD estimator.
 -/
 

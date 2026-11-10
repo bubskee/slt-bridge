@@ -1,6 +1,6 @@
 # slt-bridge status log
 
-Moved here from `PLAN.md` §9 in brief 02 (cleanliness pass). Entries are kept as written at the time,
+Moved here from the project plan (kept outside this repository) in brief 02 (cleanliness pass). Entries are kept as written at the time,
 except that each heading now gives its commit. Audit counts in an entry are the counts *at that
 stage*; the current counts are in `README.md` and are checked by `scripts/check_audit.sh`.
 Brief 02 made 54 core and 5 zoo helpers `private` (no statement changes), so some helper names
@@ -175,7 +175,7 @@ theorems and lemmas. Zero warnings in our sources, Batteries lint clean, no `sor
   - `thmN_of_margin`, `thmKUpper_of_margin`, `thmK_of_margin`: `ThmN`/`ThmK` are instances, since
     `4/2 + 12/6 = 4`.
   - `mainTheorem_shear_of_margin`: the position table with margins in place of `ThmK`/`ThmN`.
-- **Hironaka.** `PLAN.md` §4.5 records the discharge route and a design risk: the paper transfers from complex to
+- **Hironaka.** The project plan (kept outside this repository) records the discharge route and a design risk: the paper transfers from complex to
   real variables once, at the ambient level, while the hypothesis here is real and uniform in `r`.
 
 ### Brief 03, T3: leading map plus higher-weight remainder (2026-11-07, overnight run 04). Branch `overnight-templates`
@@ -249,9 +249,9 @@ each stage independently.
   - Nondegenerate weighted-homogeneous leading map: T3, all hypotheses checkable.
   - Loss comparable to a monomial sum: N2.
   - Degenerate leading map: T2 with `AngularMargin` as a named hypothesis. It needs Phong–Sturm stability plus
-    a real transfer (`PLAN.md` §4.5).
+    a real transfer (the project plan, kept outside this repository).
 - **Open items.**
-  - The real transfer has to be uniform in `r` (design risk, `PLAN.md` §4.5).
+  - The real transfer has to be uniform in `r` (design risk; see the project plan, kept outside this repository).
   - The (K3) construction for `PositionMargin` is costed at 600–1000 lines per position.
   - Quasi-homogeneous T3 is unbuilt, with no consumer.
   - The two-block identity group is [unverified] at `(1/3, 1)`.
