@@ -44,3 +44,4 @@ public import SLT.MiddlePositions.Toolkit
 public import SLT.MiddlePositions.Two
 public import SLT.MiddlePositions.Three
 public import SLT.MiddlePositions.Threshold
+public import SLT.Pushforward.Margin

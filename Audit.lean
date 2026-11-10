@@ -781,6 +781,7 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.PositionFour.volume_det2_eq_zero
 #print axioms SLT.PositionFour.volume_refQ_eq_zero
 #print axioms SLT.PositionFour.volume_sublevel_lt_top
+#print axioms SLT.Pushforward.StrictShellMargin
 #print axioms SLT.Pushforward.det_restrictScalars_complex
 #print axioms SLT.Pushforward.discConstP
 #print axioms SLT.Pushforward.discConstP_lt_top
@@ -815,6 +816,7 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.Pushforward.lintegral_twoPoint_lt_top
 #print axioms SLT.Pushforward.measurableSet_homLayer
 #print axioms SLT.Pushforward.measurableSet_homShell
+#print axioms SLT.Pushforward.norm_leadingMap_eq_generators
 #print axioms SLT.Pushforward.ofReal_inv_rpow_of_pos
 #print axioms SLT.Pushforward.ofReal_rpow_mul_inv_rpow_le
 #print axioms SLT.Pushforward.ofReal_rpow_neg_le
@@ -822,5 +824,6 @@ one line per public declaration of these directories, generated with `scripts/Du
 #print axioms SLT.Pushforward.quadConstT_lt_top
 #print axioms SLT.Pushforward.setLIntegral_ball_inv_rpow_le
 #print axioms SLT.Pushforward.setLIntegral_ball_inv_rpow_le_three_pi
+#print axioms SLT.Pushforward.strictShellMargin_leadingMaps
 #print axioms SLT.Pushforward.volume_ball_one_complex
 #print axioms SLT.Pushforward.volume_closedBall_complex
