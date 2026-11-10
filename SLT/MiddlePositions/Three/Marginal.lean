@@ -6,6 +6,7 @@ module
 
 public import SLT.MiddlePositions.Three.Suffix
 public import SLT.PositionFour.Downstream.Finiteness
+public import SLT.MiddlePositions.Toolkit.Quadratic
 
 /-!
 # The two-cube transverse marginal at position three
@@ -50,17 +51,6 @@ theorem F_eq (P : Cubic) :
 theorem measurable_F : Measurable F := by
   have := continuous_disc.measurable
   unfold F; fun_prop
-
-/-- The unit disc has area `π`. -/
-theorem volume_ball_one_complex : volume (ball (0 : ℂ) 1) = ENNReal.ofReal π := by
-  rw [Complex.volume_ball, ENNReal.ofReal_one, one_pow, one_mul, ← ENNReal.ofReal_coe_nnreal,
-    NNReal.coe_real_pi]
-
-/-- The closed disc of radius `r ≥ 0` has area `π r²`. -/
-theorem volume_closedBall_complex {r : ℝ} (hr : 0 ≤ r) :
-    volume (closedBall (0 : ℂ) r) = ENNReal.ofReal (π * r ^ 2) := by
-  rw [Complex.volume_closedBall, ← ENNReal.ofReal_pow hr, ← ENNReal.ofReal_coe_nnreal,
-    NNReal.coe_real_pi, ← ENNReal.ofReal_mul (by positivity), mul_comm]
 
 /-! ### The marginal -/
 
@@ -208,11 +198,6 @@ theorem marginal_le_outer :
     _ = _ := by ring
 
 /-! ### The central region -/
-
-/-- `FullPlaneQuadratic` is monotone in its constant. -/
-theorem fullPlaneQuadratic_mono {t K K' : ℝ} (h : FullPlaneQuadratic t K) (hKK' : K ≤ K') :
-    FullPlaneQuadratic t K' := fun A B D hA =>
-  (h A B D hA).trans (by gcongr)
 
 /-- **The box integral on the central region** (`U ≠ 0`, `1 < t`, `3(t - 1) < 2`): integrating
 `v` over all of `ℂ` with `FullPlaneQuadratic`, then `u` over the unit disc,

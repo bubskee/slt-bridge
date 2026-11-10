@@ -5,7 +5,8 @@ Released under Apache 2.0 license.
 module
 
 public import SLT.MiddlePositions.Defs
-public import SLT.PositionFour.Downstream.Quadratic
+public import SLT.PositionFour.Defs
+public import SLT.Pushforward.QuadraticDisc
 public import SLT.PositionFour.Upstream.Coords
 
 /-!
@@ -30,7 +31,7 @@ form `l = (a, b)` of a row at position three has cube `(a³, a²b, ab², b³)`. 
 
 namespace SLT.MiddlePositions.Three
 
-open MeasureTheory Set Real Metric SLT.PositionFour SLT.PositionFour.Downstream SLT.Pushforward
+open MeasureTheory Set Real Metric SLT.PositionFour SLT.Pushforward
 open scoped ENNReal NNReal
 
 /-! ### The suffix constraints and weight -/

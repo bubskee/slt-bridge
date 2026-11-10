@@ -12,7 +12,8 @@ public import SLT.Pushforward.Quadratic
 
 * `fullPlaneQuadratic`: the interface statement `FullPlaneQuadratic t C` for every `1 < t < 2`,
   with the explicit constant `quadC t = 4^{t-1} (K_t + 1)`, read off the exact full-plane
-  integral `SLT.Pushforward.lintegral_quadratic_eq_rpow`.
+  integral `SLT.Pushforward.lintegral_quadratic_eq_rpow`;
+* `fullPlaneQuadratic_mono`: `FullPlaneQuadratic t K` is monotone in `K`.
 -/
 
 @[expose] public section
@@ -59,6 +60,11 @@ theorem fullPlaneQuadratic_quadC {t : ℝ} (ht1 : 1 < t) (ht2 : t < 2) :
   rw [e, quadC]
   have h1 : 0 ≤ 4 ^ (t - 1) * ‖A‖ ^ (t - 2) * ‖B ^ 2 - 4 * A * D‖ ^ (1 - t) := by positivity
   nlinarith
+
+/-- `FullPlaneQuadratic` is monotone in its constant. -/
+theorem fullPlaneQuadratic_mono {t K K' : ℝ} (hK : FullPlaneQuadratic t K) (hKK' : K ≤ K') :
+    FullPlaneQuadratic t K' := fun A B D hA =>
+  (hK A B D hA).trans (by gcongr)
 
 /-- **Interface 3, proved (existential form).** `∀ t ∈ (1, 2), ∃ C, FullPlaneQuadratic t C`. -/
 theorem fullPlaneQuadratic : ∀ t : ℝ, 1 < t → t < 2 → ∃ C, FullPlaneQuadratic t C :=

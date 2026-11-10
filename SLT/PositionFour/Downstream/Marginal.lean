@@ -5,7 +5,7 @@ Released under Apache 2.0 license.
 module
 
 public import SLT.PositionFour.Defs
-public import SLT.PositionFour.Downstream.Quadratic
+public import SLT.Pushforward.QuadraticDisc
 
 /-!
 # The transverse marginal and its pointwise bounds

@@ -34,7 +34,7 @@ a disc of area `π min(1, |a₁|^{-1})` (`volume_prefix_le`). With `φ(x) = max(
 
 namespace SLT.MiddlePositions.Two
 
-open MeasureTheory Set Real Metric SLT.PositionFour
+open MeasureTheory Set Real Metric SLT.PositionFour SLT.Pushforward
 open scoped ENNReal NNReal
 
 /-! ### The prefix integrand -/

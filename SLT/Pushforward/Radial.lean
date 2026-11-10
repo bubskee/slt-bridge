@@ -4,6 +4,7 @@ Released under Apache 2.0 license.
 -/
 module
 
+public import SLT.Pushforward.Planar
 public import Mathlib.Analysis.SpecialFunctions.PolarCoord
 public import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
 public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
@@ -11,14 +12,20 @@ public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 /-!
 # Radial integrals on `ℂ`
 
-The one-variable analytic input of Lemma 1 of `complex_position_four.tex`. Everything is a
-`lintegral` of an inverse power of a distance in the plane:
+Inverse powers of a distance in the plane (from the analytic input of Lemma 1 of
+`complex_position_four.tex` and the planar lemma of `complex_middle_positions.tex`):
+
+* `volume_ball_one_complex`, `volume_closedBall_complex`: the disc areas `π`, `π r²`;
 
 * `lintegral_norm_comp`: polar coordinates for a radial function, `∫ g(|z|) = 2π ∫₀^∞ r g(r) dr`;
 * `lintegral_ball_inv_rpow`: `∫_{|z| < R} |z|^{-s} = 2π R^{2-s} / (2 - s)` for `s < 2`;
 * `lintegral_ball_sub_inv_rpow_le`: the same bound, with `π R^{2-s}` added, for an off-centre pole
   `|z - c|^{-s}` (uniform in `c`);
-* `lintegral_norm_gt_inv_rpow`: `∫_{|z| > c} |z|^{-γ} = 2π c^{2-γ} / (γ - 2)` for `γ > 2`.
+* `setLIntegral_ball_inv_rpow_le`: the off-centre bound on the unit disc around `Q₀`,
+  `∫_{|Q - Q₀| < 1} |Q|^{-s} ≤ 2π/(2-s) + π`; `setLIntegral_ball_inv_rpow_le_three_pi` its form
+  `≤ 3π` for `s ≤ 1/2`;
+* `lintegral_norm_gt_inv_rpow`: `∫_{|z| > c} |z|^{-γ} = 2π c^{2-γ} / (γ - 2)` for `γ > 2`;
+* `lintegral_max_one_rpow_neg_lt_top`: `∫_ℂ max(1, |a|)^{-p} < ∞` for `p > 2`.
 
 Inverse powers are written `‖z‖ₑ⁻¹ ^ s` in `ℝ≥0∞`, the convention of `densityBound`; at `z = 0`
 this is `∞` for `s > 0`.
@@ -26,10 +33,25 @@ this is `∞` for `s > 0`.
 
 @[expose] public section
 
-namespace SLT.PositionFour.Downstream
+namespace SLT.Pushforward
 
 open MeasureTheory Set Real Metric
 open scoped ENNReal NNReal
+
+/-! ### Disc areas -/
+
+/-- The unit disc has area `π`. -/
+theorem volume_ball_one_complex : volume (ball (0 : ℂ) 1) = ENNReal.ofReal π := by
+  rw [Complex.volume_ball, ENNReal.ofReal_one, one_pow, one_mul, ← ENNReal.ofReal_coe_nnreal,
+    NNReal.coe_real_pi]
+
+/-- The closed disc of radius `r ≥ 0` has area `π r²`. -/
+theorem volume_closedBall_complex {r : ℝ} (hr : 0 ≤ r) :
+    volume (closedBall (0 : ℂ) r) = ENNReal.ofReal (π * r ^ 2) := by
+  rw [Complex.volume_closedBall, ← ENNReal.ofReal_pow hr, ← ENNReal.ofReal_coe_nnreal,
+    NNReal.coe_real_pi, ← ENNReal.ofReal_mul (by positivity), mul_comm]
+
+/-! ### Radial integrals -/
 
 /-- **Polar coordinates for a radial function on `ℂ`**:
 `∫ g(|z|) dz = 2π ∫_{r > 0} r g(r) dr`. -/
@@ -173,4 +195,48 @@ theorem lintegral_norm_gt_inv_rpow {γ c : ℝ} (hγ : 2 < γ) (hc : 0 < c) :
   have : (γ - 2) ≠ 0 := by linarith
   field_simp
 
-end SLT.PositionFour.Downstream
+/-! ### Discs and tails -/
+
+/-- **Shifted discs**, uniformly in the centre: `∫_{|Q - Q₀| < 1} |Q|^{-s} ≤ 2π/(2-s) + π` for
+`0 ≤ s < 2`. -/
+theorem setLIntegral_ball_inv_rpow_le (Q₀ : ℂ) {s : ℝ} (hs0 : 0 ≤ s) (hs : s < 2) :
+    ∫⁻ Q in ball Q₀ 1, ‖Q‖ₑ⁻¹ ^ s ≤ ENNReal.ofReal (2 * π / (2 - s) + π) := by
+  rw [← lintegral_indicator measurableSet_ball,
+    ← lintegral_add_right_eq_self _ Q₀]
+  have e : (fun w : ℂ => (ball Q₀ 1).indicator (fun Q : ℂ => ‖Q‖ₑ⁻¹ ^ s) (w + Q₀)) =
+      (ball (0 : ℂ) 1).indicator fun w => ‖w - -Q₀‖ₑ⁻¹ ^ s := by
+    funext w
+    simp only [indicator, mem_ball, dist_eq_norm, add_sub_cancel_right, sub_zero, sub_neg_eq_add]
+  rw [e, lintegral_indicator measurableSet_ball]
+  refine (lintegral_ball_sub_inv_rpow_le (-Q₀) hs0 hs one_pos).trans (le_of_eq ?_)
+  rw [Real.one_rpow, mul_one]
+
+/-- The shifted-disc bound in the form used for exponents `s ≤ 1/2`: at most `3π`. -/
+theorem setLIntegral_ball_inv_rpow_le_three_pi (Q₀ : ℂ) {s : ℝ} (hs0 : 0 ≤ s) (hs : s ≤ 1 / 2) :
+    ∫⁻ Q in ball Q₀ 1, ‖Q‖ₑ⁻¹ ^ s ≤ ENNReal.ofReal (3 * π) := by
+  refine (setLIntegral_ball_inv_rpow_le Q₀ hs0 (by linarith)).trans
+    (ENNReal.ofReal_le_ofReal ?_)
+  have h1 : 2 * π / (2 - s) ≤ 2 * π := by
+    rw [div_le_iff₀ (by linarith)]; nlinarith [Real.pi_pos]
+  linarith
+
+/-- `∫_ℂ max(1, |a|)^{-p} < ∞` for `p > 2`. -/
+theorem lintegral_max_one_rpow_neg_lt_top {p : ℝ} (hp : 2 < p) :
+    ∫⁻ a : ℂ, ENNReal.ofReal (max 1 ‖a‖ ^ (-p)) < ∞ := by
+  have hpt : ∀ a : ℂ, ENNReal.ofReal (max 1 ‖a‖ ^ (-p)) ≤
+      ENNReal.ofReal (2 ^ p) * ENNReal.ofReal ((1 + ‖a‖) ^ (-p)) := by
+    intro a
+    rw [← ENNReal.ofReal_mul (by positivity)]
+    refine ENNReal.ofReal_le_ofReal ?_
+    have h1 : (1 + ‖a‖) / 2 ≤ max 1 ‖a‖ := by
+      have := le_max_left 1 ‖a‖; have := le_max_right 1 ‖a‖; linarith
+    calc max 1 ‖a‖ ^ (-p) ≤ ((1 + ‖a‖) / 2) ^ (-p) :=
+          Real.rpow_le_rpow_of_nonpos (by positivity) h1 (by linarith)
+      _ = 2 ^ p * (1 + ‖a‖) ^ (-p) := by
+          rw [Real.div_rpow (by positivity) (by norm_num),
+            Real.rpow_neg (by norm_num : (0 : ℝ) ≤ 2), div_inv_eq_mul, mul_comm]
+  refine lt_of_le_of_lt (lintegral_mono hpt) ?_
+  rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+  exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (lintegral_one_add_rpow_neg_lt_top hp)
+
+end SLT.Pushforward

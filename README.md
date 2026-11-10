@@ -35,8 +35,9 @@ SLT/Template/      Elementary (weak-L¹, MinLogBound), Cone (critical weights on
                    Margin (angular margin ⇒ log-free radial split): the margin template (T2);
                    Leading (nondegenerate leading map + higher-weight remainder ⇒ same pair) (T3)
 SLT/Pushforward/   shared tools of the two directories below: Basic, Linear (complex-linear changes of
-                   variables), Planar (planar power singularities), Quadratic (inverse powers of
-                   quadratics, shifted discs), Shell (the shell bound for cubically homogeneous maps)
+                   variables), Planar (planar power singularities), Radial (radial and off-centre
+                   disc integrals), Quadratic (full-plane quadratics, shifted discs), QuadraticDisc
+                   (quadratics on a disc), Shell (the shell bound for cubically homogeneous maps)
 SLT/PositionFour/  complex integrability margin of the position-four leading map on ℂ¹²: Defs (the map,
                    the row pushforward, the density interface), Upstream (the interface, note §1),
                    Downstream (sublevel volume and shell, §2–3), Threshold (the two composed)
@@ -68,7 +69,7 @@ has a `#print axioms` line (exclusions go in `scripts/audit_exclude.txt`, curren
 reported axiom is among `propext`, `Classical.choice`, `Quot.sound`; and there is no
 `sorry`/`admit`/`native_decide`.
 
-**Current counts:** core 803/803 public declarations audited; zoo 76/76, plus 11 source theorems
+**Current counts:** core 801/801 public declarations audited; zoo 76/76, plus 11 source theorems
 re-checked. All are on `[propext, Classical.choice, Quot.sound]`. `#print axioms` is transitive, so
 the `private` helpers are covered by the public theorems that use them.
 

@@ -65,11 +65,6 @@ theorem indicator_one_ne_top {α : Type*} (s : Set α) (x : α) :
     s.indicator (1 : α → ℝ≥0∞) x ≠ ⊤ := by
   by_cases hx : x ∈ s <;> simp [hx]
 
-/-- The volume of the unit disc is `π`. -/
-theorem volume_ball_one : volume (ball (0 : ℂ) 1) = ENNReal.ofReal π := by
-  rw [Complex.volume_ball, ENNReal.ofReal_one, one_pow, one_mul, ← ENNReal.ofReal_coe_nnreal,
-    NNReal.coe_real_pi]
-
 /-! ### The disc integral `L` -/
 
 /-- `L_t(z) = ∫_{|u| < 1} |u² - z|^{-t}`. -/
@@ -120,7 +115,7 @@ theorem L_le {K t s : ℝ} (hK : FullPlaneQuadratic (9 / 8) K) (hK0 : 0 ≤ K) (
     calc L t z ≤ ∫⁻ _ in ball (0 : ℂ) 1, ENNReal.ofReal (2 ^ t * ‖z‖ ^ (-s)) :=
           setLIntegral_mono measurable_const hpt
       _ = ENNReal.ofReal (2 ^ t * ‖z‖ ^ (-s) * π) := by
-          rw [setLIntegral_const, volume_ball_one, ← ENNReal.ofReal_mul (by positivity)]
+          rw [setLIntegral_const, volume_ball_one_complex, ← ENNReal.ofReal_mul (by positivity)]
       _ ≤ _ := by
           refine ENNReal.ofReal_le_ofReal ?_
           unfold Lc
@@ -158,7 +153,7 @@ theorem L_le {K t s : ℝ} (hK : FullPlaneQuadratic (9 / 8) K) (hK0 : 0 ≤ K) (
           lintegral_mono fun u => hpt u
       _ = (∫⁻ u in ball (0 : ℂ) 1, ‖u ^ 2 - z‖ₑ⁻¹ ^ (9 / 8 : ℝ)) + ENNReal.ofReal π := by
           rw [lintegral_add_right _ measurable_const, setLIntegral_const, one_mul,
-            volume_ball_one]
+            volume_ball_one_complex]
       _ ≤ ENNReal.ofReal (K * (4 * ‖z‖) ^ (-(9 / 8 - 1 : ℝ))) + ENNReal.ofReal π := by
           gcongr
           exact (setLIntegral_le_lintegral _ _).trans hfull

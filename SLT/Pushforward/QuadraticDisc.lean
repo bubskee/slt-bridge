@@ -4,7 +4,7 @@ Released under Apache 2.0 license.
 -/
 module
 
-public import SLT.PositionFour.Downstream.Radial
+public import SLT.Pushforward.Radial
 public import SLT.Pushforward.Basic
 public import Mathlib.FieldTheory.IsAlgClosed.Basic
 public import Mathlib.Analysis.Complex.Polynomial.Basic
@@ -12,8 +12,9 @@ public import Mathlib.Analysis.Complex.Polynomial.Basic
 /-!
 # Inverse powers of a quadratic on a disc
 
-The note's Lemma 1 integrates `|𝔇|^{-1-α}` in `P₃`, where `𝔇` is a quadratic in `P₃`. This file
-gives the two estimates it needs, **for every radius** (the note derives them only for small `ε`):
+Lemma 1 of `complex_position_four.tex` integrates `|𝔇|^{-1-α}` in `P₃`, where `𝔇` is a quadratic
+in `P₃`. This file gives the two estimates it needs, **for every radius** (the note derives them
+only for small `ε`):
 
 * `lintegral_ball_inv_quadratic_le` (two roots, `A ≠ 0`): with `b = 2α + η`,
   `∫_{|z| < R} |A z² + B z + C|^{-1-α} ≤ c R^η |A|^{b-1-α} |B² - 4AC|^{-b/2}`.
@@ -27,9 +28,9 @@ gives the two estimates it needs, **for every radius** (the note derives them on
 
 @[expose] public section
 
-namespace SLT.PositionFour.Downstream
+namespace SLT.Pushforward
 
-open MeasureTheory Set Real Metric SLT.Pushforward
+open MeasureTheory Set Real Metric
 open scoped ENNReal NNReal
 
 /-! ### Two roots -/
@@ -230,4 +231,4 @@ theorem lintegral_ball_one_inv_quadratic_le {A B C : ℂ} (hB : B ≠ 0) (hAB : 
     _ = ENNReal.ofReal ((‖B‖ / 4) ^ (-a) * (2 * π / (2 - a) + π)) := by
         rw [Real.one_rpow, mul_one, ← ENNReal.ofReal_mul (by positivity)]
 
-end SLT.PositionFour.Downstream
+end SLT.Pushforward

@@ -4,18 +4,17 @@ Released under Apache 2.0 license.
 -/
 module
 
-public import SLT.MiddlePositions.Defs
+public import SLT.MiddlePositions.Toolkit.Quadratic
 public import SLT.PositionFour.Downstream.Marginal
 
 /-!
 # Planar estimates for position two
 
 Section 2 of `complex_middle_positions.tex` (Lemma "Planar powers and quadratics"), the parts that
-position two needs beyond the interface `FullPlaneQuadratic`:
+position two needs beyond the interface `FullPlaneQuadratic` (the shifted-disc bound
+`setLIntegral_ball_inv_rpow_le` and the tail power `lintegral_max_one_rpow_neg_lt_top` are in
+`SLT/Pushforward/Radial.lean`):
 
-* `setLIntegral_ball_inv_rpow_le`: the shifted-disc bound `∫_{|Q - Q₀| < 1} |Q|^{-s} ≤ C_s`,
-  uniformly in `Q₀`;
-* `lintegral_max_one_rpow_neg_lt_top`: `∫_ℂ max(1, |a|)^{-p} < ∞` for `p > 2` (a tail power);
 * `lintegral_inv_quadratic_le`: the note's `eq:quad0` in completed-square form,
   `∫_ℂ |A((z - c)² - δ)|^{-t} ≤ K 4^{1-t} |A|^{-t} |δ|^{1-t}`, read off `FullPlaneQuadratic`;
 * `lintegral_rpow_mul_inv_quadratic_le`: the note's `eq:quadw`,
@@ -59,58 +58,7 @@ theorem sq_rpow_mul_rpow_eq {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (t : ℝ) :
   have : 0 < x ^ (4 - 4 * t) := by positivity
   field_simp
 
-/-! ### Discs and tails -/
-
-/-- **Shifted discs**, uniformly in the centre: `∫_{|Q - Q₀| < 1} |Q|^{-s} ≤ 2π/(2-s) + π` for
-`0 ≤ s < 2`. -/
-theorem setLIntegral_ball_inv_rpow_le (Q₀ : ℂ) {s : ℝ} (hs0 : 0 ≤ s) (hs : s < 2) :
-    ∫⁻ Q in ball Q₀ 1, ‖Q‖ₑ⁻¹ ^ s ≤ ENNReal.ofReal (2 * π / (2 - s) + π) := by
-  rw [← lintegral_indicator measurableSet_ball,
-    ← lintegral_add_right_eq_self _ Q₀]
-  have e : (fun w : ℂ => (ball Q₀ 1).indicator (fun Q : ℂ => ‖Q‖ₑ⁻¹ ^ s) (w + Q₀)) =
-      (ball (0 : ℂ) 1).indicator fun w => ‖w - -Q₀‖ₑ⁻¹ ^ s := by
-    funext w
-    simp only [indicator, mem_ball, dist_eq_norm, add_sub_cancel_right, sub_zero, sub_neg_eq_add]
-  rw [e, lintegral_indicator measurableSet_ball]
-  refine (lintegral_ball_sub_inv_rpow_le (-Q₀) hs0 hs one_pos).trans (le_of_eq ?_)
-  rw [Real.one_rpow, mul_one]
-
-/-- The shifted-disc bound in the form used for exponents `s ≤ 1/2`: at most `3π`. -/
-theorem setLIntegral_ball_inv_rpow_le_three_pi (Q₀ : ℂ) {s : ℝ} (hs0 : 0 ≤ s) (hs : s ≤ 1 / 2) :
-    ∫⁻ Q in ball Q₀ 1, ‖Q‖ₑ⁻¹ ^ s ≤ ENNReal.ofReal (3 * π) := by
-  refine (setLIntegral_ball_inv_rpow_le Q₀ hs0 (by linarith)).trans
-    (ENNReal.ofReal_le_ofReal ?_)
-  have h1 : 2 * π / (2 - s) ≤ 2 * π := by
-    rw [div_le_iff₀ (by linarith)]; nlinarith [Real.pi_pos]
-  linarith
-
-/-- `∫_ℂ max(1, |a|)^{-p} < ∞` for `p > 2`. -/
-theorem lintegral_max_one_rpow_neg_lt_top {p : ℝ} (hp : 2 < p) :
-    ∫⁻ a : ℂ, ENNReal.ofReal (max 1 ‖a‖ ^ (-p)) < ∞ := by
-  have hpt : ∀ a : ℂ, ENNReal.ofReal (max 1 ‖a‖ ^ (-p)) ≤
-      ENNReal.ofReal (2 ^ p) * ENNReal.ofReal ((1 + ‖a‖) ^ (-p)) := by
-    intro a
-    rw [← ENNReal.ofReal_mul (by positivity)]
-    refine ENNReal.ofReal_le_ofReal ?_
-    have h1 : (1 + ‖a‖) / 2 ≤ max 1 ‖a‖ := by
-      have := le_max_left 1 ‖a‖; have := le_max_right 1 ‖a‖; linarith
-    calc max 1 ‖a‖ ^ (-p) ≤ ((1 + ‖a‖) / 2) ^ (-p) :=
-          Real.rpow_le_rpow_of_nonpos (by positivity) h1 (by linarith)
-      _ = 2 ^ p * (1 + ‖a‖) ^ (-p) := by
-          rw [Real.div_rpow (by positivity) (by norm_num),
-            Real.rpow_neg (by norm_num : (0 : ℝ) ≤ 2), div_inv_eq_mul, mul_comm]
-  refine lt_of_le_of_lt (lintegral_mono hpt) ?_
-  rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-  exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (lintegral_one_add_rpow_neg_lt_top hp)
-
 /-! ### Quadratics on the full plane -/
-
-/-- `FullPlaneQuadratic` is monotone in its constant. -/
-theorem fullPlaneQuadratic_mono {t K K' : ℝ} (hK : FullPlaneQuadratic t K) (hKK' : K ≤ K') :
-    FullPlaneQuadratic t K' := by
-  intro A B D hA
-  refine (hK A B D hA).trans ?_
-  gcongr
 
 /-- **The completed-square form of `eq:quad0`**: for `A, δ ≠ 0`,
 `∫_ℂ |A((z - c)² - δ)|^{-t} ≤ K 4^{1-t} |A|^{-t} |δ|^{1-t}`. -/

@@ -4,8 +4,7 @@ Released under Apache 2.0 license.
 -/
 module
 
-public import SLT.PositionFour.Downstream.Radial
-public import SLT.PositionFour.Downstream.Quadratic
+public import SLT.Pushforward.QuadraticDisc
 public import SLT.PositionFour.Downstream.Marginal
 public import SLT.PositionFour.Downstream.LemmaOne
 public import SLT.PositionFour.Downstream.Finiteness
@@ -25,7 +24,8 @@ Sections 2 and 3 of `complex_position_four.tex` (2026-11-09), assuming the densi
   `shell_lintegral_lt_top_of_interface`: `‖R‖^{-2s}` is integrable on the shell
   `{1/2 ≤ ‖w‖ < 1}` for every `s < 13/3`.
 
-Module map: `Radial` (radial integrals on `ℂ`), `Quadratic` (inverse powers of a quadratic on a
-disc), `Marginal` (the transverse marginal and its pointwise bounds), `LemmaOne`, `Finiteness`
-(Section 3), `Shell` (the stretch). Notes: `SLT/PositionFour/NOTES_downstream.md`.
+Module map: `Marginal` (the transverse marginal and its pointwise bounds), `LemmaOne`, `Finiteness`
+(Section 3), `Shell` (the stretch). The planar input (radial integrals on `ℂ`, inverse powers of a
+quadratic on a disc) is in `SLT/Pushforward/Radial.lean` and `SLT/Pushforward/QuadraticDisc.lean`.
+Notes: `SLT/PositionFour/NOTES_downstream.md`.
 -/

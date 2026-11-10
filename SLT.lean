@@ -32,6 +32,8 @@ public import SLT.Pushforward.Basic
 public import SLT.Pushforward.Linear
 public import SLT.Pushforward.Planar
 public import SLT.Pushforward.Quadratic
+public import SLT.Pushforward.QuadraticDisc
+public import SLT.Pushforward.Radial
 public import SLT.Pushforward.Shell
 public import SLT.PositionFour.Defs
 public import SLT.PositionFour.Upstream
