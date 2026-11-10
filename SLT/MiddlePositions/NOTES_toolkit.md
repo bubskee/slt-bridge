@@ -1,5 +1,10 @@
 # Middle positions, toolkit (note §2 and §6): working notes
 
+> Historical working note of the session that wrote this code. Since the consolidation, some
+> files and declarations have moved to `SLT/Pushforward` or been merged, and the per-directory
+> audit files are replaced by the root `Audit.lean`. Current locations and the list of removed
+> or renamed declarations: `SLT/Pushforward/NOTES.md`.
+
 Branch `mid-toolkit`. Source: `forum/complex_middle_positions/complex_middle_positions.tex`
 (2026-11-09), §2 ("Elementary planar estimates and weighted two-cube input") and §6 ("A shell
 corollary without polar coordinates").

@@ -1,5 +1,10 @@
 # Middle positions: position two (working notes)
 
+> Historical working note of the session that wrote this code. Since the consolidation, some
+> files and declarations have moved to `SLT/Pushforward` or been merged, and the per-directory
+> audit files are replaced by the root `Audit.lean`. Current locations and the list of removed
+> or renamed declarations: `SLT/Pushforward/NOTES.md`.
+
 Branch `mid-two`, worktree `slt-bridge-mid2`, cut from `c4-position-four`. This is Theorem
 "Position two" of `forum/complex_middle_positions/complex_middle_positions.tex` (2026-11-09). It
 assumes the interface of `SLT/MiddlePositions/Defs.lean`, which is unchanged and shared with

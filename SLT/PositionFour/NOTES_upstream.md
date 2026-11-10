@@ -1,5 +1,10 @@
 # Upstream half (note §1): working notes
 
+> Historical working note of the session that wrote this code. Since the consolidation, some
+> files and declarations have moved to `SLT/Pushforward` or been merged, and the per-directory
+> audit files are replaced by the root `Audit.lean`. Current locations and the list of removed
+> or renamed declarations: `SLT/Pushforward/NOTES.md`.
+
 Branch `c4-upstream`. Source: `forum/complex_position_four/complex_position_four.tex`, §1
 ("Row pushforwards, including weighted fibers").
 

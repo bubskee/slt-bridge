@@ -1,5 +1,10 @@
 # Complex position four: downstream half (working notes)
 
+> Historical working note of the session that wrote this code. Since the consolidation, some
+> files and declarations have moved to `SLT/Pushforward` or been merged, and the per-directory
+> audit files are replaced by the root `Audit.lean`. Current locations and the list of removed
+> or renamed declarations: `SLT/Pushforward/NOTES.md`.
+
 Branch `c4-downstream`, worktree `slt-bridge-c4a`. This is Sections 2 and 3 of
 `forum/complex_position_four/complex_position_four.tex` (2026-11-09), plus the shell form that
 paper 2 consumes. It assumes the density interface of `SLT/PositionFour/Defs.lean` (unchanged).

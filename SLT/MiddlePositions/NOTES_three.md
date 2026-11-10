@@ -1,5 +1,10 @@
 # Position three: working notes (`mid-three`)
 
+> Historical working note of the session that wrote this code. Since the consolidation, some
+> files and declarations have moved to `SLT/Pushforward` or been merged, and the per-directory
+> audit files are replaced by the root `Audit.lean`. Current locations and the list of removed
+> or renamed declarations: `SLT/Pushforward/NOTES.md`.
+
 Source: `forum/complex_middle_positions/complex_middle_positions.tex` (2026-11-09), Theorem
 "Position three". Branch `mid-three`, cut from `c4-position-four`. Lean v4.35.0, mathlib `56a0058`.
 
