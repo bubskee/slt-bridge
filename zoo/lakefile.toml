@@ -31,8 +31,8 @@ subDir = "lean"
 [[lean_lib]]
 name = "Zoo"
 
-# Vector cubic-ResNet paper, pinned at the namespace-rename commit.
+# Vector cubic-ResNet paper, pinned at the commit that adds `VectorSLT/LeadingMap`.
 [[require]]
 name = "VectorSLT"
 git = "https://github.com/bubskee/vector-slt-lean.git"
-rev = "2d545cdcb9f20c34bcb188ee496d6c0261fb7289"
+rev = "bae5dc1d7d3d9c7b338f97c489cb341651a2a0cb"

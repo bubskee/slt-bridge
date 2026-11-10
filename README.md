@@ -19,7 +19,7 @@ The bridge itself (M3: hironaka's monomialization ⇒ existence of `(λ, m)`) is
 | mathlib | `56a005855ea17e0b0958f73ec801ae140b0a1679` | `lakefile.toml`, `zoo/lakefile.toml` |
 | hironaka (planned for M3, **not yet a dependency**) | tag `v4.35.0` = `044d89c9455859446fc5e986667319f910e15f4b` | commented out in `lakefile.toml` |
 | residual-slt-in-a-haystack (zoo only) | `2865e70a9ca7f559dabfce6aa32e13cf4fc88259`, `subDir = "lean"` | `zoo/lakefile.toml`, `zoo/lake-manifest.json` |
-| vector-slt-lean (zoo only, local git path, no remote) | `2d545cdcb9f20c34bcb188ee496d6c0261fb7289` | `zoo/lakefile.toml`, `zoo/lake-manifest.json` |
+| vector-slt-lean (zoo only) | `bae5dc1d7d3d9c7b338f97c489cb341651a2a0cb` | `zoo/lakefile.toml`, `zoo/lake-manifest.json` |
 
 ## Layout
 
@@ -47,7 +47,8 @@ SLT/MiddlePositions/ the same at positions two and three: Defs (R2, R3, the inte
 Audit.lean         #print axioms for every public core declaration
 zoo/Zoo/           ResidualNetwork, VectorShear, LLC, TemplateM, TemplateMargin,
                    TemplateLeading, ReadWrite,
-                   MLPArrangement, MixedGroup         zoo/Audit.lean  the same for the zoo
+                   MLPArrangement, MixedGroup,
+                   LeadingMaps                        zoo/Audit.lean  the same for the zoo
 scripts/           check_audit.sh (audit completeness + axioms), DumpDecls.lean, Lint.lean, LintZoo.lean
 docs/status_log.md per-milestone log
 ```
@@ -70,7 +71,7 @@ has a `#print axioms` line (exclusions go in `scripts/audit_exclude.txt`, curren
 reported axiom is among `propext`, `Classical.choice`, `Quot.sound`; and there is no
 `sorry`/`admit`/`native_decide`.
 
-**Current counts:** core 797/797 public declarations audited; zoo 169/169, plus 11 source theorems
+**Current counts:** core 797/797 public declarations audited; zoo 183/183, plus 11 source theorems
 re-checked. All are on `[propext, Classical.choice, Quot.sound]`. `#print axioms` is transitive, so
 the `private` helpers are covered by the public theorems that use them.
 
@@ -170,6 +171,7 @@ working notes (`NOTES_*.md` in each directory) map every step of the two notes t
 | T3 guardrail: residual-slt's `positive_homogeneous_laplace_order` re-derived (zero remainder); the remainder form for new architectures | `TemplateLeading.positive_homogeneous_laplace_order_template`, `hasLaplacePair_of_homogeneous_add_remainder` | residual-slt `2865e70` + core T3 | [LC] |
 | T2 guardrail: `ThmN`, `ThmKUpper`, `ThmK` as instances of the margin template; the position table with margins in place of `ThmK`/`ThmN` | `TemplateMargin.thmN_of_margin`, `thmKUpper_of_margin`, `thmK_of_margin`, `mainTheorem_shear_of_margin` | vector-slt-lean `2d545cd` + core T2 | [COND: `PositionMargin` at positions 2–4] |
 | T1 guardrail: `ZN1_two_sided` re-derived through the template | `TemplateM.ZN1_two_sided_template` (source statement), `TemplateM.position_one_pair_template` `(4,5)`; row bound `pivotRow_template` | vector-slt-lean `2d545cd` (Lemmas M4, M3, (G↓), F1–F3, L′) + core T1 | [LC], **unconditional**. Lemma M5, `two_rows` and `theoremM` are not used |
+| The core's complex leading maps `R2`, `R3`, `leadingMap` are the network's: on real inputs they are the complexifications of the maps `vector-slt-lean` proves to be the `ε³` term of the network error at positions two to four, so that term vanishes exactly when the active coordinates and the complex leading map vanish | `LeadingMaps.R2_complexify`, `R3_complexify`, `leadingMap_complexify`, `lead_eq_zero_iff_two`, `_three`, `_four` | vector-slt-lean `bae5dc1` (`VectorSLT/LeadingMap`) + core `SLT/MiddlePositions`, `SLT/PositionFour` | [LC] (identifies the maps; says nothing about the Laplace integral) |
 
 The four source theorems the zoo uses (`ResidualSLT.unified_residual_network_certificate`,
 `VectorSLT.ZN1_two_sided_moments`, `VectorSLT.mainTheorem_shear`,

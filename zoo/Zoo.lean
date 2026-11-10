@@ -7,3 +7,4 @@ import Zoo.TemplateLeading
 import Zoo.ReadWrite
 import Zoo.MLPArrangement
 import Zoo.MixedGroup
+import Zoo.LeadingMaps

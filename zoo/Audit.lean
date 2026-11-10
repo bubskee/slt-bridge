@@ -202,3 +202,19 @@ import Zoo
 #print axioms SLT.Zoo.MixedGroup.shearLoss_pair
 #print axioms SLT.Zoo.MixedGroup.mixedGroup_pair
 #print axioms SLT.Zoo.MixedGroup.mixedGroup_pair_formula
+
+/-! The complex leading maps are the network's (`Zoo/LeadingMaps.lean`). -/
+#print axioms SLT.Zoo.LeadingMaps.R2_complexify
+#print axioms SLT.Zoo.LeadingMaps.R3_complexify
+#print axioms SLT.Zoo.LeadingMaps.cube_formC
+#print axioms SLT.Zoo.LeadingMaps.eq_zero_iff_of_complexify
+#print axioms SLT.Zoo.LeadingMaps.formC
+#print axioms SLT.Zoo.LeadingMaps.lead_eq_zero_iff_four
+#print axioms SLT.Zoo.LeadingMaps.lead_eq_zero_iff_three
+#print axioms SLT.Zoo.LeadingMaps.lead_eq_zero_iff_two
+#print axioms SLT.Zoo.LeadingMaps.leadingMap_complexify
+#print axioms SLT.Zoo.LeadingMaps.row2C
+#print axioms SLT.Zoo.LeadingMaps.row3C
+#print axioms SLT.Zoo.LeadingMaps.rowC
+#print axioms SLT.Zoo.LeadingMaps.rowCubic_rowC
+#print axioms SLT.Zoo.LeadingMaps.twoCube_formC
