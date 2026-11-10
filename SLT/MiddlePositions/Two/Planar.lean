@@ -106,7 +106,7 @@ theorem lintegral_max_one_rpow_neg_lt_top {p : ℝ} (hp : 2 < p) :
 /-! ### Quadratics on the full plane -/
 
 /-- `FullPlaneQuadratic` is monotone in its constant. -/
-theorem FullPlaneQuadratic.mono {t K K' : ℝ} (hK : FullPlaneQuadratic t K) (hKK' : K ≤ K') :
+theorem fullPlaneQuadratic_mono {t K K' : ℝ} (hK : FullPlaneQuadratic t K) (hKK' : K ≤ K') :
     FullPlaneQuadratic t K' := by
   intro A B D hA
   refine (hK A B D hA).trans ?_
