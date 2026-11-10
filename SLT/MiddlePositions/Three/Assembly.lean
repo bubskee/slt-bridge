@@ -323,7 +323,7 @@ theorem sigmaFinite_volume_prefixPairs :
   exact Measure.prod.instSigmaFinite
 
 /-- **Theorem (position three)**, from the interface: `∫_{‖R₃ w‖ < 1} ‖w‖^{1/4} dw < ∞`. -/
-theorem sublevelThree {C : ℝ} (hW : WeightedTwoCubeBound C) (hF : LocallyIntegrableF)
+theorem sublevelThree_of_interface {C : ℝ} (hW : WeightedTwoCubeBound C) (hF : LocallyIntegrableF)
     (hQ : ∀ t : ℝ, 1 < t → t < 2 → ∃ K, FullPlaneQuadratic t K) : SublevelThree := by
   obtain ⟨K₁, hK₁⟩ := hQ (4 / 3) (by norm_num) (by norm_num)
   obtain ⟨K₂, hK₂⟩ := hQ (11 / 8) (by norm_num) (by norm_num)
