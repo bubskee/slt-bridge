@@ -28,9 +28,10 @@ and `ThmKUpper`. With the proved lower bound (`Zpos_lower_N4`) it gives `ThmK`.
 `mainTheorem_shear_of_margin` is the source's main theorem with `ThmK` and `ThmN` replaced by the
 three position margins.
 
-The implicit-function step is elementary but is not proved here; it is part of `PositionMargin`.
-The angular margin is the step that needs resolution and stability (see the project plan, kept
-outside this repository).
+The comparison step is part of `PositionMargin` here. `Zoo/LossComparison.lean` discharges it
+from `vector-slt-lean` (`VectorSLT/LossCompare`), leaving the angular margin of three explicit
+functions. The angular margin is the step that needs resolution and stability (see the project
+plan, kept outside this repository).
 (`VectorSLT` is not written in the `module` system, so this file is a plain, non-`module` file.)
 -/
 

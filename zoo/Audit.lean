@@ -218,3 +218,24 @@ import Zoo
 #print axioms SLT.Zoo.LeadingMaps.rowC
 #print axioms SLT.Zoo.LeadingMaps.rowCubic_rowC
 #print axioms SLT.Zoo.LeadingMaps.twoCube_formC
+
+/-! The position table from three shell margins (`Zoo/LossComparison.lean`), and the source
+theorems of `VectorSLT/LossCompare` it uses. -/
+#print axioms SLT.Zoo.LossComparison.H4_zero_eq_core
+#print axioms SLT.Zoo.LossComparison.Hmid_one_zero_eq_core
+#print axioms SLT.Zoo.LossComparison.Hmid_two_zero_eq_core
+#print axioms SLT.Zoo.LossComparison.ShellMargin
+#print axioms SLT.Zoo.LossComparison.angularMargin_G4
+#print axioms SLT.Zoo.LossComparison.angularMargin_Gmid
+#print axioms SLT.Zoo.LossComparison.mainTheorem_shear_of_shellMargin
+#print axioms SLT.Zoo.LossComparison.norm_sq_complexify
+#print axioms SLT.Zoo.LossComparison.positionMargin_of_marginData
+#print axioms SLT.Zoo.LossComparison.positionMargin_of_shellMargin_four
+#print axioms SLT.Zoo.LossComparison.positionMargin_of_shellMargin_middle
+#print axioms SLT.Zoo.LossComparison.thmKUpper_of_shellMargin
+#print axioms SLT.Zoo.LossComparison.thmN_of_shellMargin
+#print axioms VectorSLT.LossCompare.position_four_marginData
+#print axioms VectorSLT.LossCompare.middle_marginData
+#print axioms VectorSLT.LossCompare.position_four_homogeneity
+#print axioms VectorSLT.LossCompare.position_two_homogeneity
+#print axioms VectorSLT.LossCompare.position_three_homogeneity

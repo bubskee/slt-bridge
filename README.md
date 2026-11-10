@@ -19,7 +19,7 @@ The bridge itself (M3: hironaka's monomialization ⇒ existence of `(λ, m)`) is
 | mathlib | `56a005855ea17e0b0958f73ec801ae140b0a1679` | `lakefile.toml`, `zoo/lakefile.toml` |
 | hironaka (planned for M3, **not yet a dependency**) | tag `v4.35.0` = `044d89c9455859446fc5e986667319f910e15f4b` | commented out in `lakefile.toml` |
 | residual-slt-in-a-haystack (zoo only) | `2865e70a9ca7f559dabfce6aa32e13cf4fc88259`, `subDir = "lean"` | `zoo/lakefile.toml`, `zoo/lake-manifest.json` |
-| vector-slt-lean (zoo only) | `bae5dc1d7d3d9c7b338f97c489cb341651a2a0cb` | `zoo/lakefile.toml`, `zoo/lake-manifest.json` |
+| vector-slt-lean (zoo only) | `7ac38c674da0300b53410a440eafd9578babe306` | `zoo/lakefile.toml`, `zoo/lake-manifest.json` |
 
 ## Layout
 
@@ -48,7 +48,7 @@ Audit.lean         #print axioms for every public core declaration
 zoo/Zoo/           ResidualNetwork, VectorShear, LLC, TemplateM, TemplateMargin,
                    TemplateLeading, ReadWrite,
                    MLPArrangement, MixedGroup,
-                   LeadingMaps                        zoo/Audit.lean  the same for the zoo
+                   LeadingMaps, LossComparison        zoo/Audit.lean  the same for the zoo
 scripts/           check_audit.sh (audit completeness + axioms), DumpDecls.lean, Lint.lean, LintZoo.lean
 docs/status_log.md per-milestone log
 ```
@@ -71,7 +71,7 @@ has a `#print axioms` line (exclusions go in `scripts/audit_exclude.txt`, curren
 reported axiom is among `propext`, `Classical.choice`, `Quot.sound`; and there is no
 `sorry`/`admit`/`native_decide`.
 
-**Current counts:** core 797/797 public declarations audited; zoo 183/183, plus 11 source theorems
+**Current counts:** core 797/797 public declarations audited; zoo 196/196, plus 16 source theorems
 re-checked. All are on `[propext, Classical.choice, Quot.sound]`. `#print axioms` is transitive, so
 the `private` helpers are covered by the public theorems that use them.
 
@@ -172,13 +172,15 @@ working notes (`NOTES_*.md` in each directory) map every step of the two notes t
 | T2 guardrail: `ThmN`, `ThmKUpper`, `ThmK` as instances of the margin template; the position table with margins in place of `ThmK`/`ThmN` | `TemplateMargin.thmN_of_margin`, `thmKUpper_of_margin`, `thmK_of_margin`, `mainTheorem_shear_of_margin` | vector-slt-lean `2d545cd` + core T2 | [COND: `PositionMargin` at positions 2–4] |
 | T1 guardrail: `ZN1_two_sided` re-derived through the template | `TemplateM.ZN1_two_sided_template` (source statement), `TemplateM.position_one_pair_template` `(4,5)`; row bound `pivotRow_template` | vector-slt-lean `2d545cd` (Lemmas M4, M3, (G↓), F1–F3, L′) + core T1 | [LC], **unconditional**. Lemma M5, `two_rows` and `theoremM` are not used |
 | The core's complex leading maps `R2`, `R3`, `leadingMap` are the network's: on real inputs they are the complexifications of the maps `vector-slt-lean` proves to be the `ε³` term of the network error at positions two to four, so that term vanishes exactly when the active coordinates and the complex leading map vanish | `LeadingMaps.R2_complexify`, `R3_complexify`, `leadingMap_complexify`, `lead_eq_zero_iff_two`, `_three`, `_four` | vector-slt-lean `bae5dc1` (`VectorSLT/LeadingMap`) + core `SLT/MiddlePositions`, `SLT/PositionFour` | [LC] (identifies the maps; says nothing about the Laplace integral) |
+| The position table from three shell margins: the loss comparison inside `PositionMargin` is certified in `vector-slt-lean`, so `ThmN`, `ThmKUpper` and the table `(4,5), (4,1), (4,1), (4,1)` follow from `ShellMargin H_p` for the explicit angular functions `H₂ = Hmid 1`, `H₃ = Hmid 2`, `H₄ = H4` (for some `s > 2`, `∫_{shell} H_p(r, ·)^{-s}` is bounded uniformly in small `r > 0`). At `r = 0`, `H_p` is the squared norm of the core's complex leading map at the real point | `LossComparison.mainTheorem_shear_of_shellMargin`, `thmN_of_shellMargin`, `thmKUpper_of_shellMargin`, `positionMargin_of_shellMargin_middle`, `_four`; `H4_zero_eq_core`, `Hmid_one_zero_eq_core`, `Hmid_two_zero_eq_core` | vector-slt-lean `7ac38c6` (`VectorSLT/LossCompare`) + `TemplateMargin`, `LeadingMaps` | [COND: `ShellMargin` of three explicit polynomials]; the `r = 0` identities are [LC]. The shell margins are not proved in Lean: the paper derives them from the core's complex margins by the stability theorem of Phong and Sturm and a complex-to-real transfer |
 
 The four source theorems the zoo uses (`ResidualSLT.unified_residual_network_certificate`,
 `VectorSLT.ZN1_two_sided_moments`, `VectorSLT.mainTheorem_shear`,
 `VectorSLT.mainTheorem_shear_gaussian`) are re-audited in `zoo/Audit.lean`, as are the five source
 lemmas `TemplateM` uses (`lemmaM4`, `m3Int_Echart`, `Gdown`, `UM_inner`, `Zpos_one_lower`) and
-`Zpos_lower_N4` (used by `TemplateMargin`), and `ResidualSLT.positive_homogeneous_laplace_order` (the T3
-guardrail's source). The project plan (kept outside this repository) lists the named hypotheses and what would discharge
+`Zpos_lower_N4` (used by `TemplateMargin`), `ResidualSLT.positive_homogeneous_laplace_order` (the T3
+guardrail's source), and the five headline theorems of `VectorSLT.LossCompare` that `LossComparison`
+uses (`position_four_marginData`, `middle_marginData` and the three homogeneity statements). The project plan (kept outside this repository) lists the named hypotheses and what would discharge
 them. `ThmK` and `ThmN` are
 hypotheses, not axioms, so they do not appear in any audit line.
 

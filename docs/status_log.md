@@ -360,3 +360,23 @@ Branch `r02-certificate`, cut from `main` @ `fd0b247`. **File:** `zoo/Zoo/MixedG
   source, which is not ours to edit.
 - **Audit.** Core 286/286. Zoo 169 public declarations plus 11 source theorems, 180/180, all on
   `[propext, Classical.choice, Quot.sound]`. Lint clean, zero warnings.
+
+### The position table from three shell margins (2026-11-10, Papers forum, Bobby's go-ahead)
+
+Branch `loss-glue`, cut from `main` @ `e032936`. **File:** `zoo/Zoo/LossComparison.lean`. **No core change.**
+The zoo's VectorSLT pin moves to `7ac38c6`, which adds `VectorSLT/LossCompare`.
+
+- **What changed upstream.** `vector-slt-lean` now proves the loss comparison at positions two to four for every
+  shear target: coordinates `(𝐜, w)` with a bounded change of variables, `κ (‖𝐜‖² + G_p(w)) ≤ K`, and
+  `G_p(r ξ) = r⁶ H_p(r, ξ)` for explicit polynomials. That is `PositionMargin` without the angular margin.
+- **[COND: `ShellMargin`] `mainTheorem_shear_of_shellMargin`.** The table `(4,5), (4,1), (4,1), (4,1)` from
+  `ShellMargin (Hmid 1)`, `ShellMargin (Hmid 2)`, `ShellMargin H4`: for some `s > 2`, `∫_{shell} H_p(r, ·)^{-s}`
+  is bounded uniformly in small `r > 0`. The hypotheses mention no network, target, input law, prior or cutoff.
+  `thmN_of_shellMargin` and `thmKUpper_of_shellMargin` give the source's two named hypotheses.
+- **[LC] `H4_zero_eq_core`, `Hmid_one_zero_eq_core`, `Hmid_two_zero_eq_core`.** At `r = 0`, `H_p` is the squared
+  norm of the core's complex leading map at the real point.
+- **Not built.** The shell margins themselves. The core has the strict complex margins
+  (`strictShellMargin_leadingMaps`); going from those to the real shell, uniformly in `r`, uses the stability
+  theorem of Phong and Sturm and a complex-to-real transfer.
+- **Audit.** Core 797/797. Zoo 196 public declarations plus 16 source theorems, 212/212, all on
+  `[propext, Classical.choice, Quot.sound]`. Lint clean.

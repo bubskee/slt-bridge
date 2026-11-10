@@ -8,3 +8,4 @@ import Zoo.ReadWrite
 import Zoo.MLPArrangement
 import Zoo.MixedGroup
 import Zoo.LeadingMaps
+import Zoo.LossComparison
