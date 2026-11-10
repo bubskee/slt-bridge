@@ -31,7 +31,7 @@ nullity of `{𝔇 = 0}`) is not needed downstream.
 
 namespace SLT.PositionFour
 
-open MeasureTheory Set
+open MeasureTheory Set SLT.Pushforward
 open scoped ENNReal
 
 /-- **Step 3 as a statement.** The pushforward of Lebesgue measure under the two-cube map is at

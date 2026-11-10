@@ -8,12 +8,10 @@ public import SLT.PositionFour.Upstream.Algebra
 public import SLT.PositionFour.Upstream.Sylvester
 public import SLT.PositionFour.Upstream.Area
 public import SLT.PositionFour.Upstream.Coords
-public import SLT.PositionFour.Upstream.Planar
 public import SLT.PositionFour.Upstream.Reference
 public import SLT.PositionFour.Upstream.RefFibre
 public import SLT.PositionFour.Upstream.TwoCube
 public import SLT.PositionFour.Upstream.Density
-public import SLT.PositionFour.Upstream.Cusp
 public import SLT.PositionFour.Upstream.Local
 
 /-!
@@ -39,7 +37,8 @@ Where each step of the note's §1 lives:
 * `‖g‖ ≲ ‖P‖^{1/3} + ‖H‖^{1/2} |𝔇|^{-1/6}`: `norm_twoCube_cases`, `two_norm_rpow_le`;
 * transport and equation (2): `rhoTilde_le_of_twoCube`, `rhoTilde_le_densityBound`,
   `densityBound_holds`;
-* local finiteness: `lintegral_closedBall_twoCubeDensity_lt_top`, `locallyFiniteRow`.
+* local finiteness: `lintegral_closedBall_discDensity_lt_top` (any `1 < t ≤ 3/2`),
+  `lintegral_closedBall_twoCubeDensity_lt_top` (`t = 4/3`), `locallyFiniteRow`.
 -/
 
 @[expose] public section

@@ -31,7 +31,7 @@ One simplification over the note: both cases of `norm_twoCube_cases` give the si
 
 namespace SLT.MiddlePositions
 
-open MeasureTheory Set SLT.PositionFour
+open MeasureTheory Set SLT.PositionFour SLT.Pushforward
 open scoped ENNReal
 
 /-! ### Pointwise bounds -/

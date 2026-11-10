@@ -34,6 +34,9 @@ SLT/Template/      Elementary (weak-L¹, MinLogBound), Cone (critical weights on
                    Fibre (slice bound ⇒ rate, triangular Fubini): the elementary template (brief 03, T1);
                    Margin (angular margin ⇒ log-free radial split): the margin template (T2);
                    Leading (nondegenerate leading map + higher-weight remainder ⇒ same pair) (T3)
+SLT/Pushforward/   shared tools of the two directories below: Basic, Linear (complex-linear changes of
+                   variables), Planar (planar power singularities), Quadratic (inverse powers of
+                   quadratics, shifted discs), Shell (the shell bound for cubically homogeneous maps)
 SLT/PositionFour/  complex integrability margin of the position-four leading map on ℂ¹²: Defs (the map,
                    the row pushforward, the density interface), Upstream (the interface, note §1),
                    Downstream (sublevel volume and shell, §2–3), Threshold (the two composed)
@@ -65,7 +68,7 @@ has a `#print axioms` line (exclusions go in `scripts/audit_exclude.txt`, curren
 reported axiom is among `propext`, `Classical.choice`, `Quot.sound`; and there is no
 `sorry`/`admit`/`native_decide`.
 
-**Current counts:** core 827/827 public declarations audited; zoo 76/76, plus 11 source theorems
+**Current counts:** core 803/803 public declarations audited; zoo 76/76, plus 11 source theorems
 re-checked. All are on `[propext, Classical.choice, Quot.sound]`. `#print axioms` is transitive, so
 the `private` helpers are covered by the public theorems that use them.
 
@@ -122,7 +125,7 @@ statement passed as an argument. **[STMT]** statement only.
 | `m = dim O + 1 ⇔ m = d − dim F` (LP duality) | not in Lean | not formalised |
 | M3 monomialization ⇒ `(λ, m)` exists | not started | on hold |
 
-### Complex integrability margins (`SLT/PositionFour`, `SLT/MiddlePositions`)
+### Complex integrability margins (`SLT/PositionFour`, `SLT/MiddlePositions`, `SLT/Pushforward`)
 
 Sources: `complex_position_four.tex` and `complex_middle_positions.tex` (forum, 2026-11-09). Each
 statement is about a **leading map as defined in the directory's `Defs.lean`**: `leadingMap` on

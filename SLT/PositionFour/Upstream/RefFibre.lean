@@ -33,7 +33,7 @@ follows the note:
 
 namespace SLT.PositionFour
 
-open MeasureTheory Set
+open MeasureTheory Set SLT.Pushforward
 open scoped ENNReal
 
 /-! ### The cube substitution on `ℂ` -/

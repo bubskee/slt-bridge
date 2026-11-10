@@ -15,7 +15,8 @@ public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 /-!
 # Power singularities on the complex plane
 
-Planar integrability facts used by the reference integral and by local finiteness:
+Planar integrability facts used by the reference integral of `SLT/PositionFour/Upstream` and by
+the quadratic integrals of `SLT/Pushforward/Quadratic.lean`:
 
 * `lintegral_ball_rpow_neg_lt_top`: `∫_{|z| < r} |z|^{-p} < ∞` for `p < 2`;
 * `lintegral_one_add_rpow_neg_lt_top`: `∫_ℂ (1 + |z|)^{-q} < ∞` for `q > 2`;
@@ -28,7 +29,7 @@ real-valued integrability and agree with it off a null set.
 
 @[expose] public section
 
-namespace SLT.PositionFour
+namespace SLT.Pushforward
 
 open MeasureTheory Set Metric
 open scoped ENNReal
@@ -176,4 +177,4 @@ theorem lintegral_twoPoint_lt_top {a b : ℂ} (hab : a ≠ b) {p q c : ℝ} (hp 
     ← ENNReal.ofReal_mul (by positivity), ← ENNReal.ofReal_mul (by positivity)]
   exact ENNReal.ofReal_le_ofReal (key z hza hzb)
 
-end SLT.PositionFour
+end SLT.Pushforward

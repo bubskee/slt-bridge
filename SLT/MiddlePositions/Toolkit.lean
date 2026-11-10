@@ -28,14 +28,16 @@ The shell corollary (note §6) for both middle positions, from the headline stat
 
 Where each part of the note lives:
 
-* Lemma "Planar powers and quadratics", last display: `lintegral_quadratic_eq_rpow`,
-  `fullPlaneQuadratic_quadC` (`Quadratic`); shifted disc: `lintegral_closedBall_rpow_sub_le_rpow`;
+* Lemma "Planar powers and quadratics", last display: `fullPlaneQuadratic_quadC` (`Quadratic`),
+  from `SLT.Pushforward.lintegral_quadratic_eq_rpow`; shifted disc:
+  `SLT.Pushforward.lintegral_closedBall_rpow_sub_le_rpow`;
 * Lemma "Weighted two-cube measure bound", first half: `W2_le_of_det2_ne_zero`,
   `twoCubeWeight_mul_le`, `lintegral_W2_twoCube_le`, `weightedTwoCubeBound_sixteen_ninths`
   (`Weighted`);
-* the same lemma, second half: `lintegral_last_le_rpow`, `lintegral_middle_le_rpow`,
-  `lintegral_chart_discDensity_lt_top`, `lintegral_closedBall_discDensity_lt_top`,
-  `locallyIntegrableF` (`Local`);
+* the same lemma, second half: `locallyIntegrableF` (`Local`), from the cone chart of
+  `SLT/PositionFour/Upstream/Local.lean` at a general exponent (`lintegral_last_le_rpow`,
+  `lintegral_middle_le_rpow`, `lintegral_chart_discDensity_lt_top`,
+  `lintegral_closedBall_discDensity_lt_top`, namespace `SLT.PositionFour`);
 * §6 "A shell corollary without polar coordinates": `shell_two`, `shell_three` (`Shell`), from
   the general `SLT.Pushforward.lintegral_homShell_lt_top_of_moment`.
 -/

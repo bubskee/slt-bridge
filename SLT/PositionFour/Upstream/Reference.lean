@@ -4,7 +4,7 @@ Released under Apache 2.0 license.
 -/
 module
 
-public import SLT.PositionFour.Upstream.Planar
+public import SLT.Pushforward.Planar
 
 /-!
 # The reference integral (note §1, step 1)
@@ -25,7 +25,7 @@ translation invariance needs exactly the same three facts:
 
 namespace SLT.PositionFour
 
-open MeasureTheory Set Metric
+open MeasureTheory Set Metric SLT.Pushforward
 open scoped ENNReal
 
 /-- The note's reference weight `w_β(z) = |z|^{-4/3} |1 - z|^{-4/3} (1 + |z|)^{β/3}`. -/
