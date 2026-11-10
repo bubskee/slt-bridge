@@ -77,7 +77,9 @@ noncomputable def rowMeasure (β : ℝ) : Measure Cubic :=
   ((volume : Measure Row).withDensity fun r => ENNReal.ofReal (rowWeight β r)).map rowCubic
 
 /-- The bounding density of the note's equation (2):
-`‖P‖^(β/3) |𝔇(P)|⁻¹ + ‖H(P)‖^(β/2) |𝔇(P)|^(-1-β/6)`, with value `∞` where `𝔇(P) = 0`. -/
+`‖P‖^(β/3) |𝔇(P)|⁻¹ + ‖H(P)‖^(β/2) |𝔇(P)|^(-1-β/6)`. The value is `∞` where `𝔇(P) = 0` and
+`P ≠ 0`. At `P = 0` it is `∞` for `β = 0` and `0` for `β > 0`, since `0 * ∞ = 0` in `ℝ≥0∞`; that
+point is Lebesgue-null. -/
 noncomputable def densityBound (β : ℝ) (P : Cubic) : ℝ≥0∞ :=
   ENNReal.ofReal (‖P‖ ^ (β / 3)) * (‖disc P‖₊ : ℝ≥0∞)⁻¹
     + ENNReal.ofReal (‖hess P‖ ^ (β / 2)) * ((‖disc P‖₊ : ℝ≥0∞)⁻¹) ^ (1 + β / 6)
