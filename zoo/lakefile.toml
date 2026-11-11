@@ -35,4 +35,4 @@ name = "Zoo"
 [[require]]
 name = "VectorSLT"
 git = "https://github.com/bubskee/vector-slt-lean.git"
-rev = "7ac38c674da0300b53410a440eafd9578babe306"
+rev = "196b8df2fd0623fc7d61e8694aaede9643eaf943"

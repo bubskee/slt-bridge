@@ -364,7 +364,8 @@ Branch `r02-certificate`, cut from `main` @ `fd0b247`. **File:** `zoo/Zoo/MixedG
 ### The position table from three inactive Laplace bounds (2026-11-10, Papers forum, Bobby's go-ahead)
 
 Branch `loss-glue`, cut from `main` @ `e032936`. **File:** `zoo/Zoo/LossComparison.lean`. **No core change.**
-The zoo's VectorSLT pin moves to `7ac38c6`, which adds `VectorSLT/LossCompare`.
+The zoo's VectorSLT pin moves to `196b8df` (`VectorSLT/LossCompare` was added at `7ac38c6`; `196b8df` changes
+only its documentation).
 
 - **What changed upstream.** `vector-slt-lean` now proves the loss comparison at positions two to four for every
   shear target: coordinates `(𝐜, w)` with a bounded change of variables, `κ (‖𝐜‖² + G_p(w)) ≤ K`, and
